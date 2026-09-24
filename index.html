@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لومرا | Lumera — نسل جدید محتوای دیجیتال</title>
+  <meta name="description" content="لومرا — پلتفرم نسل بعد محتوا با هوش مصنوعی، حافظه زنده و تجربه فضایی" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            space: {
+              950: '#030712',
+              900: '#0a0f1c',
+              800: '#0f172a',
+              700: '#1e293b',
+              600: '#334155',
+            },
+            neon: {
+              cyan: '#22d3ee',
+              purple: '#a855f7',
+              pink: '#ec4899',
+              blue: '#3b82f6',
+            }
+          },
+          fontFamily: {
+            vazir: ['Vazirmatn', 'system-ui', 'sans-serif']
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+            'twinkle': 'twinkle 3s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' }
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(34, 211, 238, 0.3)' },
+              '100%': { boxShadow: '0 0 40px rgba(168, 85, 247, 0.5)' }
+            },
+            twinkle: {
+              '0%, 100%': { opacity: 0.3 },
+              '50%': { opacity: 1 }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Vazirmatn', system-ui, sans-serif; }
+    body {
+      background: #030712;
+      overflow-x: hidden;
+    }
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 50px 160px, #fff, transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 130px 80px, #fff, transparent),
+        radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 200px 50px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 250px 180px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 300px 90px, #fff, transparent),
+        radial-gradient(1px 1px at 350px 140px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 400px 60px, #fff, transparent),
+        radial-gradient(1px 1px at 450px 200px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 500px 30px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 550px 110px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 600px 170px, #fff, transparent);
+      background-size: 650px 220px;
+      animation: twinkle 8s linear infinite;
+    }
+    .nebula {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168, 85, 247, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(34, 211, 238, 0.08), transparent),
+        radial-gradient(ellipse 50% 30% at 50% 80%, rgba(59, 130, 246, 0.06), transparent);
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .glass-strong {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+    .neon-border {
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+    }
+    .neon-text {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); border-radius: 4px; }
+    input:focus, textarea:focus { outline: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(34, 211, 238, 0.35);
+    }
+    .channel-card:hover {
+      border-color: rgba(34, 211, 238, 0.4);
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+    }
+    .post-card {
+      transition: all 0.25s ease;
+    }
+    .post-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .memory-glow {
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.25), inset 0 0 20px rgba(34, 211, 238, 0.05);
+    }
+    .xp-bar {
+      background: linear-gradient(90deg, #22d3ee, #a855f7, #ec4899);
+    }
+  </style>
+</head>
+<body class="font-vazir text-slate-100 min-h-screen">
+  <div class="stars"></div>
+  <div class="nebula"></div>
+
+  <!-- ==================== AUTH SCREEN ==================== -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="glass-strong rounded-3xl p-8 w-full max-w-md neon-border relative overflow-hidden">
+      <div class="absolute -top-20 -right-20 w-40 h-40 bg-neon-purple/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-neon-cyan/20 rounded-full blur-3xl"></div>
+      
+      <div class="relative text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-purple mb-4 animate-float">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold neon-text mb-1">لومرا</h1>
+        <p class="text-slate-400 text-sm">پلتفرم نسل بعد محتوای دیجیتال</p>
+        <p class="text-slate-500 text-xs mt-1">Lumera — Beyond Content</p>
+      </div>
+
+      <div id="login-form" class="relative space-y-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">نام کاربری</label>
+          <input id="login-username" type="text" placeholder="نام کاربری خود را وارد کنید" 
+            class="w-full bg-space-800/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan transition" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">رمز عبور</label>
+          <input id="login-password" type="password" placeholder="رمز عبور" 
+            class="w-full bg-space-800/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan transition" />
+        </div>
+        <button onclick="handleLogin()" class="btn-primary w-full py-3 rounded-xl font-semibold text-white text-sm">
+          ورود به لومرا ✨
+        </button>
+        <p class="text-center text-xs text-slate-400">
+          تازه وارد هستید؟ 
+          <button onclick="showRegister()" class="text-neon-cyan hover:underline">ثبت‌نام کنید</button>
+        </p>
+      </div>
+
+      <div id="register-form" class="relative space-y-4 hidden">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">نام نمایشی</label>
+          <input id="reg-name" type="text" placeholder="نام شما" 
+            class="w-full bg-space-800/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan transition" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">نام کاربری</label>
+          <input id="reg-username" type="text" placeholder="username" 
+            class="w-full bg-space-800/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan transition" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">رمز عبور</label>
+          <input id="reg-password" type="password" placeholder="حداقل ۶ کاراکتر" 
+            class="w-full bg-space-800/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan transition" />
+        </div>
+        <button onclick="handleRegister()" class="btn-primary w-full py-3 rounded-xl font-semibold text-white text-sm">
+          ساخت حساب در لومرا 🚀
+        </button>
+        <p class="text-center text-xs text-slate-400">
+          قبلاً حساب دارید؟ 
+          <button onclick="showLogin()" class="text-neon-cyan hover:underline">ورود</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP ==================== -->
+  <div id="app" class="hidden relative z-10 min-h-screen flex flex-col">
+    
+    <!-- Top Navbar -->
+    <header class="glass-strong sticky top-0 z-40 border-b border-slate-800/50">
+      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="font-bold text-lg neon-text">لومرا</span>
+        </div>
+
+        <div class="hidden md:flex items-center gap-1 bg-space-800/60 rounded-full p-1">
+          <button onclick="navigate('home')" data-nav="home" class="nav-btn px-4 py-1.5 rounded-full text-xs font-medium transition">خانه</button>
+          <button onclick="navigate('channels')" data-nav="channels" class="nav-btn px-4 py-1.5 rounded-full text-xs font-medium transition">کانال‌ها</button>
+          <button onclick="navigate('chats')" data-nav="chats" class="nav-btn px-4 py-1.5 rounded-full text-xs font-medium transition">چت‌ها</button>
+          <button onclick="navigate('memory')" data-nav="memory" class="nav-btn px-4 py-1.5 rounded-full text-xs font-medium transition">حافظه زنده</button>
+          <button onclick="navigate('explore')" data-nav="explore" class="nav-btn px-4 py-1.5 rounded-full text-xs font-medium transition">کشف</button>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="openCreatePost()" class="hidden sm:flex items-center gap-1.5 btn-primary px-3 py-1.5 rounded-lg text-xs font-medium text-white">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            پست جدید
+          </button>
+          <div class="relative">
+            <button onclick="toggleNotif()" class="w-9 h-9 rounded-xl glass flex items-center justify-center hover:border-neon-cyan/50 transition relative">
+              <svg class="w-4.5 h-4.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-neon-pink rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
+            </button>
+          </div>
+          <button onclick="navigate('profile')" class="flex items-center gap-2 glass rounded-xl px-2 py-1.5 hover:border-neon-cyan/40 transition">
+            <div id="user-avatar" class="w-7 h-7 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-xs font-bold"></div>
+            <span id="user-display-name" class="text-xs font-medium hidden sm:block"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
+      
+      <!-- HOME -->
+      <section id="view-home" class="view space-y-6">
+        <!-- XP & Level Banner -->
+        <div class="glass rounded-2xl p-5 neon-border relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 xp-bar"></div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p class="text-xs text-slate-400 mb-1">سطح شما در کهکشان لومرا</p>
+              <div class="flex items-center gap-3">
+                <span class="text-2xl font-bold neon-text" id="user-level">سطح ۱۲</span>
+                <span class="text-sm text-slate-400">• <span id="user-xp">۲٬۴۵۰</span> XP</span>
+              </div>
+              <div class="mt-2 w-48 h-1.5 bg-space-700 rounded-full overflow-hidden">
+                <div class="h-full xp-bar rounded-full" style="width: 68%"></div>
+              </div>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-3 py-1 rounded-full bg-neon-cyan/10 text-neon-cyan text-xs border border-neon-cyan/20">🚀 کاوشگر</span>
+              <span class="px-3 py-1 rounded-full bg-neon-purple/10 text-neon-purple text-xs border border-neon-purple/20">✨ خالق محتوا</span>
+              <span class="px-3 py-1 rounded-full bg-neon-pink/10 text-neon-pink text-xs border border-neon-pink/20">🔥 فعال</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stories -->
+        <div>
+          <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-neon-cyan"></span>
+            استوری‌های فضایی
+          </h2>
+          <div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+            <button onclick="openCreateStory()" class="flex-shrink-0 w-20 flex flex-col items-center gap-1.5">
+              <div class="w-16 h-16 rounded-2xl border-2 border-dashed border-slate-600 flex items-center justify-center hover:border-neon-cyan transition">
+                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+              </div>
+              <span class="text-[10px] text-slate-500">داستان شما</span>
+            </button>
+            <div class="flex-shrink-0 w-20 flex flex-col items-center gap-1.5 cursor-pointer" onclick="alert('استوری باز شد (دمو)')">
+              <div class="w-16 h-16 rounded-2xl p-0.5 bg-gradient-to-br from-neon-cyan via-neon-purple to-neon-pink">
+                <div class="w-full h-full rounded-2xl bg-space-800 flex items-center justify-center text-lg">🌌</div>
+              </div>
+              <span class="text-[10px] text-slate-400 truncate w-full text-center">کهکشان</span>
+            </div>
+            <div class="flex-shrink-0 w-20 flex flex-col items-center gap-1.5 cursor-pointer">
+              <div class="w-16 h-16 rounded-2xl p-0.5 bg-gradient-to-br from-neon-purple to-neon-pink">
+                <div class="w-full h-full rounded-2xl bg-space-800 flex items-center justify-center text-lg">🚀</div>
+              </div>
+              <span class="text-[10px] text-slate-400 truncate w-full text-center">فضانورد</span>
+            </div>
+            <div class="flex-shrink-0 w-20 flex flex-col items-center gap-1.5 cursor-pointer">
+              <div class="w-16 h-16 rounded-2xl p-0.5 bg-gradient-to-br from-neon-cyan to-neon-blue">
+                <div class="w-full h-full rounded-2xl bg-space-800 flex items-center justify-center text-lg">⭐</div>
+              </div>
+              <span class="text-[10px] text-slate-400 truncate w-full text-center">ستاره</span>
+            </div>
+            <div class="flex-shrink-0 w-20 flex flex-col items-center gap-1.5 cursor-pointer">
+              <div class="w-16 h-16 rounded-2xl p-0.5 bg-gradient-to-br from-neon-pink to-neon-purple">
+                <div class="w-full h-full rounded-2xl bg-space-800 flex items-center justify-center text-lg">🪐</div>
+              </div>
+              <span class="text-[10px] text-slate-400 truncate w-full text-center">سیاره</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feed -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-neon-purple"></span>
+              فید کهکشانی
+            </h2>
+            <select class="bg-space-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-400">
+              <option>جدیدترین</option>
+              <option>پرطرفدار</option>
+              <option>پیشنهاد AI</option>
+            </select>
+          </div>
+          <div id="feed-posts" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- CHANNELS -->
+      <section id="view-channels" class="view hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h1 class="text-xl font-bold">کانال‌های لومرا</h1>
+          <div class="flex gap-2">
+            <button onclick="openCreateChannel()" class="btn-primary px-4 py-2 rounded-xl text-xs font-medium text-white flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              کانال جدید
+            </button>
+            <button onclick="openCreateGroup()" class="glass px-4 py-2 rounded-xl text-xs font-medium border border-slate-700 hover:border-neon-cyan/40 transition">
+              گروه جدید
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="channels-grid"></div>
+      </section>
+
+      <!-- SINGLE CHANNEL -->
+      <section id="view-channel" class="view hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="navigate('channels')" class="w-9 h-9 rounded-xl glass flex items-center justify-center hover:border-neon-cyan/40 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="flex-1">
+            <h1 id="channel-title" class="text-xl font-bold"></h1>
+            <p id="channel-meta" class="text-xs text-slate-400"></p>
+          </div>
+          <button onclick="openChannelSettings()" class="glass px-3 py-1.5 rounded-lg text-xs border border-slate-700 hover:border-neon-cyan/40">تنظیمات</button>
+          <button onclick="openChannelMemory()" class="glass px-3 py-1.5 rounded-lg text-xs border border-neon-purple/40 text-neon-purple hover:bg-neon-purple/10">روح کانال 🧠</button>
+        </div>
+        <div id="channel-posts" class="space-y-4"></div>
+      </section>
+
+      <!-- CHATS -->
+      <section id="view-chats" class="view hidden">
+        <h1 class="text-xl font-bold mb-6">چت‌های خصوصی</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[60vh]">
+          <div class="glass rounded-2xl p-3 overflow-y-auto custom-scroll space-y-1" id="chat-list"></div>
+          <div class="lg:col-span-2 glass rounded-2xl flex flex-col" id="chat-window">
+            <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-blue flex items-center justify-center text-sm font-bold">؟</div>
+              <div>
+                <p class="text-sm font-medium" id="chat-name">یک چت انتخاب کنید</p>
+                <p class="text-xs text-slate-500" id="chat-status"></p>
+              </div>
+            </div>
+            <div class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3" id="chat-messages"></div>
+            <div class="p-3 border-t border-slate-800 flex gap-2">
+              <input id="chat-input" type="text" placeholder="پیام بنویسید..." class="flex-1 bg-space-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:border-neon-cyan" onkeydown="if(event.key==='Enter')sendChat()" />
+              <button onclick="sendChat()" class="btn-primary px-4 rounded-xl text-white text-sm">ارسال</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE MEMORY -->
+      <section id="view-memory" class="view hidden space-y-6">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-purple to-neon-pink mb-4 memory-glow animate-float">
+            <span class="text-2xl">🧠</span>
+          </div>
+          <h1 class="text-2xl font-bold neon-text mb-2">حافظه زنده لومرا</h1>
+          <p class="text-slate-400 text-sm max-w-lg mx-auto">روح جمعی پلتفرم. از تاریخچه، ترندها، و دانش کانال‌ها بپرس. این حافظه با هر تعامل رشد می‌کند.</p>
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+          <div class="glass rounded-2xl p-4 memory-glow mb-4 min-h-[320px] max-h-[400px] overflow-y-auto custom-scroll space-y-4" id="memory-chat"></div>
+          <div class="flex gap-2">
+            <input id="memory-input" type="text" placeholder="از حافظه زنده بپرس... مثلاً: چه ترندی این هفته قوی بوده؟" 
+              class="flex-1 bg-space-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-purple" 
+              onkeydown="if(event.key==='Enter')askMemory()" />
+            <button onclick="askMemory()" class="btn-primary px-5 rounded-xl text-white text-sm font-medium">بپرس</button>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-3 justify-center">
+            <button onclick="quickMemory('ترندهای این هفته چیه؟')" class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40 transition">ترندهای هفته</button>
+            <button onclick="quickMemory('بهترین کانال‌های طراحی رو معرفی کن')" class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40 transition">بهترین کانال‌ها</button>
+            <button onclick="quickMemory('چطور می‌تونم محتوای بهتری بسازم؟')" class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40 transition">راهنمای محتوا</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPLORE -->
+      <section id="view-explore" class="view hidden space-y-6">
+        <h1 class="text-xl font-bold">کشف کهکشان</h1>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">🎨</div>
+            <p class="text-sm font-medium">طراحی</p>
+            <p class="text-xs text-slate-500">۱۲۸ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">💻</div>
+            <p class="text-sm font-medium">تکنولوژی</p>
+            <p class="text-xs text-slate-500">۲۴۵ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">🚀</div>
+            <p class="text-sm font-medium">استارتاپ</p>
+            <p class="text-xs text-slate-500">۸۹ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">🎮</div>
+            <p class="text-sm font-medium">گیم</p>
+            <p class="text-xs text-slate-500">۱۶۷ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">📚</div>
+            <p class="text-sm font-medium">آموزش</p>
+            <p class="text-xs text-slate-500">۲۰۳ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">🎵</div>
+            <p class="text-sm font-medium">موسیقی</p>
+            <p class="text-xs text-slate-500">۹۴ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">🪐</div>
+            <p class="text-sm font-medium">علم</p>
+            <p class="text-xs text-slate-500">۷۱ کانال</p>
+          </div>
+          <div class="glass rounded-2xl p-4 text-center hover:border-neon-cyan/40 transition cursor-pointer channel-card">
+            <div class="text-2xl mb-2">✨</div>
+            <p class="text-sm font-medium">خلاقیت</p>
+            <p class="text-xs text-slate-500">۱۵۶ کانال</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h2 class="text-sm font-semibold mb-4 flex items-center gap-2">
+            <span class="text-neon-cyan">🔥</span> ترندهای لحظه‌ای
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-space-800/50 transition cursor-pointer">
+              <span class="text-lg font-bold text-slate-600">۱</span>
+              <div class="flex-1">
+                <p class="text-sm font-medium">هوش مصنوعی در طراحی رابط کاربری</p>
+                <p class="text-xs text-slate-500">۲.۴ هزار پست • در حال رشد</p>
+              </div>
+              <span class="text-xs text-neon-cyan">↑ ۲۴٪</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-space-800/50 transition cursor-pointer">
+              <span class="text-lg font-bold text-slate-600">۲</span>
+              <div class="flex-1">
+                <p class="text-sm font-medium">فضانوردی و آینده بشر</p>
+                <p class="text-xs text-slate-500">۱.۸ هزار پست</p>
+              </div>
+              <span class="text-xs text-neon-cyan">↑ ۱۸٪</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-space-800/50 transition cursor-pointer">
+              <span class="text-lg font-bold text-slate-600">۳</span>
+              <div class="flex-1">
+                <p class="text-sm font-medium">تولید محتوا با AI فارسی</p>
+                <p class="text-xs text-slate-500">۳.۱ هزار پست</p>
+              </div>
+              <span class="text-xs text-neon-pink">↑ ۴۲٪</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="view-profile" class="view hidden space-y-6">
+        <div class="glass rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-neon-cyan/20 via-neon-purple/20 to-neon-pink/20"></div>
+          <div class="relative flex flex-col sm:flex-row items-center gap-5 pt-8">
+            <div id="profile-avatar" class="w-20 h-20 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-2xl font-bold border-4 border-space-900"></div>
+            <div class="text-center sm:text-right flex-1">
+              <h1 id="profile-name" class="text-xl font-bold"></h1>
+              <p id="profile-username" class="text-sm text-slate-400"></p>
+              <p class="text-xs text-slate-500 mt-1">عضو از شهریور ۱۴۰۴ • سطح ۱۲ • ۲٬۴۵۰ XP</p>
+            </div>
+            <button onclick="openSettings()" class="glass px-4 py-2 rounded-xl text-xs border border-slate-700 hover:border-neon-cyan/40">تنظیمات حساب</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold neon-text">۲۴</p>
+            <p class="text-xs text-slate-400 mt-1">پست</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold neon-text">۸</p>
+            <p class="text-xs text-slate-400 mt-1">کانال</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold neon-text">۱.۲هزار</p>
+            <p class="text-xs text-slate-400 mt-1">دنبال‌کننده</p>
+          </div>
+          <div class="glass rounded-xl p-4 text-center">
+            <p class="text-2xl font-bold neon-text">۳۴۰</p>
+            <p class="text-xs text-slate-400 mt-1">دنبال‌شونده</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+          <h2 class="text-sm font-semibold mb-4">بج‌های فضایی شما</h2>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1.5 rounded-full bg-neon-cyan/10 text-neon-cyan text-xs border border-neon-cyan/20">🚀 اولین پرتاب</span>
+            <span class="px-3 py-1.5 rounded-full bg-neon-purple/10 text-neon-purple text-xs border border-neon-purple/20">✨ خالق ستاره</span>
+            <span class="px-3 py-1.5 rounded-full bg-neon-pink/10 text-neon-pink text-xs border border-neon-pink/20">🔥 ۷ روز متوالی</span>
+            <span class="px-3 py-1.5 rounded-full bg-neon-blue/10 text-neon-blue text-xs border border-neon-blue/20">🧠 گفتگو با حافظه</span>
+            <span class="px-3 py-1.5 rounded-full bg-slate-700/50 text-slate-400 text-xs border border-slate-600">🪐 کاشف (قفل)</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="handleLogout()" class="glass px-4 py-2 rounded-xl text-xs text-red-400 border border-red-500/30 hover:bg-red-500/10 transition">خروج از حساب</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 glass-strong border-t border-slate-800 z-40">
+      <div class="flex justify-around py-2">
+        <button onclick="navigate('home')" class="flex flex-col items-center gap-0.5 p-2 text-xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+          خانه
+        </button>
+        <button onclick="navigate('channels')" class="flex flex-col items-center gap-0.5 p-2 text-xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          کانال
+        </button>
+        <button onclick="openCreatePost()" class="flex flex-col items-center gap-0.5 p-2">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center -mt-4 shadow-lg shadow-neon-cyan/30">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </div>
+        </button>
+        <button onclick="navigate('memory')" class="flex flex-col items-center gap-0.5 p-2 text-xs">
+          <span class="text-lg">🧠</span>
+          حافظه
+        </button>
+        <button onclick="navigate('profile')" class="flex flex-col items-center gap-0.5 p-2 text-xs">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          پروفایل
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+  
+  <!-- Create Post Modal -->
+  <div id="modal-create-post" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="glass-strong rounded-2xl w-full max-w-lg p-6 neon-border relative">
+      <button onclick="closeModal('modal-create-post')" class="absolute top-4 left-4 w-8 h-8 rounded-lg glass flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+      <h2 class="text-lg font-bold mb-4">ایجاد پست جدید 🚀</h2>
+      <textarea id="post-content" rows="4" placeholder="چی در سر داری؟ بنویس..." class="w-full bg-space-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan resize-none mb-3"></textarea>
+      
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button onclick="aiAssistPost()" class="text-xs px-3 py-1.5 rounded-full bg-neon-purple/15 text-neon-purple border border-neon-purple/30 hover:bg-neon-purple/25 transition">✨ کمک AI</button>
+        <button class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40">📷 تصویر</button>
+        <button class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40">🎥 ویدیو</button>
+        <button class="text-xs px-3 py-1.5 rounded-full glass border border-slate-700 hover:border-neon-cyan/40">📊 نظرسنجی</button>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <select id="post-channel" class="bg-space-800 border border-slate-700 rounded-lg px-3 py-2 text-xs">
+          <option value="feed">فید عمومی</option>
+          <option value="design">کانال طراحی</option>
+          <option value="tech">کانال تکنولوژی</option>
+        </select>
+        <button onclick="publishPost()" class="btn-primary px-5 py-2 rounded-xl text-sm font-medium text-white">انتشار ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Channel Modal -->
+  <div id="modal-create-channel" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="glass-strong rounded-2xl w-full max-w-md p-6 neon-border relative">
+      <button onclick="closeModal('modal-create-channel')" class="absolute top-4 left-4 w-8 h-8 rounded-lg glass flex items-center justify-center text-slate-400">✕</button>
+      <h2 class="text-lg font-bold mb-4">ساخت کانال جدید</h2>
+      <div class="space-y-3">
+        <input id="new-channel-name" type="text" placeholder="نام کانال" class="w-full bg-space-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan" />
+        <textarea id="new-channel-desc" rows="2" placeholder="توضیحات کوتاه" class="w-full bg-space-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-neon-cyan resize-none"></textarea>
+        <select id="new-channel-type" class="w-full bg-space-800 border border-slate-700 rounded-xl px-4 py-3 text-sm">
+          <option>عمومی</option>
+          <option>خصوصی</option>
+        </select>
+        <button onclick="createChannel()" class="btn-primary w-full py-3 rounded-xl text-sm font-medium text-white">ساخت کانال 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="modal-settings" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="glass-strong rounded-2xl w-full max-w-md p-6 neon-border relative max-h-[80vh] overflow-y-auto custom-scroll">
+      <button onclick="closeModal('modal-settings')" class="absolute top-4 left-4 w-8 h-8 rounded-lg glass flex items-center justify-center text-slate-400">✕</button>
+      <h2 class="text-lg font-bold mb-6">تنظیمات حساب</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-slate-400">نام نمایشی</label>
+          <input id="settings-name" type="text" class="w-full mt-1 bg-space-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:border-neon-cyan" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">بیو</label>
+          <textarea id="settings-bio" rows="2" class="w-full mt-1 bg-space-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:border-neon-cyan resize-none"></textarea>
+        </div>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 transition">🔒 تغییر رمز عبور</button>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 transition">💬 پشتیبانی</button>
+        <button onclick="saveSettings()" class="btn-primary w-full py-2.5 rounded-xl text-sm font-medium text-white">ذخیره تغییرات</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Channel Settings Modal -->
+  <div id="modal-channel-settings" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="glass-strong rounded-2xl w-full max-w-md p-6 neon-border relative">
+      <button onclick="closeModal('modal-channel-settings')" class="absolute top-4 left-4 w-8 h-8 rounded-lg glass flex items-center justify-center text-slate-400">✕</button>
+      <h2 class="text-lg font-bold mb-4">تنظیمات کانال</h2>
+      <div class="space-y-3">
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 text-right px-4">👤 اضافه کردن ادمین</button>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 text-right px-4">👥 مدیریت اعضا</button>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 text-right px-4">📊 آنالیتیکس کانال</button>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-slate-700 hover:border-neon-cyan/40 text-right px-4">💰 monetization</button>
+        <button class="w-full glass py-2.5 rounded-xl text-sm border border-red-500/30 text-red-400 hover:bg-red-500/10 text-right px-4">🚪 ترک کانال</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[60] hidden">
+    <div class="glass-strong px-5 py-3 rounded-xl neon-border text-sm font-medium shadow-2xl" id="toast-msg"></div>
+  </div>
+
+  <script>
+    // ==================== STATE ====================
+    let currentUser = null;
+    let currentView = 'home';
+    let currentChat = null;
+
+    const defaultChannels = [
+      { id: 1, name: 'طراحی فضایی', desc: 'جایی برای طراحان کهکشان', members: 1240, icon: '🎨', posts: 89 },
+      { id: 2, name: 'تکنولوژی آینده', desc: 'آخرین دستاوردهای تکنولوژی', members: 3420, icon: '💻', posts: 156 },
+      { id: 3, name: 'استارتاپ لومرا', desc: 'جامعه بنیان‌گذاران', members: 890, icon: '🚀', posts: 67 },
+      { id: 4, name: 'علم و فضا', desc: 'کاوش در ناشناخته‌ها', members: 2100, icon: '🪐', posts: 112 },
+      { id: 5, name: 'خلاقیت بی‌مرز', desc: 'ایده‌ها و الهام', members: 1560, icon: '✨', posts: 94 },
+      { id: 6, name: 'گیم کهکشانی', desc: 'بازی و سرگرمی', members: 2780, icon: '🎮', posts: 203 },
+    ];
+
+    const defaultPosts = [
+      { id: 1, author: 'آسترو', avatar: 'آ', content: 'امروز اولین نسخه لومرا رو تست کردم. حس می‌کنم وارد یه کهکشان جدید شدم! 🌌\n\nحافظه زنده واقعاً چیز دیگه‌ایه...', likes: 128, comments: 24, time: '۲ ساعت پیش', channel: 'عمومی' },
+      { id: 2, author: 'نووا', avatar: 'ن', content: 'سوال: بهترین ابزار AI برای تولید محتوای فارسی چیه به نظرتون؟\n\nمن فعلاً با چندتا کار می‌کنم ولی هنوز به نتیجه قطعی نرسیدم.', likes: 89, comments: 45, time: '۵ ساعت پیش', channel: 'تکنولوژی آینده' },
+      { id: 3, author: 'کایرا', avatar: 'ک', content: 'طراحی رابط کاربری با تم فضایی یکی از چالش‌برانگیزترین کارهاست. کنتراست، عمق، و حس بی‌نهایت رو باید همزمان داشته باشی. ✨', likes: 210, comments: 18, time: 'دیروز', channel: 'طراحی فضایی' },
+      { id: 4, author: 'زفی', avatar: 'ز', content: 'ایده: اگه هر کانال یه «روح» داشته باشه که تاریخچه‌ش رو حفظ کنه و بتونه با اعضا حرف بزنه... این دیگه پلتفرم نیست، یه موجود زنده‌ست! 🧠', likes: 340, comments: 67, time: '۲ روز پیش', channel: 'خلاقیت بی‌مرز' },
+    ];
+
+    const chatUsers = [
+      { id: 1, name: 'آسترو ناوبر', avatar: 'آ', last: 'سلام! پروژه چطور پیش می‌ره؟', online: true },
+      { id: 2, name: 'نووا طراح', avatar: 'ن', last: 'فایل‌ها رو فرستادم', online: false },
+      { id: 3, name: 'کایرا', avatar: 'ک', last: 'فردا جلسه داریم؟', online: true },
+    ];
+
+    // ==================== AUTH ====================
+    function showRegister() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.remove('hidden');
+    }
+    function showLogin() {
+      document.getElementById('register-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    }
+
+    function handleLogin() {
+      const username = document.getElementById('login-username').value.trim() || 'کاوشگر';
+      currentUser = {
+        name: username,
+        username: username.toLowerCase().replace(/\s/g, '_'),
+        avatar: username.charAt(0).toUpperCase(),
+        level: 12,
+        xp: 2450
+      };
+      enterApp();
+    }
+
+    function handleRegister() {
+      const name = document.getElementById('reg-name').value.trim() || 'کاوشگر جدید';
+      const username = document.getElementById('reg-username').value.trim() || 'explorer';
+      currentUser = {
+        name,
+        username: username.toLowerCase(),
+        avatar: name.charAt(0).toUpperCase(),
+        level: 1,
+        xp: 50
+      };
+      enterApp();
+      showToast('به لومرا خوش اومدی، کاوشگر! 🚀');
+    }
+
+    function enterApp() {
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('user-avatar').textContent = currentUser.avatar;
+      document.getElementById('user-display-name').textContent = currentUser.name;
+      document.getElementById('profile-avatar').textContent = currentUser.avatar;
+      document.getElementById('profile-name').textContent = currentUser.name;
+      document.getElementById('profile-username').textContent = '@' + currentUser.username;
+      localStorage.setItem('lumera_user', JSON.stringify(currentUser));
+      renderFeed();
+      renderChannels();
+      renderChatList();
+      navigate('home');
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('lumera_user');
+      currentUser = null;
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      showLogin();
+    }
+
+    // ==================== NAVIGATION ====================
+    function navigate(view) {
+      currentView = view;
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      const el = document.getElementById('view-' + view);
+      if (el) el.classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-neon-cyan/20', 'text-neon-cyan');
+        btn.classList.add('text-slate-400');
+        if (btn.dataset.nav === view) {
+          btn.classList.add('bg-neon-cyan/20', 'text-neon-cyan');
+          btn.classList.remove('text-slate-400');
+        }
+      });
+    }
+
+    // ==================== RENDER ====================
+    function renderFeed() {
+      const container = document.getElementById('feed-posts');
+      container.innerHTML = defaultPosts.map(p => `
+        <article class="glass rounded-2xl p-5 post-card">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-sm font-bold flex-shrink-0">${p.avatar}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-medium text-sm">${p.author}</span>
+                <span class="text-xs text-slate-500">• ${p.time}</span>
+                <span class="text-xs text-neon-cyan/70 bg-neon-cyan/10 px-2 py-0.5 rounded-full">${p.channel}</span>
+              </div>
+              <p class="text-sm text-slate-200 whitespace-pre-line leading-relaxed">${p.content}</p>
+              <div class="flex items-center gap-4 mt-3 text-xs text-slate-400">
+                <button onclick="likePost(${p.id})" class="flex items-center gap-1 hover:text-neon-pink transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                  ${p.likes}
+                </button>
+                <button class="flex items-center gap-1 hover:text-neon-cyan transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                  ${p.comments}
+                </button>
+                <button class="hover:text-neon-purple transition">اشتراک</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderChannels() {
+      const container = document.getElementById('channels-grid');
+      container.innerHTML = defaultChannels.map(c => `
+        <div onclick="openChannel(${c.id})" class="glass rounded-2xl p-5 channel-card cursor-pointer transition border border-transparent">
+          <div class="flex items-start gap-3">
+            <div class="w-12 h-12 rounded-xl bg-space-700 flex items-center justify-center text-2xl">${c.icon}</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-sm truncate">${c.name}</h3>
+              <p class="text-xs text-slate-400 mt-0.5 line-clamp-2">${c.desc}</p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                <span>${c.members.toLocaleString('fa-IR')} عضو</span>
+                <span>•</span>
+                <span>${c.posts} پست</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openChannel(id) {
+      const ch = defaultChannels.find(c => c.id === id);
+      if (!ch) return;
+      document.getElementById('channel-title').textContent = ch.icon + ' ' + ch.name;
+      document.getElementById('channel-meta').textContent = ch.members.toLocaleString('fa-IR') + ' عضو • ' + ch.posts + ' پست';
+      document.getElementById('channel-posts').innerHTML = defaultPosts.slice(0, 2).map(p => `
+        <article class="glass rounded-2xl p-5 post-card">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-sm font-bold">${p.avatar}</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-medium text-sm">${p.author}</span>
+                <span class="text-xs text-slate-500">• ${p.time}</span>
+              </div>
+              <p class="text-sm text-slate-200 whitespace-pre-line">${p.content}</p>
+              <div class="flex gap-4 mt-3 text-xs text-slate-400">
+                <span>❤️ ${p.likes}</span>
+                <span>💬 ${p.comments}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      navigate('channel');
+    }
+
+    function renderChatList() {
+      document.getElementById('chat-list').innerHTML = chatUsers.map(u => `
+        <button onclick="openChat(${u.id})" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-space-800/60 transition text-right">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-blue flex items-center justify-center text-sm font-bold">${u.avatar}</div>
+            ${u.online ? '<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-space-900"></span>' : ''}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">${u.name}</p>
+            <p class="text-xs text-slate-500 truncate">${u.last}</p>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function openChat(id) {
+      const u = chatUsers.find(c => c.id === id);
+      if (!u) return;
+      currentChat = u;
+      document.getElementById('chat-name').textContent = u.name;
+      document.getElementById('chat-status').textContent = u.online ? 'آنلاین' : 'آخرین بازدید اخیراً';
+      document.getElementById('chat-messages').innerHTML = `
+        <div class="flex justify-start"><div class="glass rounded-2xl rounded-tr-sm px-4 py-2 text-sm max-w-[80%]">سلام! چطوری؟</div></div>
+        <div class="flex justify-end"><div class="bg-gradient-to-r from-neon-cyan/30 to-neon-purple/30 rounded-2xl rounded-tl-sm px-4 py-2 text-sm max-w-[80%]">خوبم، تو چطوری؟</div></div>
+        <div class="flex justify-start"><div class="glass rounded-2xl rounded-tr-sm px-4 py-2 text-sm max-w-[80%]">${u.last}</div></div>
+      `;
+    }
+
+    function sendChat() {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg || !currentChat) return;
+      const container = document.getElementById('chat-messages');
+      container.innerHTML += `<div class="flex justify-end"><div class="bg-gradient-to-r from-neon-cyan/30 to-neon-purple/30 rounded-2xl rounded-tl-sm px-4 py-2 text-sm max-w-[80%]">${msg}</div></div>`;
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ==================== MEMORY ====================
+    const memoryResponses = {
+      'ترند': 'بر اساس حافظه زنده لومرا، این هفته سه ترند قوی داریم:\n\n۱. تولید محتوا با هوش مصنوعی فارسی (↑۴۲٪)\n۲. طراحی رابط کاربری فضایی و دارک مود پیشرفته\n۳. بحث‌های مربوط به آینده فضا و کلونیزاسیون مریخ\n\nکانال «تکنولوژی آینده» بیشترین فعالیت رو داشته.',
+      'کانال': 'بهترین کانال‌های فعال الان:\n\n🎨 طراحی فضایی — ۱٬۲۴۰ عضو\n💻 تکنولوژی آینده — ۳٬۴۲۰ عضو\n🪐 علم و فضا — ۲٬۱۰۰ عضو\n\nاگه دنبال جامعه خلاق هستی، «خلاقیت بی‌مرز» رو پیشنهاد می‌کنم.',
+      'محتوا': 'برای ساخت محتوای بهتر در لومرا:\n\n• از دکمه «کمک AI» موقع نوشتن پست استفاده کن\n• پست‌های تعاملی (نظرسنجی، سوال) بیشتر درگیر می‌کنن\n• بهترین زمان انتشار: ۹ شب تا ۱۱ شب\n• روح کانال‌ها رو چک کن؛ گاهی ایده‌های طلایی می‌دن\n\nهر پست باکیفیت = XP بیشتر و رشد سطح!',
+      'default': 'حافظه زنده لومرا فعال است. 🧠\n\nمن تاریخچه تعاملات، ترندها و دانش جمعی کانال‌ها رو در اختیار دارم. می‌تونی ازم در مورد ترندها، کانال‌های پیشنهادی، راهنمای محتوا یا هر چیزی که به جامعه لومرا مربوطه بپرسی.\n\nچیزی که می‌خوای بدونی چیه؟'
+    };
+
+    function askMemory() {
+      const input = document.getElementById('memory-input');
+      const q = input.value.trim();
+      if (!q) return;
+      const chat = document.getElementById('memory-chat');
+      chat.innerHTML += `<div class="flex justify-end"><div class="bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm max-w-[85%]">${q}</div></div>`;
+      input.value = '';
+      
+      setTimeout(() => {
+        let answer = memoryResponses.default;
+        if (q.includes('ترند') || q.includes('هفته')) answer = memoryResponses['ترند'];
+        else if (q.includes('کانال') || q.includes('بهترین')) answer = memoryResponses['کانال'];
+        else if (q.includes('محتوا') || q.includes('بسازم') || q.includes('راهنما')) answer = memoryResponses['محتوا'];
+        
+        chat.innerHTML += `<div class="flex justify-start"><div class="glass rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm max-w-[85%] whitespace-pre-line border border-neon-purple/20">${answer}</div></div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }, 800);
+    }
+
+    function quickMemory(q) {
+      document.getElementById('memory-input').value = q;
+      askMemory();
+    }
+
+    function openChannelMemory() {
+      navigate('memory');
+      showToast('روح این کانال به حافظه زنده متصل شد 🧠');
+    }
+
+    // ==================== MODALS ====================
+    function openCreatePost() {
+      document.getElementById('modal-create-post').classList.remove('hidden');
+      document.getElementById('modal-create-post').classList.add('flex');
+    }
+    function openCreateChannel() {
+      document.getElementById('modal-create-channel').classList.remove('hidden');
+      document.getElementById('modal-create-channel').classList.add('flex');
+    }
+    function openCreateGroup() {
+      showToast('ساخت گروه به زودی فعال می‌شه 🚀');
+    }
+    function openSettings() {
+      document.getElementById('settings-name').value = currentUser?.name || '';
+      document.getElementById('modal-settings').classList.remove('hidden');
+      document.getElementById('modal-settings').classList.add('flex');
+    }
+    function openChannelSettings() {
+      document.getElementById('modal-channel-settings').classList.remove('hidden');
+      document.getElementById('modal-channel-settings').classList.add('flex');
+    }
+    function openCreateStory() {
+      showToast('استوری فضایی به زودی... 🌌');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    function publishPost() {
+      const content = document.getElementById('post-content').value.trim();
+      if (!content) return showToast('یه چیزی بنویس!');
+      defaultPosts.unshift({
+        id: Date.now(),
+        author: currentUser.name,
+        avatar: currentUser.avatar,
+        content,
+        likes: 0,
+        comments: 0,
+        time: 'همین الان',
+        channel: 'عمومی'
+      });
+      renderFeed();
+      closeModal('modal-create-post');
+      document.getElementById('post-content').value = '';
+      showToast('پست شما در کهکشان منتشر شد! ✨');
+      navigate('home');
+    }
+
+    function createChannel() {
+      const name = document.getElementById('new-channel-name').value.trim();
+      if (!name) return showToast('نام کانال رو وارد کن');
+      defaultChannels.unshift({
+        id: Date.now(),
+        name,
+        desc: document.getElementById('new-channel-desc').value || 'کانال جدید در لومرا',
+        members: 1,
+        icon: '🌌',
+        posts: 0
+      });
+      renderChannels();
+      closeModal('modal-create-channel');
+      showToast('کانال «' + name + '» ساخته شد! 🚀');
+      navigate('channels');
+    }
+
+    function aiAssistPost() {
+      const ta = document.getElementById('post-content');
+      const ideas = [
+        'امروز در لومرا یه ایده جدید به ذهنم رسید که می‌تونه بازی رو عوض کنه...\n\nبه نظرتون آینده محتوا به کدوم سمت می‌ره؟',
+        'تجربه کار با حافظه زنده لومرا واقعاً متفاوت بود. حس می‌کنی با یه موجود زنده حرف می‌زنی نه یه ربات.\n\nشما امتحان کردید؟',
+        'سه نکته برای تولید محتوای بهتر در فضای دیجیتال:\n۱. اصالت\n۲. تعامل واقعی\n۳. داستان‌گویی\n\nشما کدوم رو اولویت می‌دید؟'
+      ];
+      ta.value = ideas[Math.floor(Math.random() * ideas.length)];
+      showToast('AI ایده داد! می‌تونی ویرایشش کنی ✨');
+    }
+
+    function likePost(id) {
+      showToast('لایک ثبت شد ❤️');
+    }
+
+    function saveSettings() {
+      if (currentUser) {
+        currentUser.name = document.getElementById('settings-name').value || currentUser.name;
+        document.getElementById('user-display-name').textContent = currentUser.name;
+        document.getElementById('profile-name').textContent = currentUser.name;
+        localStorage.setItem('lumera_user', JSON.stringify(currentUser));
+      }
+      closeModal('modal-settings');
+      showToast('تنظیمات ذخیره شد');
+    }
+
+    function toggleNotif() {
+      showToast('۳ اعلان جدید دارید 🔔');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 2800);
+    }
+
+    // ==================== INIT ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('lumera_user');
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        enterApp();
+      }
+      // Init memory welcome
+      document.getElementById('memory-chat').innerHTML = `
+        <div class="flex justify-start">
+          <div class="glass rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm max-w-[85%] border border-neon-purple/20">
+            سلام کاوشگر. 🧠<br><br>
+            من حافظه زنده لومرا هستم. دانش جمعی همه کانال‌ها، پست‌ها و تعاملات اینجاست.<br><br>
+            ازم بپرس؛ آماده‌ام.
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

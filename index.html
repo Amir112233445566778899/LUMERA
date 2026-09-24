@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>لومرا | Lumera</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Vazirmatn', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Vazirmatn', system-ui, sans-serif; box-sizing: border-box; }
+    :root, [data-theme="dark"] {
+      --bg: #030712; --surface: #0f172a; --panel: #111827; --border: #1e293b;
+      --text: #e2e8f0; --muted: #64748b; --accent: #38bdf8; --accent2: #818cf8;
+      --danger: #fb7185; --success: #34d399; --card: rgba(17,24,39,0.85);
+    }
+    [data-theme="space"] {
+      --bg: #020617; --surface: #0b1220; --panel: #0f172a; --border: #1e3a5f;
+      --text: #e0f2fe; --muted: #7dd3fc; --accent: #22d3ee; --accent2: #a78bfa;
+      --danger: #f472b6; --success: #2dd4bf; --card: rgba(15,23,42,0.88);
+    }
+    [data-theme="solar"] {
+      --bg: #1c1917; --surface: #292524; --panel: #1c1917; --border: #44403c;
+      --text: #fef3c7; --muted: #d6d3d1; --accent: #f59e0b; --accent2: #f97316;
+      --danger: #ef4444; --success: #84cc16; --card: rgba(41,37,36,0.9);
+    }
+    [data-theme="blood"] {
+      --bg: #0c0a0a; --surface: #1a1010; --panel: #1c1010; --border: #3f1a1a;
+      --text: #fecaca; --muted: #f87171; --accent: #ef4444; --accent2: #f43f5e;
+      --danger: #fb7185; --success: #fbbf24; --card: rgba(28,16,16,0.9);
+    }
+    body { background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; overflow-x: hidden; transition: background .3s, color .3s; }
+    .glass { background: var(--card); backdrop-filter: blur(18px); border: 1px solid var(--border); }
+    .input {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; font-size: 13.5px; color: var(--text); width: 100%;
+    }
+    .input:focus { outline: none; border-color: var(--accent); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-weight: 600; font-size: 13px; border-radius: 10px; border: none; cursor: pointer; transition: .2s;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-danger { background: rgba(251,113,133,.12); color: var(--danger); border: 1px solid rgba(251,113,133,.3); }
+    .badge { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+    .admin-badge { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.35); }
+    .crown { color: #fbbf24; font-size: 12px; }
+    .scroll::-webkit-scrollbar { width: 3px; }
+    .scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .fade { animation: fade .25s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .nav-on { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent) !important; }
+    .story-ring { background: linear-gradient(135deg, var(--accent), var(--accent2)); padding: 2px; border-radius: 16px; }
+    .warn-box { background: rgba(251,113,133,.1); border: 1px solid rgba(251,113,133,.35); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <!-- AUTH -->
+  <div id="auth" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-[400px]">
+      <div class="text-center mb-7">
+        <div class="inline-flex w-13 h-13 rounded-2xl items-center justify-center mb-3" style="background:linear-gradient(135deg,var(--accent),var(--accent2));width:52px;height:52px">
+          <svg width="24" height="24" fill="none" stroke="#fff" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h1 class="text-3xl font-extrabold" style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">لومرا</h1>
+        <p class="text-sm mt-1" style="color:var(--muted)">پلتفرم حرفه‌ای نسل بعد محتوا</p>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <div class="flex gap-1 p-1 rounded-xl mb-4" style="background:var(--surface)">
+          <button id="t-login" onclick="authTab('login')" class="flex-1 py-2 rounded-lg text-sm font-medium nav-on">ورود</button>
+          <button id="t-reg" onclick="authTab('register')" class="flex-1 py-2 rounded-lg text-sm font-medium" style="color:var(--muted)">ثبت‌نام</button>
+        </div>
+        <div id="f-login" class="space-y-3">
+          <input id="l-user" class="input" placeholder="نام کاربری" />
+          <input id="l-pass" class="input" type="password" placeholder="رمز عبور" />
+          <p id="l-err" class="text-xs hidden" style="color:var(--danger)"></p>
+          <button onclick="doLogin()" class="btn btn-primary w-full py-2.5">ورود</button>
+        </div>
+        <div id="f-reg" class="space-y-3 hidden">
+          <input id="r-name" class="input" placeholder="نام نمایشی" />
+          <input id="r-user" class="input" placeholder="نام کاربری (انگلیسی)" />
+          <input id="r-pass" class="input" type="password" placeholder="رمز (حداقل ۶ کاراکتر)" />
+          <p id="r-err" class="text-xs hidden" style="color:var(--danger)"></p>
+          <button onclick="doRegister()" class="btn btn-primary w-full py-2.5">ایجاد حساب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="hidden min-h-screen flex flex-col pb-16 md:pb-0">
+    <header class="glass sticky top-0 z-40 border-b" style="border-color:var(--border)">
+      <div class="max-w-6xl mx-auto px-3 h-[50px] flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">
+            <svg width="15" height="15" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <span class="font-bold text-[15px]">لومرا</span>
+        </div>
+        <nav class="hidden md:flex gap-0.5 p-0.5 rounded-full" style="background:var(--surface)">
+          <button data-n="home" onclick="go('home')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">خانه</button>
+          <button data-n="explore" onclick="go('explore')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">اکسپلور</button>
+          <button data-n="channels" onclick="go('channels')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">کانال‌ها</button>
+          <button data-n="chats" onclick="go('chats')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">گفتگو</button>
+          <button data-n="memory" onclick="go('memory')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">حافظه</button>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button onclick="openM('m-post')" class="hidden sm:inline-flex btn btn-primary px-3 py-1.5 text-xs">انتشار</button>
+          <button onclick="openM('m-notif')" class="relative w-8 h-8 rounded-lg glass flex items-center justify-center">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span id="ndot" class="absolute -top-0.5 -left-0.5 w-3.5 h-3.5 rounded-full text-[9px] flex items-center justify-center font-bold text-white" style="background:var(--danger)">0</span>
+          </button>
+          <button onclick="go('profile')" class="flex items-center gap-1.5 glass rounded-lg px-1.5 py-1">
+            <div id="hav" class="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))"></div>
+            <span id="hname" class="text-xs font-medium hidden sm:block max-w-[70px] truncate"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl mx-auto w-full px-3 py-4">
+      <!-- HOME -->
+      <section id="v-home" class="view space-y-4 fade">
+        <div class="flex gap-2.5 overflow-x-auto pb-1" style="scrollbar-width:none" id="stories"></div>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-semibold" style="color:var(--muted)">جریان محتوا</h2>
+          <select id="fsort" onchange="renderFeed()" class="input !w-auto !py-1 !px-2 text-[11px]">
+            <option value="new">جدیدترین</option>
+            <option value="hot">پرتعامل</option>
+          </select>
+        </div>
+        <div id="feed" class="space-y-3"></div>
+      </section>
+
+      <!-- EXPLORE -->
+      <section id="v-explore" class="view hidden space-y-4 fade">
+        <h1 class="text-base font-bold">اکسپلور</h1>
+        <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none">
+          <button onclick="setExploreFilter('all')" class="efilt badge border cursor-pointer" style="border-color:var(--border)">همه</button>
+          <button onclick="setExploreFilter('admin')" class="efilt badge border cursor-pointer" style="border-color:var(--border)">ادمین‌ها</button>
+          <button onclick="setExploreFilter('hot')" class="efilt badge border cursor-pointer" style="border-color:var(--border)">داغ</button>
+        </div>
+        <div id="explore-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </section>
+
+      <!-- CHANNELS -->
+      <section id="v-channels" class="view hidden space-y-3 fade">
+        <div class="flex items-center justify-between">
+          <h1 class="text-base font-bold">کانال‌ها</h1>
+          <button onclick="openM('m-channel')" class="btn btn-primary px-3 py-1.5 text-xs">کانال جدید</button>
+        </div>
+        <input id="chq" class="input" placeholder="جستجو..." oninput="renderChannels()" />
+        <div id="chlist" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </section>
+
+      <!-- CHANNEL DETAIL -->
+      <section id="v-channel" class="view hidden fade">
+        <div class="flex items-center gap-2 mb-3">
+          <button onclick="go('channels')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+          <div class="flex-1 min-w-0">
+            <h1 id="chtitle" class="text-base font-bold truncate"></h1>
+            <p id="chmeta" class="text-[11px]" style="color:var(--muted)"></p>
+          </div>
+        </div>
+        <div id="chfeed" class="space-y-3"></div>
+      </section>
+
+      <!-- CHATS -->
+      <section id="v-chats" class="view hidden fade">
+        <h1 class="text-base font-bold mb-3">گفتگوها</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3" style="min-height:55vh">
+          <div id="clist" class="glass rounded-xl p-2 overflow-y-auto scroll max-h-[55vh]"></div>
+          <div class="lg:col-span-2 glass rounded-xl flex flex-col max-h-[55vh]">
+            <div class="px-3 py-2.5 border-b flex items-center gap-2" style="border-color:var(--border)">
+              <div id="cav" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">?</div>
+              <div>
+                <p id="cname" class="text-sm font-medium">گفتگو انتخاب کنید</p>
+                <p id="cstat" class="text-[10px]" style="color:var(--muted)"></p>
+              </div>
+            </div>
+            <div id="cmsgs" class="flex-1 p-3 overflow-y-auto scroll space-y-2"></div>
+            <div class="p-2 border-t flex gap-2" style="border-color:var(--border)">
+              <input id="cinput" class="input flex-1 !py-2" placeholder="پیام..." onkeydown="if(event.key==='Enter')sendChat()" />
+              <button onclick="sendChat()" class="btn btn-primary px-3">ارسال</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMORY -->
+      <section id="v-memory" class="view hidden fade space-y-4">
+        <div class="text-center">
+          <h1 class="text-lg font-bold">حافظه زنده</h1>
+          <p class="text-xs mt-1" style="color:var(--muted)">دانش جمعی پلتفرم</p>
+        </div>
+        <div class="max-w-lg mx-auto">
+          <div id="mbox" class="glass rounded-xl p-3 min-h-[240px] max-h-[320px] overflow-y-auto scroll space-y-2.5 mb-2"></div>
+          <div class="flex gap-2">
+            <input id="min" class="input flex-1" placeholder="سوال..." onkeydown="if(event.key==='Enter')askMem()" />
+            <button onclick="askMem()" class="btn btn-primary px-3">بپرس</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="v-profile" class="view hidden fade space-y-3">
+        <div class="glass rounded-xl overflow-hidden">
+          <div class="h-14" style="background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 25%,transparent),color-mix(in srgb,var(--accent2) 25%,transparent))"></div>
+          <div class="px-4 pb-4 -mt-6 flex flex-col sm:flex-row items-center gap-3">
+            <div id="pav" class="w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white border-4" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:var(--bg)"></div>
+            <div class="text-center sm:text-right flex-1">
+              <h1 id="pname" class="text-base font-bold"></h1>
+              <p id="puser" class="text-xs" style="color:var(--muted)"></p>
+              <p class="text-[11px] mt-0.5" style="color:var(--muted)"><span id="plvl">سطح ۱</span></p>
+            </div>
+            <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">تنظیمات</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="glass rounded-xl p-2.5 text-center"><p class="text-base font-bold" id="sp">۰</p><p class="text-[10px]" style="color:var(--muted)">پست</p></div>
+          <div class="glass rounded-xl p-2.5 text-center"><p class="text-base font-bold" id="sc">۰</p><p class="text-[10px]" style="color:var(--muted)">کانال</p></div>
+          <div class="glass rounded-xl p-2.5 text-center"><p class="text-base font-bold">۰</p><p class="text-[10px]" style="color:var(--muted)">دنبال‌کننده</p></div>
+          <div class="glass rounded-xl p-2.5 text-center"><p class="text-base font-bold">۰</p><p class="text-[10px]" style="color:var(--muted)">دنبال‌شونده</p></div>
+        </div>
+        <button onclick="logout()" class="btn btn-danger px-4 py-2 text-xs">خروج</button>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="v-settings" class="view hidden fade space-y-4">
+        <div class="flex items-center gap-2">
+          <button onclick="go('profile')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+          <h1 class="text-base font-bold">تنظیمات</h1>
+        </div>
+
+        <div class="glass rounded-xl p-4 space-y-3">
+          <h2 class="text-xs font-semibold" style="color:var(--muted)">ظاهر</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setTheme('dark')" class="btn btn-ghost py-2.5 text-xs">تیره</button>
+            <button onclick="setTheme('space')" class="btn btn-ghost py-2.5 text-xs">فضانوردی</button>
+            <button onclick="setTheme('solar')" class="btn btn-ghost py-2.5 text-xs">خورشیدی</button>
+            <button onclick="setTheme('blood')" class="btn btn-ghost py-2.5 text-xs">خونی</button>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-4 space-y-2">
+          <h2 class="text-xs font-semibold" style="color:var(--muted)">حساب</h2>
+          <input id="setname" class="input" placeholder="نام نمایشی" />
+          <textarea id="setbio" class="input resize-none" rows="2" placeholder="درباره شما"></textarea>
+          <button onclick="saveSet()" class="btn btn-primary w-full py-2">ذخیره</button>
+        </div>
+
+        <div class="glass rounded-xl p-4">
+          <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">پنل مدیریت مخصوص ادمین</h2>
+          <p class="text-[11px] mb-2" style="color:var(--muted)">فقط مدیران سیستم به این بخش دسترسی دارند.</p>
+          <button onclick="openM('m-admin')" class="btn btn-ghost w-full py-2.5 text-xs" style="color:#fbbf24;border-color:rgba(251,191,36,.3)">ورود به پنل مدیریت</button>
+        </div>
+      </section>
+
+      <!-- ADMIN -->
+      <section id="v-admin" class="view hidden fade space-y-3">
+        <div class="flex items-center justify-between">
+          <h1 class="text-base font-bold" style="color:#fbbf24">پنل مدیریت</h1>
+          <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">بازگشت</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">کاربران</p><p class="text-lg font-bold" id="au">۰</p></div>
+          <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">پست‌ها</p><p class="text-lg font-bold" id="ap">۰</p></div>
+          <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">اخطار فحش</p><p class="text-lg font-bold" id="aw" style="color:var(--danger)">۰</p></div>
+          <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">بن‌شده</p><p class="text-lg font-bold" id="ab">۰</p></div>
+        </div>
+
+        <div class="glass rounded-xl p-3">
+          <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">اخطارهای فحاشی</h2>
+          <div id="warnlist" class="space-y-1.5 max-h-36 overflow-y-auto scroll text-xs"></div>
+        </div>
+
+        <div class="glass rounded-xl p-3">
+          <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">کاربران</h2>
+          <div id="userlist" class="space-y-1.5 max-h-48 overflow-y-auto scroll text-xs"></div>
+        </div>
+
+        <div class="glass rounded-xl p-3">
+          <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">پست‌ها</h2>
+          <div id="postlist" class="space-y-1.5 max-h-40 overflow-y-auto scroll text-xs"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button onclick="clearWarns()" class="btn btn-ghost px-3 py-2 text-xs">پاک کردن اخطارها</button>
+          <button onclick="resetDemo()" class="btn btn-ghost px-3 py-2 text-xs">بازنشانی دمو</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Mobile Nav -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 glass border-t z-40" style="border-color:var(--border)">
+      <div class="flex justify-around py-1.5">
+        <button onclick="go('home')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">خانه</button>
+        <button onclick="go('explore')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">اکسپلور</button>
+        <button onclick="openM('m-post')" class="flex flex-col items-center -mt-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">+</div>
+        </button>
+        <button onclick="go('channels')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">کانال</button>
+        <button onclick="go('profile')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">پروفایل</button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- MODALS -->
+  <div id="m-post" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+    <div class="glass rounded-2xl w-full max-w-md p-4 relative">
+      <button onclick="closeM('m-post')" class="absolute top-3 left-3 text-sm" style="color:var(--muted)">×</button>
+      <h2 class="text-sm font-bold mb-2">انتشار</h2>
+      <div class="flex gap-2 mb-2">
+        <button id="ptab-post" onclick="postTab('post')" class="btn btn-ghost px-3 py-1 text-xs nav-on">پست</button>
+        <button id="ptab-story" onclick="postTab('story')" class="btn btn-ghost px-3 py-1 text-xs">استوری</button>
+      </div>
+      <textarea id="pbody" rows="4" class="input resize-none mb-2" placeholder="متن..."></textarea>
+      <div id="pwarn" class="warn-box rounded-lg p-2 text-xs mb-2 hidden">محتوای نامناسب شناسایی شد. لطفاً اصلاح کنید.</div>
+      <div class="flex justify-between items-center">
+        <button onclick="aiHelp()" class="badge border cursor-pointer" style="border-color:var(--border)">پیشنهاد هوشمند</button>
+        <button onclick="publish()" class="btn btn-primary px-4 py-1.5 text-xs">انتشار</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="m-channel" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+    <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+      <button onclick="closeM('m-channel')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+      <h2 class="text-sm font-bold mb-2">کانال جدید</h2>
+      <input id="nch" class="input mb-2" placeholder="نام" />
+      <textarea id="ncd" class="input resize-none mb-2" rows="2" placeholder="توضیح"></textarea>
+      <button onclick="createCh()" class="btn btn-primary w-full py-2">ایجاد</button>
+    </div>
+  </div>
+
+  <div id="m-admin" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+    <div class="glass rounded-2xl w-full max-w-xs p-4 relative" style="border-color:rgba(251,191,36,.3)">
+      <button onclick="closeM('m-admin')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+      <h2 class="text-sm font-bold mb-1" style="color:#fbbf24">ورود مدیریت</h2>
+      <input id="apass" type="password" class="input mb-2" placeholder="رمز مدیریت" onkeydown="if(event.key==='Enter')checkAdmin()" />
+      <p id="aerr" class="text-xs hidden mb-2" style="color:var(--danger)"></p>
+      <button onclick="checkAdmin()" class="btn btn-primary w-full py-2">ورود</button>
+    </div>
+  </div>
+
+  <div id="m-notif" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+    <div class="glass rounded-2xl w-full max-w-sm p-4 relative max-h-[70vh] overflow-y-auto scroll">
+      <button onclick="closeM('m-notif')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+      <h2 class="text-sm font-bold mb-2">اعلان‌ها</h2>
+      <div id="nlist" class="space-y-2 text-xs"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
+    <div class="glass px-4 py-2 rounded-xl text-sm font-medium shadow-xl" id="tmsg"></div>
+  </div>
+
+  <script>
+    const ADMIN_PASS = 'lumera-admin-2026';
+    const BAD = ['کیر','کص','کسکش','جنده','حرومزاده','لاشی','مادرجنده','fuck','shit','bitch','asshole','کون','ننه','قیاسی','آشغال'];
+    const BOTS = [
+      { name: 'رصدگر لومرا', user: 'bot_radar', avatar: 'ر' },
+      { name: 'نبض محتوا', user: 'bot_pulse', avatar: 'ن' },
+      { name: 'کاوشگر', user: 'bot_scout', avatar: 'ک' }
+    ];
+    const BOT_POSTS = [
+      'امروز در لومرا بحث‌های خوبی شکل گرفته. کیفیت تعامل مهم‌تر از تعداد است.',
+      'سه اصل محتوا: وضوح، ارزش، دعوت به گفتگو.',
+      'حافظه زنده می‌تواند نقطه تمایز پلتفرم باشد.',
+      'بهترین زمان انتشار معمولاً عصر و اوایل شب است.',
+      'کانال‌های تخصصی رشد پایدارتری دارند.',
+      'طراحی تمیز و حرفه‌ای اعتماد کاربر را بالا می‌برد.'
+    ];
+    const BOT_STORIES = [
+      'صبح بخیر از لومرا',
+      'ترند امروز را بررسی کنید',
+      'ایده جدید در راه است',
+      'کیفیت > کمیت'
+    ];
+
+    let user = null, posts = [], stories = [], channels = [], warns = [], bans = [], admins = [];
+    let chatId = null, chats = {}, postMode = 'post', expFilter = 'all';
+
+    function authTab(t) {
+      document.getElementById('f-login').classList.toggle('hidden', t!=='login');
+      document.getElementById('f-reg').classList.toggle('hidden', t!=='register');
+      document.getElementById('t-login').classList.toggle('nav-on', t==='login');
+      document.getElementById('t-reg').classList.toggle('nav-on', t==='register');
+    }
+
+    function doLogin() {
+      const u = document.getElementById('l-user').value.trim();
+      const p = document.getElementById('l-pass').value;
+      const err = document.getElementById('l-err');
+      if (!u||!p) { err.textContent='نام کاربری و رمز الزامی'; err.classList.remove('hidden'); return; }
+      const users = JSON.parse(localStorage.getItem('lm_users')||'{}');
+      if (users[u]) {
+        if (users[u].pass !== p) { err.textContent='رمز اشتباه'; err.classList.remove('hidden'); return; }
+        if (bans.includes(u)) { err.textContent='حساب شما مسدود شده'; err.classList.remove('hidden'); return; }
+        user = users[u];
+      } else {
+        users[u] = { name:u, username:u, pass:p, xp:50, level:1, posts:0, channels:0, bio:'' };
+        localStorage.setItem('lm_users', JSON.stringify(users));
+        user = users[u];
+      }
+      enter();
+    }
+
+    function doRegister() {
+      const name = document.getElementById('r-name').value.trim();
+      const username = document.getElementById('r-user').value.trim().toLowerCase();
+      const pass = document.getElementById('r-pass').value;
+      const err = document.getElementById('r-err');
+      if (!name||name.length<2) { err.textContent='نام کوتاه است'; err.classList.remove('hidden'); return; }
+      if (!username||username.length<3||!/^[a-z0-9_]+$/.test(username)) { err.textContent='نام کاربری نامعتبر'; err.classList.remove('hidden'); return; }
+      if (!pass||pass.length<6) { err.textContent='رمز حداقل ۶ کاراکتر'; err.classList.remove('hidden'); return; }
+      const users = JSON.parse(localStorage.getItem('lm_users')||'{}');
+      if (users[username]) { err.textContent='نام کاربری تکراری'; err.classList.remove('hidden'); return; }
+      users[username] = { name, username, pass, xp:50, level:1, posts:0, channels:0, bio:'' };
+      localStorage.setItem('lm_users', JSON.stringify(users));
+      user = users[username];
+      enter();
+      toast('حساب ساخته شد');
+    }
+
+    function enter() {
+      document.getElementById('auth').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('hav').textContent = user.name.charAt(0);
+      document.getElementById('hname').textContent = user.name;
+      document.getElementById('pav').textContent = user.name.charAt(0);
+      document.getElementById('pname').textContent = user.name + (isAdmin(user.username) ? ' 👑' : '');
+      document.getElementById('puser').textContent = '@' + user.username;
+      localStorage.setItem('lm_session', JSON.stringify(user));
+      loadData();
+      renderAll();
+      go('home');
+      startBots();
+      const th = localStorage.getItem('lm_theme') || 'dark';
+      setTheme(th, true);
+    }
+
+    function logout() {
+      localStorage.removeItem('lm_session');
+      user = null;
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('auth').classList.remove('hidden');
+    }
+
+    function loadData() {
+      posts = JSON.parse(localStorage.getItem('lm_posts')||'null') || seedPosts();
+      stories = JSON.parse(localStorage.getItem('lm_stories')||'null') || seedStories();
+      channels = JSON.parse(localStorage.getItem('lm_channels')||'null') || seedChannels();
+      warns = JSON.parse(localStorage.getItem('lm_warns')||'[]');
+      bans = JSON.parse(localStorage.getItem('lm_bans')||'[]');
+      admins = JSON.parse(localStorage.getItem('lm_admins')||'[]');
+      chats = JSON.parse(localStorage.getItem('lm_chats')||'{}');
+    }
+
+    function seedPosts() {
+      return [
+        { id:1, author:'آریا', user:'arya', avatar:'آ', content:'ساختار جدید لومرا تمرکز خوبی روی کیفیت تعامل دارد.', likes:88, comments:14, time:'۲ ساعت پیش', channel:'عمومی', liked:false, isAdmin:false },
+        { id:2, author:'سارا', user:'sara', avatar:'س', content:'چه معیارهایی برای سنجش کیفیت محتوا در نظر می‌گیرید؟', likes:61, comments:27, time:'۵ ساعت پیش', channel:'تکنولوژی', liked:false, isAdmin:false },
+        { id:3, author:'کیان', user:'kian', avatar:'ک', content:'طراحی مینیمال با اطلاعات بالا؛ تعادل سخت اما ارزشمند.', likes:120, comments:9, time:'دیروز', channel:'طراحی', liked:false, isAdmin:false }
+      ];
+    }
+    function seedStories() {
+      return [
+        { id:1, author:'آریا', user:'arya', avatar:'آ', text:'صبح بخیر', time:Date.now()-3600000, isAdmin:false },
+        { id:2, author:'سارا', user:'sara', avatar:'س', text:'ایده جدید', time:Date.now()-7200000, isAdmin:false }
+      ];
+    }
+    function seedChannels() {
+      return [
+        { id:1, name:'طراحی محصول', desc:'رابط و تجربه کاربری', members:1840, posts:90 },
+        { id:2, name:'تکنولوژی', desc:'ابزارها و روندها', members:3100, posts:160 },
+        { id:3, name:'محتوا و رشد', desc:'استراتژی محتوا', members:2200, posts:110 }
+      ];
+    }
+
+    function go(v) {
+      document.querySelectorAll('.view').forEach(e => e.classList.add('hidden'));
+      const el = document.getElementById('v-'+v);
+      if (el) { el.classList.remove('hidden'); el.classList.add('fade'); }
+      document.querySelectorAll('.navb').forEach(b => {
+        b.classList.toggle('nav-on', b.dataset.n === v);
+      });
+      if (v==='admin') renderAdmin();
+      if (v==='settings') {
+        document.getElementById('setname').value = user.name||'';
+        document.getElementById('setbio').value = user.bio||'';
+      }
+      if (v==='explore') renderExplore();
+    }
+
+    function isAdmin(username) {
+      return admins.includes(username);
+    }
+
+    function hasBad(text) {
+      const t = text.toLowerCase();
+      return BAD.some(w => t.includes(w.toLowerCase()));
+    }
+
+    function addWarn(username, text, type) {
+      warns.unshift({ id:Date.now(), user:username, text:text.slice(0,80), type, time:new Date().toLocaleString('fa-IR') });
+      if (warns.length > 50) warns = warns.slice(0,50);
+      localStorage.setItem('lm_warns', JSON.stringify(warns));
+      updateNotif();
+    }
+
+    // FEED & STORIES
+    function renderStories() {
+      const active = stories.filter(s => Date.now() - s.time < 24*3600000);
+      let html = `<button onclick="openM('m-post');postTab('story')" class="flex-shrink-0 flex flex-col items-center gap-1 w-16">
+        <div class="w-14 h-14 rounded-2xl border-2 border-dashed flex items-center justify-center" style="border-color:var(--border)">+</div>
+        <span class="text-[10px]" style="color:var(--muted)">شما</span>
+      </button>`;
+      active.forEach(s => {
+        const crown = s.isAdmin || isAdmin(s.user) ? '<span class="crown">👑</span>' : '';
+        html += `<div onclick="toast('استوری: '+${JSON.stringify(s.text)})" class="flex-shrink-0 flex flex-col items-center gap-1 w-16 cursor-pointer">
+          <div class="story-ring"><div class="w-13 h-13 rounded-2xl flex items-center justify-center text-sm font-bold text-white" style="width:52px;height:52px;background:var(--surface)">${s.avatar}</div></div>
+          <span class="text-[10px] truncate w-full text-center">${crown}${esc(s.author)}</span>
+        </div>`;
+      });
+      document.getElementById('stories').innerHTML = html;
+    }
+
+    function renderFeed() {
+      const sort = document.getElementById('fsort')?.value || 'new';
+      let list = [...posts];
+      if (sort==='hot') list.sort((a,b)=>b.likes-a.likes);
+      else list.sort((a,b)=>b.id-a.id);
+      document.getElementById('feed').innerHTML = list.map(p => postCard(p)).join('');
+    }
+
+    function postCard(p) {
+      const admin = p.isAdmin || isAdmin(p.user);
+      const badge = admin ? '<span class="admin-badge badge mr-1">ادمین 👑</span>' : '';
+      return `<article class="glass rounded-xl p-3.5">
+        <div class="flex gap-2.5">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">${p.avatar}</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap mb-1">
+              <span class="text-sm font-medium">${esc(p.author)}</span>
+              ${badge}
+              <span class="text-[10px]" style="color:var(--muted)">${p.time}</span>
+            </div>
+            <p class="text-sm whitespace-pre-line leading-relaxed">${esc(p.content)}</p>
+            <div class="flex gap-3 mt-2 text-[11px]" style="color:var(--muted)">
+              <button onclick="like(${p.id})" class="${p.liked?'text-rose-400':''}">♥ ${p.likes}</button>
+              <button onclick="toast('نظرات به‌زودی')">گفتگو ${p.comments}</button>
+            </div>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function like(id) {
+      const p = posts.find(x=>x.id===id);
+      if (!p) return;
+      p.liked = !p.liked;
+      p.likes += p.liked ? 1 : -1;
+      savePosts();
+      renderFeed();
+      renderExplore();
+    }
+
+    function postTab(m) {
+      postMode = m;
+      document.getElementById('ptab-post').classList.toggle('nav-on', m==='post');
+      document.getElementById('ptab-story').classList.toggle('nav-on', m==='story');
+    }
+
+    function publish() {
+      const text = document.getElementById('pbody').value.trim();
+      if (!text) return toast('متن خالی است');
+      if (hasBad(text)) {
+        document.getElementById('pwarn').classList.remove('hidden');
+        addWarn(user.username, text, postMode);
+        toast('محتوای نامناسب — اخطار ثبت شد');
+        return;
+      }
+      document.getElementById('pwarn').classList.add('hidden');
+      const isAdm = isAdmin(user.username);
+      if (postMode === 'story') {
+        stories.unshift({ id:Date.now(), author:user.name, user:user.username, avatar:user.name.charAt(0), text, time:Date.now(), isAdmin:isAdm });
+        localStorage.setItem('lm_stories', JSON.stringify(stories));
+        toast('استوری منتشر شد');
+      } else {
+        posts.unshift({ id:Date.now(), author:user.name, user:user.username, avatar:user.name.charAt(0), content:text, likes:0, comments:0, time:'همین الان', channel:'عمومی', liked:false, isAdmin:isAdm });
+        user.posts = (user.posts||0)+1;
+        user.xp = (user.xp||0)+12;
+        saveUser(); savePosts();
+        toast('پست منتشر شد');
+      }
+      document.getElementById('pbody').value = '';
+      closeM('m-post');
+      renderAll();
+    }
+
+    function aiHelp() {
+      const s = ['سه اصل محتوا: وضوح، ارزش، دعوت به گفتگو.','کیفیت تعامل مهم‌تر از حجم انتشار است.','بهترین زمان انتشار معمولاً عصر است.'];
+      document.getElementById('pbody').value = s[Math.floor(Math.random()*s.length)];
+    }
+
+    // EXPLORE
+    function setExploreFilter(f) {
+      expFilter = f;
+      renderExplore();
+    }
+    function renderExplore() {
+      let list = [...posts];
+      if (expFilter==='admin') list = list.filter(p => p.isAdmin || isAdmin(p.user));
+      if (expFilter==='hot') list.sort((a,b)=>b.likes-a.likes);
+      else list.sort((a,b)=>b.id-a.id);
+      document.getElementById('explore-grid').innerHTML = list.map(p => postCard(p)).join('') || '<p class="text-sm col-span-full text-center py-6" style="color:var(--muted)">موردی نیست</p>';
+    }
+
+    // CHANNELS
+    function renderChannels() {
+      const q = (document.getElementById('chq')?.value||'').toLowerCase();
+      let list = channels;
+      if (q) list = list.filter(c => c.name.includes(q)||c.desc.includes(q));
+      document.getElementById('chlist').innerHTML = list.map(c => `
+        <div onclick="openCh(${c.id})" class="glass rounded-xl p-3.5 cursor-pointer">
+          <h3 class="text-sm font-semibold">${esc(c.name)}</h3>
+          <p class="text-[11px] mt-1" style="color:var(--muted)">${esc(c.desc)}</p>
+          <p class="text-[10px] mt-1.5" style="color:var(--muted)">${c.members.toLocaleString('fa-IR')} عضو</p>
+        </div>
+      `).join('');
+    }
+    function openCh(id) {
+      const c = channels.find(x=>x.id===id);
+      if (!c) return;
+      document.getElementById('chtitle').textContent = c.name;
+      document.getElementById('chmeta').textContent = c.members.toLocaleString('fa-IR')+' عضو';
+      document.getElementById('chfeed').innerHTML = posts.slice(0,4).map(p=>postCard(p)).join('');
+      go('channel');
+    }
+    function createCh() {
+      const name = document.getElementById('nch').value.trim();
+      if (!name) return toast('نام الزامی');
+      channels.unshift({ id:Date.now(), name, desc:document.getElementById('ncd').value.trim()||'کانال جدید', members:1, posts:0 });
+      user.channels=(user.channels||0)+1; saveUser();
+      localStorage.setItem('lm_channels', JSON.stringify(channels));
+      closeM('m-channel');
+      renderChannels();
+      toast('کانال ساخته شد');
+    }
+
+    // CHAT
+    const CUSERS = [
+      { id:1, name:'آریا', avatar:'آ', last:'سلام', online:true },
+      { id:2, name:'سارا', avatar:'س', last:'فایل آماده است', online:false }
+    ];
+    function renderChatList() {
+      document.getElementById('clist').innerHTML = CUSERS.map(u => `
+        <button onclick="openChat(${u.id})" class="w-full flex items-center gap-2 p-2 rounded-lg text-right" style="hover:background:var(--surface)">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">${u.avatar}</div>
+          <div class="min-w-0"><p class="text-sm font-medium truncate">${u.name}</p><p class="text-[10px] truncate" style="color:var(--muted)">${u.last}</p></div>
+        </button>
+      `).join('');
+    }
+    function openChat(id) {
+      const u = CUSERS.find(x=>x.id===id);
+      if (!u) return;
+      chatId = id;
+      document.getElementById('cav').textContent = u.avatar;
+      document.getElementById('cname').textContent = u.name;
+      document.getElementById('cstat').textContent = u.online ? 'آنلاین' : 'آفلاین';
+      if (!chats[id]) chats[id] = [{from:'them',text:'سلام'},{from:'me',text:'سلام'}];
+      renderMsgs();
+    }
+    function renderMsgs() {
+      const m = chats[chatId]||[];
+      document.getElementById('cmsgs').innerHTML = m.map(x => `
+        <div class="flex ${x.from==='me'?'justify-end':'justify-start'}">
+          <div class="rounded-xl px-3 py-1.5 text-sm max-w-[80%]" style="background:${x.from==='me'?'color-mix(in srgb,var(--accent) 20%,transparent)':'var(--surface)'}">${esc(x.text)}</div>
+        </div>
+      `).join('');
+    }
+    function sendChat() {
+      const t = document.getElementById('cinput').value.trim();
+      if (!t||!chatId) return;
+      if (hasBad(t)) { toast('پیام نامناسب — ارسال نشد'); addWarn(user.username,t,'chat'); return; }
+      if (!chats[chatId]) chats[chatId]=[];
+      chats[chatId].push({from:'me',text:t});
+      document.getElementById('cinput').value='';
+      renderMsgs();
+      localStorage.setItem('lm_chats',JSON.stringify(chats));
+      setTimeout(()=>{ chats[chatId].push({from:'them',text:'متوجه شدم.'}); renderMsgs(); localStorage.setItem('lm_chats',JSON.stringify(chats)); },700);
+    }
+
+    // MEMORY
+    function askMem() {
+      const q = document.getElementById('min').value.trim();
+      if (!q) return;
+      const box = document.getElementById('mbox');
+      box.innerHTML += `<div class="flex justify-end"><div class="rounded-xl px-3 py-1.5 text-sm max-w-[85%]" style="background:color-mix(in srgb,var(--accent) 18%,transparent)">${esc(q)}</div></div>`;
+      document.getElementById('min').value='';
+      setTimeout(()=>{
+        box.innerHTML += `<div class="flex justify-start"><div class="glass rounded-xl px-3 py-1.5 text-sm max-w-[85%]">حافظه زنده: روی کیفیت محتوا، تعامل واقعی و انتشار منظم تمرکز کنید. کانال‌های تخصصی رشد بهتری دارند.</div></div>`;
+        box.scrollTop = box.scrollHeight;
+      },600);
+    }
+
+    // THEME
+    function setTheme(t, silent) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('lm_theme', t);
+      if (!silent) toast('تم اعمال شد');
+    }
+
+    // SETTINGS / ADMIN
+    function saveSet() {
+      const n = document.getElementById('setname').value.trim();
+      if (n) {
+        user.name = n;
+        document.getElementById('hname').textContent = n;
+        document.getElementById('hav').textContent = n.charAt(0);
+        document.getElementById('pname').textContent = n + (isAdmin(user.username)?' 👑':'');
+        document.getElementById('pav').textContent = n.charAt(0);
+      }
+      user.bio = document.getElementById('setbio').value.trim();
+      saveUser();
+      toast('ذخیره شد');
+    }
+
+    function checkAdmin() {
+      if (document.getElementById('apass').value === ADMIN_PASS) {
+        closeM('m-admin');
+        go('admin');
+        toast('ورود به پنل');
+      } else {
+        document.getElementById('aerr').textContent = 'رمز نادرست';
+        document.getElementById('aerr').classList.remove('hidden');
+      }
+    }
+
+    function renderAdmin() {
+      const users = JSON.parse(localStorage.getItem('lm_users')||'{}');
+      document.getElementById('au').textContent = Object.keys(users).length;
+      document.getElementById('ap').textContent = posts.length;
+      document.getElementById('aw').textContent = warns.length;
+      document.getElementById('ab').textContent = bans.length;
+
+      document.getElementById('warnlist').innerHTML = warns.length ? warns.map(w => `
+        <div class="p-2 rounded-lg" style="background:var(--surface)">
+          <span class="font-medium">@${esc(w.user)}</span> · ${w.type} · ${w.time}<br>
+          <span style="color:var(--muted)">${esc(w.text)}</span>
+        </div>
+      `).join('') : '<p style="color:var(--muted)">اخطاری نیست</p>';
+
+      document.getElementById('userlist').innerHTML = Object.values(users).map(u => {
+        const banned = bans.includes(u.username);
+        const adm = isAdmin(u.username);
+        return `<div class="flex items-center justify-between gap-2 p-2 rounded-lg" style="background:var(--surface)">
+          <span>${esc(u.name)} (@${esc(u.username)}) ${adm?'👑':''} ${banned?'[بن]':''}</span>
+          <span class="flex gap-1">
+            <button onclick="toggleAdmin('${u.username}')" class="text-[10px]" style="color:#fbbf24">${adm?'عزل':'ادمین'}</button>
+            <button onclick="toggleBan('${u.username}')" class="text-[10px]" style="color:var(--danger)">${banned?'آنبن':'بن'}</button>
+          </span>
+        </div>`;
+      }).join('') || '<p style="color:var(--muted)">کاربری نیست</p>';
+
+      document.getElementById('postlist').innerHTML = posts.slice(0,15).map(p => `
+        <div class="flex justify-between gap-2 p-2 rounded-lg" style="background:var(--surface)">
+          <span class="truncate">${esc(p.author)}: ${esc(p.content.slice(0,40))}</span>
+          <button onclick="delPost(${p.id})" style="color:var(--danger)">حذف</button>
+        </div>
+      `).join('');
+    }
+
+    function toggleAdmin(username) {
+      if (admins.includes(username)) admins = admins.filter(a=>a!==username);
+      else admins.push(username);
+      localStorage.setItem('lm_admins', JSON.stringify(admins));
+      // update posts isAdmin flag
+      posts.forEach(p => { if (p.user===username) p.isAdmin = isAdmin(username); });
+      savePosts();
+      renderAdmin();
+      renderAll();
+      toast(isAdmin(username) ? 'مقام ادمین اعطا شد' : 'مقام ادمین گرفته شد');
+    }
+
+    function toggleBan(username) {
+      if (bans.includes(username)) bans = bans.filter(b=>b!==username);
+      else bans.push(username);
+      localStorage.setItem('lm_bans', JSON.stringify(bans));
+      renderAdmin();
+      toast(bans.includes(username) ? 'کاربر بن شد' : 'بن برداشته شد');
+    }
+
+    function delPost(id) {
+      posts = posts.filter(p=>p.id!==id);
+      savePosts();
+      renderAdmin();
+      renderAll();
+      toast('حذف شد');
+    }
+
+    function clearWarns() {
+      warns = [];
+      localStorage.setItem('lm_warns','[]');
+      renderAdmin();
+      toast('اخطارها پاک شد');
+    }
+
+    function resetDemo() {
+      posts = seedPosts();
+      stories = seedStories();
+      channels = seedChannels();
+      savePosts();
+      localStorage.setItem('lm_stories', JSON.stringify(stories));
+      localStorage.setItem('lm_channels', JSON.stringify(channels));
+      renderAdmin();
+      renderAll();
+      toast('بازنشانی شد');
+    }
+
+    // BOTS
+    function startBots() {
+      // initial boost if empty
+      if (posts.length < 4) botPost();
+      if (stories.length < 2) botStory();
+      // every 8-15 minutes (demo: shorter for visibility — in real would be ~2h)
+      setInterval(() => {
+        if (Math.random() > 0.4) botPost();
+        if (Math.random() > 0.6) botStory();
+      }, 8 * 60 * 1000);
+    }
+
+    function botPost() {
+      const b = BOTS[Math.floor(Math.random()*BOTS.length)];
+      const content = BOT_POSTS[Math.floor(Math.random()*BOT_POSTS.length)];
+      posts.unshift({
+        id: Date.now()+Math.random(),
+        author: b.name, user: b.user, avatar: b.avatar,
+        content, likes: Math.floor(Math.random()*40)+5, comments: Math.floor(Math.random()*10),
+        time: 'همین الان', channel: 'عمومی', liked: false, isAdmin: false, bot: true
+      });
+      if (posts.length > 80) posts = posts.slice(0,80);
+      savePosts();
+      if (document.getElementById('v-home') && !document.getElementById('v-home').classList.contains('hidden')) renderFeed();
+      if (document.getElementById('v-explore') && !document.getElementById('v-explore').classList.contains('hidden')) renderExplore();
+    }
+
+    function botStory() {
+      const b = BOTS[Math.floor(Math.random()*BOTS.length)];
+      const text = BOT_STORIES[Math.floor(Math.random()*BOT_STORIES.length)];
+      stories.unshift({ id:Date.now()+Math.random(), author:b.name, user:b.user, avatar:b.avatar, text, time:Date.now(), isAdmin:false, bot:true });
+      stories = stories.filter(s => Date.now()-s.time < 24*3600000).slice(0,20);
+      localStorage.setItem('lm_stories', JSON.stringify(stories));
+      renderStories();
+    }
+
+    // HELPERS
+    function renderAll() {
+      renderStories();
+      renderFeed();
+      renderChannels();
+      renderChatList();
+      renderExplore();
+      document.getElementById('sp').textContent = (user.posts||0).toLocaleString('fa-IR');
+      document.getElementById('sc').textContent = (user.channels||0).toLocaleString('fa-IR');
+      document.getElementById('plvl').textContent = 'سطح ' + (user.level||1);
+      updateNotif();
+    }
+    function updateNotif() {
+      const n = warns.length;
+      const d = document.getElementById('ndot');
+      d.textContent = n > 9 ? '9+' : n;
+      d.style.display = n ? 'flex' : 'none';
+      document.getElementById('nlist').innerHTML = warns.slice(0,10).map(w => `
+        <div class="p-2 rounded-lg" style="background:var(--surface)">
+          <p class="font-medium">اخطار فحش: @${esc(w.user)}</p>
+          <p style="color:var(--muted)">${esc(w.text)} · ${w.time}</p>
+        </div>
+      `).join('') || '<p style="color:var(--muted)">اعلانی نیست</p>';
+    }
+    function openM(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+    function closeM(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+    function toast(m) {
+      const t = document.getElementById('toast');
+      document.getElementById('tmsg').textContent = m;
+      t.classList.remove('hidden');
+      clearTimeout(window._tt);
+      window._tt = setTimeout(()=>t.classList.add('hidden'), 2500);
+    }
+    function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    function saveUser() {
+      const users = JSON.parse(localStorage.getItem('lm_users')||'{}');
+      users[user.username] = user;
+      localStorage.setItem('lm_users', JSON.stringify(users));
+      localStorage.setItem('lm_session', JSON.stringify(user));
+    }
+    function savePosts() { localStorage.setItem('lm_posts', JSON.stringify(posts)); }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('mbox').innerHTML = `<div class="flex justify-start"><div class="glass rounded-xl px-3 py-1.5 text-sm max-w-[85%]">حافظه زنده آماده است. سوال بپرسید.</div></div>`;
+      const s = localStorage.getItem('lm_session');
+      if (s) { try { user=JSON.parse(s); if(bans.includes(user.username)){localStorage.removeItem('lm_session');} else enter(); } catch(e){} }
+    });
+    document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if(e.target===m) closeM(m.id); }));
+  </script>
+</body>
+</html>

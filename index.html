@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>لومرا | Lumera</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{font-family:'Vazirmatn',system-ui,sans-serif;box-sizing:border-box}
+    :root,[data-theme="dark"]{--bg:#030712;--surface:#0f172a;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--accent:#38bdf8;--accent2:#818cf8;--danger:#fb7185;--card:rgba(17,24,39,.88)}
+    [data-theme="space"]{--bg:#020617;--surface:#0b1220;--border:#1e3a5f;--text:#e0f2fe;--muted:#7dd3fc;--accent:#22d3ee;--accent2:#a78bfa;--danger:#f472b6;--card:rgba(15,23,42,.9)}
+    [data-theme="solar"]{--bg:#1c1917;--surface:#292524;--border:#44403c;--text:#fef3c7;--muted:#d6d3d1;--accent:#f59e0b;--accent2:#f97316;--danger:#ef4444;--card:rgba(41,37,36,.92)}
+    [data-theme="blood"]{--bg:#0c0a0a;--surface:#1a1010;--border:#3f1a1a;--text:#fecaca;--muted:#f87171;--accent:#ef4444;--accent2:#f43f5e;--danger:#fb7185;--card:rgba(28,16,16,.92)}
+    body{background:var(--bg);color:var(--text);margin:0;min-height:100vh;overflow-x:hidden;transition:.3s}
+    .glass{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border)}
+    .input{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13.5px;color:var(--text);width:100%}
+    .input:focus{outline:none;border-color:var(--accent)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px;border-radius:10px;border:none;cursor:pointer;transition:.2s}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+    .btn-primary:hover{filter:brightness(1.1)}
+    .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .btn-danger{background:rgba(251,113,133,.12);color:var(--danger);border:1px solid rgba(251,113,133,.3)}
+    .badge{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500}
+    .admin-badge{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.35)}
+    .nav-on{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)!important}
+    .scroll::-webkit-scrollbar{width:3px}
+    .scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+    .fade{animation:fade .25s ease}
+    @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .story-ring{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:2px;border-radius:16px}
+    .warn-box{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:var(--danger)}
+  </style>
+</head>
+<body>
+<div id="auth" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-[400px]">
+    <div class="text-center mb-7">
+      <div class="inline-flex rounded-2xl items-center justify-center mb-3" style="width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2))">
+        <svg width="24" height="24" fill="none" stroke="#fff" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <h1 class="text-3xl font-extrabold" style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">لومرا</h1>
+      <p class="text-sm mt-1" style="color:var(--muted)">پلتفرم آنلاین نسل بعد محتوا</p>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <div class="flex gap-1 p-1 rounded-xl mb-4" style="background:var(--surface)">
+        <button id="t-login" onclick="authTab('login')" class="flex-1 py-2 rounded-lg text-sm font-medium nav-on">ورود</button>
+        <button id="t-reg" onclick="authTab('register')" class="flex-1 py-2 rounded-lg text-sm font-medium" style="color:var(--muted)">ثبت‌نام</button>
+      </div>
+      <div id="f-login" class="space-y-3">
+        <input id="l-user" class="input" placeholder="نام کاربری" />
+        <input id="l-pass" class="input" type="password" placeholder="رمز عبور" />
+        <p id="l-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doLogin()" class="btn btn-primary w-full py-2.5" id="btn-login">ورود</button>
+      </div>
+      <div id="f-reg" class="space-y-3 hidden">
+        <input id="r-name" class="input" placeholder="نام نمایشی" />
+        <input id="r-user" class="input" placeholder="نام کاربری (انگلیسی)" />
+        <input id="r-pass" class="input" type="password" placeholder="رمز (حداقل ۶ کاراکتر)" />
+        <p id="r-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doRegister()" class="btn btn-primary w-full py-2.5" id="btn-reg">ایجاد حساب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="hidden min-h-screen flex flex-col pb-16 md:pb-0">
+  <header class="glass sticky top-0 z-40 border-b" style="border-color:var(--border)">
+    <div class="max-w-6xl mx-auto px-3 h-[50px] flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">
+          <svg width="15" height="15" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="font-bold text-[15px]">لومرا</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)">آنلاین</span>
+      </div>
+      <nav class="hidden md:flex gap-0.5 p-0.5 rounded-full" style="background:var(--surface)">
+        <button data-n="home" onclick="go('home')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">خانه</button>
+        <button data-n="explore" onclick="go('explore')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">اکسپلور</button>
+        <button data-n="channels" onclick="go('channels')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">کانال‌ها</button>
+        <button data-n="memory" onclick="go('memory')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">حافظه</button>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button onclick="openM('m-post')" class="hidden sm:inline-flex btn btn-primary px-3 py-1.5 text-xs">انتشار</button>
+        <button onclick="openM('m-notif')" class="relative w-8 h-8 rounded-lg glass flex items-center justify-center">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span id="ndot" class="absolute -top-0.5 -left-0.5 w-3.5 h-3.5 rounded-full text-[9px] flex items-center justify-center font-bold text-white hidden" style="background:var(--danger)">0</span>
+        </button>
+        <button onclick="go('profile')" class="flex items-center gap-1.5 glass rounded-lg px-1.5 py-1">
+          <div id="hav" class="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))"></div>
+          <span id="hname" class="text-xs font-medium hidden sm:block max-w-[70px] truncate"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 py-4">
+    <section id="v-home" class="view space-y-4 fade">
+      <div class="flex gap-2.5 overflow-x-auto pb-1" style="scrollbar-width:none" id="stories"></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">جریان محتوا</h2>
+        <button onclick="loadFeed()" class="text-[11px]" style="color:var(--accent)">بروزرسانی</button>
+      </div>
+      <div id="feed" class="space-y-3"></div>
+    </section>
+
+    <section id="v-explore" class="view hidden space-y-4 fade">
+      <h1 class="text-base font-bold">اکسپلور</h1>
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        <button onclick="expFilter='all';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">همه</button>
+        <button onclick="expFilter='admin';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">ادمین‌ها</button>
+        <button onclick="expFilter='hot';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">داغ</button>
+      </div>
+      <div id="explore-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
+
+    <section id="v-channels" class="view hidden space-y-3 fade">
+      <div class="flex items-center justify-between">
+        <h1 class="text-base font-bold">کانال‌ها</h1>
+        <button onclick="openM('m-channel')" class="btn btn-primary px-3 py-1.5 text-xs">کانال جدید</button>
+      </div>
+      <div id="chlist" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section id="v-channel" class="view hidden fade">
+      <div class="flex items-center gap-2 mb-3">
+        <button onclick="go('channels')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <div class="flex-1 min-w-0">
+          <h1 id="chtitle" class="text-base font-bold truncate"></h1>
+          <p id="chmeta" class="text-[11px]" style="color:var(--muted)"></p>
+        </div>
+      </div>
+      <div id="chfeed" class="space-y-3"></div>
+    </section>
+
+    <section id="v-memory" class="view hidden fade space-y-4">
+      <div class="text-center"><h1 class="text-lg font-bold">حافظه زنده</h1><p class="text-xs mt-1" style="color:var(--muted)">دانش جمعی</p></div>
+      <div class="max-w-lg mx-auto">
+        <div id="mbox" class="glass rounded-xl p-3 min-h-[220px] max-h-[300px] overflow-y-auto scroll space-y-2.5 mb-2"></div>
+        <div class="flex gap-2">
+          <input id="min" class="input flex-1" placeholder="سوال..." onkeydown="if(event.key==='Enter')askMem()" />
+          <button onclick="askMem()" class="btn btn-primary px-3">بپرس</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-profile" class="view hidden fade space-y-3">
+      <div class="glass rounded-xl overflow-hidden">
+        <div class="h-14" style="background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 25%,transparent),color-mix(in srgb,var(--accent2) 25%,transparent))"></div>
+        <div class="px-4 pb-4 -mt-6 flex flex-col sm:flex-row items-center gap-3">
+          <div id="pav" class="w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white border-4" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:var(--bg)"></div>
+          <div class="text-center sm:text-right flex-1">
+            <h1 id="pname" class="text-base font-bold"></h1>
+            <p id="puser" class="text-xs" style="color:var(--muted)"></p>
+          </div>
+          <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">تنظیمات</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="glass rounded-xl p-3 text-center"><p class="text-base font-bold" id="sp">۰</p><p class="text-[10px]" style="color:var(--muted)">پست</p></div>
+        <div class="glass rounded-xl p-3 text-center"><p class="text-base font-bold" id="sc">۰</p><p class="text-[10px]" style="color:var(--muted)">کانال</p></div>
+      </div>
+      <button onclick="logout()" class="btn btn-danger px-4 py-2 text-xs">خروج</button>
+    </section>
+
+    <section id="v-settings" class="view hidden fade space-y-4">
+      <div class="flex items-center gap-2">
+        <button onclick="go('profile')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <h1 class="text-base font-bold">تنظیمات</h1>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-3">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">ظاهر</h2>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="setTheme('dark')" class="btn btn-ghost py-2.5 text-xs">تیره</button>
+          <button onclick="setTheme('space')" class="btn btn-ghost py-2.5 text-xs">فضانوردی</button>
+          <button onclick="setTheme('solar')" class="btn btn-ghost py-2.5 text-xs">خورشیدی</button>
+          <button onclick="setTheme('blood')" class="btn btn-ghost py-2.5 text-xs">خونی</button>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-2">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">حساب</h2>
+        <input id="setname" class="input" placeholder="نام نمایشی" />
+        <textarea id="setbio" class="input resize-none" rows="2" placeholder="درباره شما"></textarea>
+        <button onclick="saveProfile()" class="btn btn-primary w-full py-2">ذخیره</button>
+      </div>
+      <div class="glass rounded-xl p-4">
+        <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">پنل مدیریت مخصوص ادمین</h2>
+        <button onclick="openM('m-admin')" class="btn btn-ghost w-full py-2.5 text-xs" style="color:#fbbf24;border-color:rgba(251,191,36,.3)">ورود به پنل مدیریت</button>
+      </div>
+    </section>
+
+    <section id="v-admin" class="view hidden fade space-y-3">
+      <div class="flex items-center justify-between">
+        <h1 class="text-base font-bold" style="color:#fbbf24">پنل مدیریت</h1>
+        <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">بازگشت</button>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">کاربران</p><p class="text-lg font-bold" id="au">۰</p></div>
+        <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">پست‌ها</p><p class="text-lg font-bold" id="ap">۰</p></div>
+        <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">اخطار</p><p class="text-lg font-bold" id="aw" style="color:var(--danger)">۰</p></div>
+        <div class="glass rounded-xl p-3"><p class="text-[10px]" style="color:var(--muted)">بن</p><p class="text-lg font-bold" id="ab">۰</p></div>
+      </div>
+      <div class="glass rounded-xl p-3">
+        <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">اخطارهای فحش</h2>
+        <div id="warnlist" class="space-y-1.5 max-h-36 overflow-y-auto scroll text-xs"></div>
+      </div>
+      <div class="glass rounded-xl p-3">
+        <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">کاربران</h2>
+        <div id="userlist" class="space-y-1.5 max-h-48 overflow-y-auto scroll text-xs"></div>
+      </div>
+      <div class="glass rounded-xl p-3">
+        <h2 class="text-xs font-semibold mb-2" style="color:var(--muted)">پست‌ها</h2>
+        <div id="postlist" class="space-y-1.5 max-h-40 overflow-y-auto scroll text-xs"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 inset-x-0 glass border-t z-40" style="border-color:var(--border)">
+    <div class="flex justify-around py-1.5">
+      <button onclick="go('home')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">خانه</button>
+      <button onclick="go('explore')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">اکسپلور</button>
+      <button onclick="openM('m-post')" class="flex flex-col items-center -mt-3"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">+</div></button>
+      <button onclick="go('channels')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">کانال</button>
+      <button onclick="go('profile')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">پروفایل</button>
+    </div>
+  </nav>
+</div>
+
+<div id="m-post" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-md p-4 relative">
+    <button onclick="closeM('m-post')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">انتشار</h2>
+    <div class="flex gap-2 mb-2">
+      <button id="ptab-post" onclick="postMode='post';this.classList.add('nav-on');document.getElementById('ptab-story').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs nav-on">پست</button>
+      <button id="ptab-story" onclick="postMode='story';this.classList.add('nav-on');document.getElementById('ptab-post').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs">استوری</button>
+    </div>
+    <textarea id="pbody" rows="4" class="input resize-none mb-2" placeholder="متن..."></textarea>
+    <div id="pwarn" class="warn-box rounded-lg p-2 text-xs mb-2 hidden">محتوای نامناسب شناسایی شد.</div>
+    <div class="flex justify-end"><button onclick="publish()" class="btn btn-primary px-4 py-1.5 text-xs" id="btn-pub">انتشار</button></div>
+  </div>
+</div>
+
+<div id="m-channel" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+    <button onclick="closeM('m-channel')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">کانال جدید</h2>
+    <input id="nch" class="input mb-2" placeholder="نام" />
+    <textarea id="ncd" class="input resize-none mb-2" rows="2" placeholder="توضیح"></textarea>
+    <button onclick="createChannel()" class="btn btn-primary w-full py-2">ایجاد</button>
+  </div>
+</div>
+
+<div id="m-admin" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-xs p-4 relative" style="border-color:rgba(251,191,36,.3)">
+    <button onclick="closeM('m-admin')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-1" style="color:#fbbf24">ورود مدیریت</h2>
+    <input id="apass" type="password" class="input mb-2" placeholder="رمز مدیریت" onkeydown="if(event.key==='Enter')checkAdmin()" />
+    <p id="aerr" class="text-xs hidden mb-2" style="color:var(--danger)"></p>
+    <button onclick="checkAdmin()" class="btn btn-primary w-full py-2">ورود</button>
+  </div>
+</div>
+
+<div id="m-notif" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative max-h-[70vh] overflow-y-auto scroll">
+    <button onclick="closeM('m-notif')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">اعلان‌ها</h2>
+    <div id="nlist" class="space-y-2 text-xs"></div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
+  <div class="glass px-4 py-2 rounded-xl text-sm font-medium" id="tmsg"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xtyxorzyrzvzpwrtqnys.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DALm5phLFNf8pf7q7Pl3Mg_KZPnwKAJ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const ADMIN_PASS = 'lumera-admin-2026';
+const BAD = ['کیر','کص','کسکش','جنده','حرومزاده','لاشی','مادرجنده','fuck','shit','bitch','asshole','کون','ننه','آشغال'];
+const BOTS = [{name:'رصدگر لومرا',user:'bot_radar',avatar:'ر'},{name:'نبض محتوا',user:'bot_pulse',avatar:'ن'},{name:'کاوشگر',user:'bot_scout',avatar:'ک'}];
+const BOT_TEXTS = ['امروز در لومرا بحث‌های خوبی شکل گرفته.','سه اصل محتوا: وضوح، ارزش، دعوت به گفتگو.','کیفیت تعامل مهم‌تر از تعداد است.','بهترین زمان انتشار معمولاً عصر است.','کانال‌های تخصصی رشد پایدارتری دارند.'];
+
+let user=null, posts=[], stories=[], channels=[], warns=[], postMode='post', expFilter='all';
+
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return 'h'+Math.abs(h).toString(36)+s.length}
+
+function authTab(t){
+  document.getElementById('f-login').classList.toggle('hidden',t!=='login');
+  document.getElementById('f-reg').classList.toggle('hidden',t!=='register');
+  document.getElementById('t-login').classList.toggle('nav-on',t==='login');
+  document.getElementById('t-reg').classList.toggle('nav-on',t==='register');
+}
+
+async function doLogin(){
+  const username=document.getElementById('l-user').value.trim().toLowerCase();
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  if(!username||!pass){err.textContent='نام کاربری و رمز الزامی';err.classList.remove('hidden');return}
+  document.getElementById('btn-login').disabled=true;
+  try{
+    const {data,error}=await sb.from('profiles').select('*').eq('username',username).maybeSingle();
+    if(error)throw error;
+    if(!data){err.textContent='کاربر یافت نشد';err.classList.remove('hidden');return}
+    if(data.is_banned){err.textContent='حساب مسدود است';err.classList.remove('hidden');return}
+    if(data.password_hash!==hash(pass)){err.textContent='رمز اشتباه';err.classList.remove('hidden');return}
+    user=data;
+    localStorage.setItem('lm_user',JSON.stringify(user));
+    await enter();
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-login').disabled=false}
+}
+
+async function doRegister(){
+  const name=document.getElementById('r-name').value.trim();
+  const username=document.getElementById('r-user').value.trim().toLowerCase();
+  const pass=document.getElementById('r-pass').value;
+  const err=document.getElementById('r-err');
+  if(!name||name.length<2){err.textContent='نام کوتاه';err.classList.remove('hidden');return}
+  if(!username||username.length<3||!/^[a-z0-9_]+$/.test(username)){err.textContent='نام کاربری نامعتبر';err.classList.remove('hidden');return}
+  if(!pass||pass.length<6){err.textContent='رمز حداقل ۶ کاراکتر';err.classList.remove('hidden');return}
+  document.getElementById('btn-reg').disabled=true;
+  try{
+    const {data:ex}=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
+    if(ex){err.textContent='نام کاربری تکراری';err.classList.remove('hidden');return}
+    const {data,error}=await sb.from('profiles').insert({username,display_name:name,password_hash:hash(pass),bio:'',xp:50,level:1}).select().single();
+    if(error)throw error;
+    user=data;
+    localStorage.setItem('lm_user',JSON.stringify(user));
+    await enter();
+    toast('حساب ساخته شد');
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-reg').disabled=false}
+}
+
+async function enter(){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  const n=user.display_name||user.username;
+  document.getElementById('hav').textContent=n.charAt(0);
+  document.getElementById('hname').textContent=n;
+  document.getElementById('pav').textContent=n.charAt(0);
+  document.getElementById('pname').textContent=n+(user.is_admin?' 👑':'');
+  document.getElementById('puser').textContent='@'+user.username;
+  document.getElementById('sp').textContent=(user.posts_count||0).toLocaleString('fa-IR');
+  document.getElementById('sc').textContent=(user.channels_count||0).toLocaleString('fa-IR');
+  setTheme(localStorage.getItem('lm_theme')||'dark',true);
+  await loadAll();
+  go('home');
+  startBots();
+}
+
+function logout(){
+  localStorage.removeItem('lm_user');
+  user=null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('auth').classList.remove('hidden');
+}
+
+async function loadAll(){await Promise.all([loadFeed(),loadStories(),loadChannels(),loadWarns()])}
+
+async function loadFeed(){
+  const {data}=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(50);
+  posts=data||[];
+  renderFeed();renderExplore();
+}
+
+async function loadStories(){
+  const {data}=await sb.from('stories').select('*').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(20);
+  stories=data||[];
+  renderStories();
+}
+
+async function loadChannels(){
+  const {data}=await sb.from('channels').select('*').order('created_at',{ascending:false}).limit(30);
+  channels=data||[];
+  renderChannels();
+}
+
+async function loadWarns(){
+  const {data}=await sb.from('warnings').select('*').order('created_at',{ascending:false}).limit(40);
+  warns=data||[];
+  updateNotif();
+}
+
+function hasBad(t){const s=t.toLowerCase();return BAD.some(w=>s.includes(w.toLowerCase()))}
+
+function go(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.add('hidden'));
+  const el=document.getElementById('v-'+v);
+  if(el){el.classList.remove('hidden');el.classList.add('fade')}
+  document.querySelectorAll('.navb').forEach(b=>b.classList.toggle('nav-on',b.dataset.n===v));
+  if(v==='admin')renderAdmin();
+  if(v==='settings'){document.getElementById('setname').value=user.display_name||'';document.getElementById('setbio').value=user.bio||''}
+  if(v==='explore')renderExplore();
+}
+
+function timeAgo(iso){
+  if(!iso)return '';
+  const d=(Date.now()-new Date(iso).getTime())/1000;
+  if(d<60)return 'همین الان';
+  if(d<3600)return Math.floor(d/60)+' دقیقه پیش';
+  if(d<86400)return Math.floor(d/3600)+' ساعت پیش';
+  return Math.floor(d/86400)+' روز پیش';
+}
+
+function postCard(p){
+  const badge=p.is_admin_post?'<span class="admin-badge badge">ادمین 👑</span>':'';
+  return `<article class="glass rounded-xl p-3.5"><div class="flex gap-2.5">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">${esc(p.avatar||'?')}</div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-1.5 flex-wrap mb-1">
+        <span class="text-sm font-medium">${esc(p.author_name)}</span>${badge}
+        <span class="text-[10px]" style="color:var(--muted)">${timeAgo(p.created_at)}</span>
+      </div>
+      <p class="text-sm whitespace-pre-line leading-relaxed">${esc(p.content)}</p>
+      <div class="flex gap-3 mt-2 text-[11px]" style="color:var(--muted)">
+        <button onclick="likePost('${p.id}',${p.likes_count||0})">♥ ${p.likes_count||0}</button>
+        <span>${esc(p.channel||'عمومی')}</span>
+      </div>
+    </div>
+  </div></article>`;
+}
+
+function renderFeed(){document.getElementById('feed').innerHTML=posts.map(postCard).join('')||'<p class="text-center text-sm py-8" style="color:var(--muted)">هنوز پستی نیست</p>'}
+function renderExplore(){
+  let list=[...posts];
+  if(expFilter==='admin')list=list.filter(p=>p.is_admin_post);
+  if(expFilter==='hot')list.sort((a,b)=>(b.likes_count||0)-(a.likes_count||0));
+  document.getElementById('explore-grid').innerHTML=list.map(postCard).join('')||'<p class="text-center text-sm col-span-full py-8" style="color:var(--muted)">موردی نیست</p>';
+}
+function renderStories(){
+  let html=`<button onclick="openM('m-post');postMode='story';document.getElementById('ptab-story').classList.add('nav-on');document.getElementById('ptab-post').classList.remove('nav-on')" class="flex-shrink-0 flex flex-col items-center gap-1 w-16">
+    <div class="w-14 h-14 rounded-2xl border-2 border-dashed flex items-center justify-center" style="border-color:var(--border)">+</div>
+    <span class="text-[10px]" style="color:var(--muted)">شما</span></button>`;
+  stories.forEach(s=>{
+    html+=`<div onclick="toast('${esc(s.body||'').replace(/'/g,"\\'")}')" class="flex-shrink-0 flex flex-col items-center gap-1 w-16 cursor-pointer">
+      <div class="story-ring"><div class="rounded-2xl flex items-center justify-center text-sm font-bold text-white" style="width:52px;height:52px;background:var(--surface)">${esc(s.avatar||'?')}</div></div>
+      <span class="text-[10px] truncate w-full text-center">${s.is_admin_story?'👑':''}${esc(s.author_name)}</span></div>`;
+  });
+  document.getElementById('stories').innerHTML=html;
+}
+function renderChannels(){
+  document.getElementById('chlist').innerHTML=channels.map(c=>`
+    <div onclick="openChannel('${c.id}','${esc(c.name)}',${c.members_count||1})" class="glass rounded-xl p-3.5 cursor-pointer">
+      <h3 class="text-sm font-semibold">${esc(c.name)}</h3>
+      <p class="text-[11px] mt-1" style="color:var(--muted)">${esc(c.description||'')}</p>
+      <p class="text-[10px] mt-1.5" style="color:var(--muted)">${(c.members_count||1).toLocaleString('fa-IR')} عضو</p>
+    </div>`).join('')||'<p class="text-sm col-span-full text-center py-6" style="color:var(--muted)">کانالی نیست</p>';
+}
+function openChannel(id,name,members){
+  document.getElementById('chtitle').textContent=name;
+  document.getElementById('chmeta').textContent=members.toLocaleString('fa-IR')+' عضو';
+  document.getElementById('chfeed').innerHTML=posts.slice(0,6).map(postCard).join('');
+  go('channel');
+}
+
+async function publish(){
+  const text=document.getElementById('pbody').value.trim();
+  if(!text)return toast('متن خالی است');
+  if(hasBad(text)){
+    document.getElementById('pwarn').classList.remove('hidden');
+    await sb.from('warnings').insert({username:user.username,content_snippet:text.slice(0,100),warn_type:postMode});
+    await loadWarns();
+    toast('محتوای نامناسب — اخطار ثبت شد');
+    return;
+  }
+  document.getElementById('pwarn').classList.add('hidden');
+  document.getElementById('btn-pub').disabled=true;
+  try{
+    const n=user.display_name||user.username;
+    if(postMode==='story'){
+      await sb.from('stories').insert({user_id:user.id,author_name:n,author_username:user.username,avatar:n.charAt(0),body:text,is_admin_story:!!user.is_admin});
+      toast('استوری منتشر شد');
+    }else{
+      await sb.from('posts').insert({user_id:user.id,author_name:n,author_username:user.username,avatar:n.charAt(0),content:text,channel:'عمومی',is_admin_post:!!user.is_admin});
+      await sb.from('profiles').update({posts_count:(user.posts_count||0)+1,xp:(user.xp||0)+12}).eq('id',user.id);
+      user.posts_count=(user.posts_count||0)+1;
+      localStorage.setItem('lm_user',JSON.stringify(user));
+      document.getElementById('sp').textContent=user.posts_count.toLocaleString('fa-IR');
+      toast('پست منتشر شد');
+    }
+    document.getElementById('pbody').value='';
+    closeM('m-post');
+    await loadAll();
+  }catch(e){toast('خطا: '+(e.message||e))}
+  finally{document.getElementById('btn-pub').disabled=false}
+}
+
+async function likePost(id,cur){
+  await sb.from('posts').update({likes_count:(cur||0)+1}).eq('id',id);
+  await loadFeed();
+}
+
+async function createChannel(){
+  const name=document.getElementById('nch').value.trim();
+  if(!name)return toast('نام الزامی');
+  await sb.from('channels').insert({name,description:document.getElementById('ncd').value.trim()||'کانال جدید',created_by:user.id,members_count:1});
+  await sb.from('profiles').update({channels_count:(user.channels_count||0)+1}).eq('id',user.id);
+  user.channels_count=(user.channels_count||0)+1;
+  document.getElementById('sc').textContent=user.channels_count.toLocaleString('fa-IR');
+  closeM('m-channel');
+  document.getElementById('nch').value='';
+  await loadChannels();
+  toast('کانال ساخته شد');
+}
+
+async function saveProfile(){
+  const name=document.getElementById('setname').value.trim();
+  const bio=document.getElementById('setbio').value.trim();
+  if(name){
+    await sb.from('profiles').update({display_name:name,bio}).eq('id',user.id);
+    user.display_name=name;user.bio=bio;
+    localStorage.setItem('lm_user',JSON.stringify(user));
+    document.getElementById('hname').textContent=name;
+    document.getElementById('hav').textContent=name.charAt(0);
+    document.getElementById('pname').textContent=name+(user.is_admin?' 👑':'');
+    document.getElementById('pav').textContent=name.charAt(0);
+  }
+  toast('ذخیره شد');
+}
+
+function setTheme(t,silent){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('lm_theme',t);if(!silent)toast('تم اعمال شد')}
+
+function checkAdmin(){
+  if(document.getElementById('apass').value===ADMIN_PASS){closeM('m-admin');go('admin');toast('ورود به پنل')}
+  else{document.getElementById('aerr').textContent='رمز نادرست';document.getElementById('aerr').classList.remove('hidden')}
+}
+
+async function renderAdmin(){
+  const [{data:users},{count:pc},{count:wc},{count:bc}]=await Promise.all([
+    sb.from('profiles').select('id,username,display_name,is_admin,is_banned,level'),
+    sb.from('posts').select('*',{count:'exact',head:true}),
+    sb.from('warnings').select('*',{count:'exact',head:true}),
+    sb.from('profiles').select('*',{count:'exact',head:true}).eq('is_banned',true)
+  ]);
+  document.getElementById('au').textContent=(users||[]).length;
+  document.getElementById('ap').textContent=pc||0;
+  document.getElementById('aw').textContent=wc||0;
+  document.getElementById('ab').textContent=bc||0;
+  document.getElementById('warnlist').innerHTML=(warns||[]).map(w=>`<div class="p-2 rounded-lg" style="background:var(--surface)"><b>@${esc(w.username)}</b> · ${w.warn_type}<br><span style="color:var(--muted)">${esc(w.content_snippet||'')}</span></div>`).join('')||'<p style="color:var(--muted)">اخطاری نیست</p>';
+  document.getElementById('userlist').innerHTML=(users||[]).map(u=>`<div class="flex items-center justify-between gap-2 p-2 rounded-lg" style="background:var(--surface)">
+    <span>${esc(u.display_name)} (@${esc(u.username)}) ${u.is_admin?'👑':''} ${u.is_banned?'[بن]':''}</span>
+    <span class="flex gap-1">
+      <button onclick="toggleAdmin('${u.id}',${!u.is_admin})" class="text-[10px]" style="color:#fbbf24">${u.is_admin?'عزل':'ادمین'}</button>
+      <button onclick="toggleBan('${u.id}',${!u.is_banned})" class="text-[10px]" style="color:var(--danger)">${u.is_banned?'آنبن':'بن'}</button>
+    </span></div>`).join('');
+  document.getElementById('postlist').innerHTML=posts.slice(0,15).map(p=>`<div class="flex justify-between gap-2 p-2 rounded-lg" style="background:var(--surface)">
+    <span class="truncate">${esc(p.author_name)}: ${esc((p.content||'').slice(0,40))}</span>
+    <button onclick="delPost('${p.id}')" style="color:var(--danger)">حذف</button></div>`).join('');
+}
+
+async function toggleAdmin(id,make){
+  await sb.from('profiles').update({is_admin:make}).eq('id',id);
+  const {data:u}=await sb.from('profiles').select('username').eq('id',id).single();
+  if(u)await sb.from('posts').update({is_admin_post:make}).eq('author_username',u.username);
+  await loadFeed();renderAdmin();
+  toast(make?'ادمین شد':'عزل شد');
+}
+async function toggleBan(id,ban){await sb.from('profiles').update({is_banned:ban}).eq('id',id);renderAdmin();toast(ban?'بن شد':'آنبن شد')}
+async function delPost(id){await sb.from('posts').delete().eq('id',id);await loadFeed();renderAdmin();toast('حذف شد')}
+
+function updateNotif(){
+  const n=(warns||[]).length;
+  const d=document.getElementById('ndot');
+  if(n>0){d.textContent=n>9?'9+':n;d.classList.remove('hidden')}else d.classList.add('hidden');
+  document.getElementById('nlist').innerHTML=(warns||[]).slice(0,10).map(w=>`<div class="p-2 rounded-lg" style="background:var(--surface)"><p class="font-medium">اخطار: @${esc(w.username)}</p><p style="color:var(--muted)">${esc(w.content_snippet||'')}</p></div>`).join('')||'<p style="color:var(--muted)">اعلانی نیست</p>';
+}
+
+function askMem(){
+  const q=document.getElementById('min').value.trim();if(!q)return;
+  const box=document.getElementById('mbox');
+  box.innerHTML+=`<div class="flex justify-end"><div class="rounded-xl px-3 py-1.5 text-sm max-w-[85%]" style="background:color-mix(in srgb,var(--accent) 18%,transparent)">${esc(q)}</div></div>`;
+  document.getElementById('min').value='';
+  setTimeout(()=>{box.innerHTML+=`<div class="flex justify-start"><div class="glass rounded-xl px-3 py-1.5 text-sm max-w-[85%]">روی کیفیت محتوا و تعامل واقعی تمرکز کنید.</div></div>`;box.scrollTop=box.scrollHeight},500);
+}
+
+function startBots(){
+  setInterval(async()=>{
+    if(Math.random()>0.5){
+      const b=BOTS[Math.floor(Math.random()*BOTS.length)];
+      await sb.from('posts').insert({author_name:b.name,author_username:b.user,avatar:b.avatar,content:BOT_TEXTS[Math.floor(Math.random()*BOT_TEXTS.length)],channel:'عمومی',is_bot:true,likes_count:Math.floor(Math.random()*30)+3});
+      await loadFeed();
+    }
+    if(Math.random()>0.7){
+      const b=BOTS[Math.floor(Math.random()*BOTS.length)];
+      await sb.from('stories').insert({author_name:b.name,author_username:b.user,avatar:b.avatar,body:BOT_TEXTS[Math.floor(Math.random()*BOT_TEXTS.length)].slice(0,40),is_bot:true});
+      await loadStories();
+    }
+  },10*60*1000);
+}
+
+function openM(id){document.getElementById(id).classList.remove('hidden');document.getElementById(id).classList.add('flex')}
+function closeM(id){document.getElementById(id).classList.add('hidden');document.getElementById(id).classList.remove('flex')}
+function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.remove('hidden');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.add('hidden'),2500)}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('mbox').innerHTML=`<div class="flex justify-start"><div class="glass rounded-xl px-3 py-1.5 text-sm max-w-[85%]">حافظه زنده آماده است.</div></div>`;
+  const saved=localStorage.getItem('lm_user');
+  if(saved){
+    try{
+      user=JSON.parse(saved);
+      const {data}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+      if(data&&!data.is_banned){user=data;localStorage.setItem('lm_user',JSON.stringify(user));await enter()}
+      else{localStorage.removeItem('lm_user')}
+    }catch(e){}
+  }
+});
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeM(m.id)}));
+</script>
+</body>
+</html>

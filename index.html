@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="space">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>لومرا | Lumera</title>
+<meta name="lm-version" content="2026.09.26-secure"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{font-family:'Vazirmatn',system-ui,sans-serif;box-sizing:border-box}
+:root,[data-theme="dark"]{--bg:#030712;--surface:#0f172a;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--accent:#38bdf8;--accent2:#818cf8;--danger:#fb7185;--card:rgba(17,24,39,.88)}
+[data-theme="space"]{--bg:#020617;--surface:#0b1220;--border:#1e3a5f;--text:#e0f2fe;--muted:#7dd3fc;--accent:#22d3ee;--accent2:#a78bfa;--danger:#f472b6;--card:rgba(15,23,42,.82)}
+[data-theme="solar"]{--bg:#1c1917;--surface:#292524;--border:#44403c;--text:#fef3c7;--muted:#d6d3d1;--accent:#f59e0b;--accent2:#f97316;--danger:#ef4444;--card:rgba(41,37,36,.9)}
+[data-theme="blood"]{--bg:#0c0a0a;--surface:#1a1010;--border:#3f1a1a;--text:#fecaca;--muted:#f87171;--accent:#ef4444;--accent2:#f43f5e;--danger:#fb7185;--card:rgba(28,16,16,.9)}
+[data-theme="ocean"]{--bg:#042f2e;--surface:#134e4a;--border:#115e59;--text:#ccfbf1;--muted:#5eead4;--accent:#2dd4bf;--accent2:#22d3ee;--danger:#fb7185;--card:rgba(19,78,74,.88)}
+[data-theme="neon"]{--bg:#0a0a0a;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3;--accent:#a3e635;--accent2:#22d3ee;--danger:#f43f5e;--card:rgba(23,23,23,.9)}
+body{margin:0;min-height:100vh;overflow-x:hidden;color:var(--text);background-color:var(--bg);background-image:var(--bg-img,url('theme-space.png'));background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg-overlay,linear-gradient(180deg,rgba(2,6,23,.4) 0%,rgba(2,6,23,.62) 50%,rgba(2,6,23,.8) 100%))}
+[data-theme="space"]{--bg-img:url('theme-space.png');--bg-overlay:linear-gradient(180deg,rgba(2,6,23,.35) 0%,rgba(2,6,23,.55) 45%,rgba(2,6,23,.78) 100%)}
+[data-theme="dark"]{--bg-img:url('theme-dark.jpg');--bg-overlay:linear-gradient(180deg,rgba(3,7,18,.45) 0%,rgba(3,7,18,.65) 50%,rgba(3,7,18,.85) 100%)}
+[data-theme="solar"]{--bg-img:url('theme-solar.jpg');--bg-overlay:linear-gradient(180deg,rgba(28,25,23,.35) 0%,rgba(28,25,23,.55) 45%,rgba(28,25,23,.8) 100%)}
+[data-theme="blood"]{--bg-img:url('theme-blood.jpg');--bg-overlay:linear-gradient(180deg,rgba(12,10,10,.4) 0%,rgba(12,10,10,.6) 50%,rgba(12,10,10,.85) 100%)}
+[data-theme="ocean"]{--bg-img:url('theme-space.png');--bg-overlay:linear-gradient(180deg,rgba(4,47,46,.45) 0%,rgba(4,47,46,.65) 50%,rgba(4,47,46,.85) 100%)}
+[data-theme="neon"]{--bg-img:url('theme-dark.jpg');--bg-overlay:linear-gradient(180deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.7) 50%,rgba(10,10,10,.88) 100%)}
+#auth,#app,#lock{position:relative;z-index:1}
+.glass{background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.input{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text);width:100%}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px;border-radius:12px;border:none;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:rgba(251,113,133,.12);color:var(--danger);border:1px solid rgba(251,113,133,.3)}
+.badge{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500}
+.admin-badge{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.35)}
+.nav-on{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)!important}
+.scroll::-webkit-scrollbar{width:3px}.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.fade{animation:fade .2s ease}@keyframes fade{from{opacity:0}to{opacity:1}}
+.story-ring{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:2px;border-radius:50%}
+.warn-box{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:var(--danger)}
+.explore-item{aspect-ratio:1;overflow:hidden;border-radius:8px;background:var(--surface)}
+.explore-item img,.explore-item video{width:100%;height:100%;object-fit:cover}
+.av{border-radius:50%;object-fit:cover;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.reply-box{border-right:2px solid var(--accent);margin-right:8px;padding-right:8px}
+/* auth redesign */
+.auth-shell{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0}
+@media(min-width:640px){.auth-shell{justify-content:center;padding:24px}}
+.auth-card{border-radius:28px 28px 0 0;padding:28px 22px 32px;border:1px solid rgba(255,255,255,.08);border-bottom:none}
+@media(min-width:640px){.auth-card{border-radius:24px;border-bottom:1px solid rgba(255,255,255,.08);max-width:400px;margin:0 auto;width:100%}}
+.auth-tab{flex:1;padding:10px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:none;cursor:pointer}
+.auth-tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+</style>
+</head>
+<body>
+<div id="lock" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background:rgba(0,0,0,.92)">
+  <div class="glass rounded-2xl p-6 max-w-sm text-center">
+    <h1 class="text-lg font-bold mb-2" style="color:var(--danger)">قفل امنیتی</h1>
+    <p class="text-sm" style="color:var(--muted)" id="lock-msg">چند دقیقه دیگر...</p>
+  </div>
+</div>
+
+<!-- ورود جدید (شبیه اپ موبایل، نه نکسو) -->
+<div id="auth" class="auth-shell fixed inset-0 z-50" style="background:url('auth-bg.png') center/cover no-repeat">
+  <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(2,6,23,.25) 0%,rgba(2,6,23,.55) 45%,rgba(2,6,23,.92) 100%)"></div>
+  <div class="relative z-10 flex-1 flex flex-col justify-end sm:justify-center">
+    <div class="px-5 pt-16 pb-4 text-center sm:pb-8">
+      <p class="text-xs tracking-[0.2em] uppercase mb-2" style="color:rgba(125,211,252,.7)">SECURE SPACE</p>
+      <h1 class="text-5xl font-extrabold" style="background:linear-gradient(135deg,#67e8f9,#c4b5fd,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 20px rgba(34,211,238,.35))">لومرا</h1>
+      <p class="mt-3 text-sm" style="color:rgba(224,242,254,.75)">جهان محتوا · با ربات نگهبان</p>
+    </div>
+    <div class="auth-card glass w-full">
+      <div class="flex gap-1 p-1 rounded-full mb-5" style="background:rgba(15,23,42,.6)">
+        <button id="t-login" class="auth-tab on" onclick="authTab('login')">ورود</button>
+        <button id="t-reg" class="auth-tab" onclick="authTab('register')">عضویت</button>
+      </div>
+      <div id="f-login" class="space-y-3">
+        <div>
+          <label class="text-[11px] mb-1 block" style="color:var(--muted)">نام کاربری</label>
+          <input id="l-user" class="input" placeholder="username" autocomplete="username"/>
+        </div>
+        <div>
+          <label class="text-[11px] mb-1 block" style="color:var(--muted)">رمز عبور</label>
+          <input id="l-pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <p id="l-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doLogin()" class="btn btn-primary w-full py-3.5 text-sm mt-1" id="btn-login">ورود به لومرا</button>
+      </div>
+      <div id="f-reg" class="space-y-3 hidden">
+        <input id="r-name" class="input" placeholder="نام نمایشی"/>
+        <input id="r-user" class="input" placeholder="نام کاربری انگلیسی"/>
+        <input id="r-phone" class="input" type="tel" inputmode="numeric" placeholder="09xxxxxxxxx" maxlength="11"/>
+        <input id="r-pass" class="input" type="password" placeholder="رمز حداقل ۸ کاراکتر"/>
+        <p id="r-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doRegister()" class="btn btn-primary w-full py-3.5 text-sm" id="btn-reg">ساخت حساب</button>
+      </div>
+      <p class="text-center text-[10px] mt-4" style="color:var(--muted)">با ورود، قوانین لومرا را می‌پذیرید</p>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="hidden min-h-screen flex flex-col pb-16 md:pb-0">
+  <header class="glass sticky top-0 z-40 border-b" style="border-color:var(--border)">
+    <div class="max-w-6xl mx-auto px-3 h-[50px] flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">
+          <svg width="15" height="15" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="font-bold text-[15px]">لومرا</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)">امن</span>
+      </div>
+      <nav class="hidden md:flex gap-0.5 p-0.5 rounded-full" style="background:var(--surface)">
+        <button data-n="home" onclick="go('home')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">خانه</button>
+        <button data-n="explore" onclick="go('explore')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">اکسپلور</button>
+        <button data-n="direct" onclick="go('direct')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">دایرکت</button>
+        <button data-n="channels" onclick="go('channels')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">کانال‌ها</button>
+        <button data-n="memory" onclick="go('memory')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">AI</button>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button onclick="openM('m-post')" class="hidden sm:inline-flex btn btn-primary px-3 py-1.5 text-xs">انتشار</button>
+        <button onclick="go('profile')" class="flex items-center gap-1.5 glass rounded-lg px-1.5 py-1">
+          <img id="hav" class="w-7 h-7 av" alt=""/>
+          <span id="hname" class="text-xs font-medium hidden sm:block max-w-[70px] truncate"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 py-4">
+    <section id="v-home" class="view space-y-4 fade">
+      <div class="flex gap-2.5 overflow-x-auto pb-1" style="scrollbar-width:none" id="stories"></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">جریان</h2>
+        <button onclick="loadFeed()" class="text-[11px]" style="color:var(--accent)">بروز</button>
+      </div>
+      <div id="feed" class="space-y-3"></div>
+    </section>
+
+    <section id="v-explore" class="view hidden space-y-3 fade">
+      <h1 class="text-base font-bold">اکسپلور</h1>
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        <button onclick="expFilter='all';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">همه</button>
+        <button onclick="expFilter='image';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">عکس</button>
+        <button onclick="expFilter='video';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">ویدیو</button>
+      </div>
+      <div id="explore-grid" class="grid grid-cols-3 gap-1 sm:gap-2"></div>
+    </section>
+
+    <section id="v-direct" class="view hidden fade">
+      <div class="flex items-center justify-between mb-3">
+        <h1 class="text-base font-bold">دایرکت</h1>
+        <button onclick="openM('m-group')" class="btn btn-primary px-3 py-1.5 text-xs">گروه</button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3" style="min-height:55vh">
+        <div class="glass rounded-xl p-2 overflow-y-auto scroll max-h-[55vh]">
+          <input id="dm-search" class="input mb-2 text-xs" placeholder="نام کاربری..." onkeydown="if(event.key==='Enter')startDm()"/>
+          <button onclick="startDm()" class="btn btn-primary w-full py-2 text-xs mb-2">چت</button>
+          <div id="dm-list" class="space-y-1 mb-2"></div>
+          <div id="group-list" class="space-y-1"></div>
+        </div>
+        <div class="lg:col-span-2 glass rounded-xl flex flex-col max-h-[55vh]">
+          <div class="px-3 py-2.5 border-b flex items-center gap-2" style="border-color:var(--border)">
+            <div id="dm-av" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">?</div>
+            <p id="dm-name" class="text-sm font-medium">گفتگو</p>
+          </div>
+          <div id="dm-msgs" class="flex-1 p-3 overflow-y-auto scroll space-y-2"></div>
+          <div class="p-2 border-t flex gap-2" style="border-color:var(--border)">
+            <input id="dm-input" class="input flex-1 !py-2" placeholder="پیام..." onkeydown="if(event.key==='Enter')sendDm()"/>
+            <button onclick="sendDm()" class="btn btn-primary px-3">ارسال</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-channels" class="view hidden space-y-3 fade">
+      <div class="flex items-center justify-between">
+        <h1 class="text-base font-bold">کانال‌ها</h1>
+        <button onclick="openM('m-channel')" class="btn btn-primary px-3 py-1.5 text-xs">جدید</button>
+      </div>
+      <div id="chlist" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section id="v-channel" class="view hidden fade">
+      <div class="flex items-center gap-2 mb-3">
+        <button onclick="go('channels')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <div class="flex-1 min-w-0"><h1 id="chtitle" class="text-base font-bold truncate"></h1><p id="chmeta" class="text-[11px]" style="color:var(--muted)"></p></div>
+      </div>
+      <div id="chfeed" class="space-y-3"></div>
+    </section>
+
+    <!-- AI موبایل‌فرندلی -->
+    <section id="v-memory" class="view hidden fade space-y-3">
+      <div class="text-center px-2">
+        <h1 class="text-lg font-bold">AI لومرا</h1>
+        <p class="text-xs mt-1" style="color:var(--muted)">روی موبایل و دسکتاپ · بدون وابستگی به OpenAI</p>
+      </div>
+      <div class="w-full max-w-lg mx-auto flex flex-col" style="height:min(62vh,520px)">
+        <div class="flex flex-wrap gap-1.5 mb-2 justify-center px-1">
+          <button onclick="askQuick('لومرا چیست؟')" class="badge border cursor-pointer" style="border-color:var(--border)">لومرا</button>
+          <button onclick="askQuick('قوانین چیست؟')" class="badge border cursor-pointer" style="border-color:var(--border)">قوانین</button>
+          <button onclick="askQuick('چطور پست بنویسم؟')" class="badge border cursor-pointer" style="border-color:var(--border)">پست</button>
+          <button onclick="askQuick('چطور رشد کنم؟')" class="badge border cursor-pointer" style="border-color:var(--border)">رشد</button>
+          <button onclick="askQuick('بن یعنی چه؟')" class="badge border cursor-pointer" style="border-color:var(--border)">بن</button>
+        </div>
+        <div id="mbox" class="glass rounded-xl p-3 flex-1 overflow-y-auto scroll space-y-2.5 mb-2"></div>
+        <div class="flex gap-2 pb-1">
+          <input id="min" class="input flex-1" placeholder="از AI بپرس..." onkeydown="if(event.key==='Enter')askMem()"/>
+          <button onclick="askMem()" class="btn btn-primary px-4">ارسال</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-profile" class="view hidden fade space-y-3">
+      <div class="glass rounded-xl overflow-hidden">
+        <div class="h-16" style="background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,transparent),color-mix(in srgb,var(--accent2) 30%,transparent))"></div>
+        <div class="px-4 pb-4 -mt-8 flex flex-col sm:flex-row items-center gap-3">
+          <div class="relative">
+            <img id="pav" class="w-16 h-16 av border-4" style="border-color:var(--bg)" alt=""/>
+            <label class="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] cursor-pointer text-white" style="background:var(--accent)">+
+              <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(this)"/>
+            </label>
+          </div>
+          <div class="text-center sm:text-right flex-1">
+            <h1 id="pname" class="text-base font-bold"></h1>
+            <p id="puser" class="text-xs" style="color:var(--muted)"></p>
+          </div>
+          <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">تنظیمات</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="glass rounded-xl p-3 text-center"><p class="text-base font-bold" id="sp">۰</p><p class="text-[10px]" style="color:var(--muted)">پست</p></div>
+        <div class="glass rounded-xl p-3 text-center"><p class="text-base font-bold" id="sc">۰</p><p class="text-[10px]" style="color:var(--muted)">کانال</p></div>
+      </div>
+      <button onclick="logout()" class="btn btn-danger px-4 py-2 text-xs">خروج</button>
+    </section>
+
+    <section id="v-settings" class="view hidden fade space-y-4">
+      <div class="flex items-center gap-2">
+        <button onclick="go('profile')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <h1 class="text-base font-bold">تنظیمات</h1>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-3">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">تم</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button onclick="setTheme('space')" class="btn btn-ghost py-2.5 text-xs">فضا</button>
+          <button onclick="setTheme('dark')" class="btn btn-ghost py-2.5 text-xs">تیره</button>
+          <button onclick="setTheme('solar')" class="btn btn-ghost py-2.5 text-xs">خورشیدی</button>
+          <button onclick="setTheme('blood')" class="btn btn-ghost py-2.5 text-xs">خونی</button>
+          <button onclick="setTheme('ocean')" class="btn btn-ghost py-2.5 text-xs">اقیانوس</button>
+          <button onclick="setTheme('neon')" class="btn btn-ghost py-2.5 text-xs">نئون</button>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-2">
+        <input id="setname" class="input" placeholder="نام نمایشی"/>
+        <textarea id="setbio" class="input resize-none" rows="2" placeholder="درباره"></textarea>
+        <button onclick="saveProfile()" class="btn btn-primary w-full py-2">ذخیره</button>
+      </div>
+      <div class="glass rounded-xl p-4 text-[11px] leading-relaxed" style="color:var(--muted)">
+        ریپلای ادمین: <b>حذف</b> = پاک پست · <b>بن</b> = بن دائمی نویسنده<br/>
+        بیش از ۳ پیام پشت‌سرهم = بن موقت ۵ روز · بن ربات بعد ۵ روز آنبن می‌شود
+      </div>
+    </section>
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 inset-x-0 glass border-t z-40" style="border-color:var(--border)">
+    <div class="flex justify-around py-1.5">
+      <button onclick="go('home')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">خانه</button>
+      <button onclick="go('explore')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">اکسپلور</button>
+      <button onclick="openM('m-post')" class="flex flex-col items-center -mt-3"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">+</div></button>
+      <button onclick="go('memory')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">AI</button>
+      <button onclick="go('profile')" class="flex flex-col items-center gap-0.5 p-1.5 text-[10px]" style="color:var(--muted)">من</button>
+    </div>
+  </nav>
+</div>
+
+<div id="m-post" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
+  <div class="glass rounded-2xl w-full max-w-md p-4 relative max-h-[90vh] overflow-y-auto scroll">
+    <button onclick="closeM('m-post')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">انتشار</h2>
+    <div class="flex gap-2 mb-2">
+      <button id="ptab-post" onclick="postMode='post';this.classList.add('nav-on');document.getElementById('ptab-story').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs nav-on">پست</button>
+      <button id="ptab-story" onclick="postMode='story';this.classList.add('nav-on');document.getElementById('ptab-post').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs">استوری</button>
+    </div>
+    <textarea id="pbody" rows="3" class="input resize-none mb-2" placeholder="متن..."></textarea>
+    <div class="flex gap-2 mb-2">
+      <label class="btn btn-ghost px-3 py-1.5 text-xs cursor-pointer flex-1">📷<input type="file" accept="image/*" class="hidden" onchange="pickMedia(this,'image')"/></label>
+      <label class="btn btn-ghost px-3 py-1.5 text-xs cursor-pointer flex-1">🎬<input type="file" accept="video/*" class="hidden" onchange="pickMedia(this,'video')"/></label>
+    </div>
+    <div id="media-preview" class="mb-2 hidden rounded-lg overflow-hidden"></div>
+    <div id="pwarn" class="warn-box rounded-lg p-2 text-xs mb-2 hidden"></div>
+    <button onclick="publish()" class="btn btn-primary w-full py-2 text-xs" id="btn-pub">انتشار</button>
+  </div>
+</div>
+<div id="m-channel" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+    <button onclick="closeM('m-channel')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">کانال</h2>
+    <input id="nch" class="input mb-2" placeholder="نام"/>
+    <textarea id="ncd" class="input resize-none mb-2" rows="2" placeholder="توضیح"></textarea>
+    <button onclick="createChannel()" class="btn btn-primary w-full py-2">ایجاد</button>
+  </div>
+</div>
+<div id="m-group" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+    <button onclick="closeM('m-group')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">گروه</h2>
+    <input id="gname" class="input mb-2" placeholder="نام گروه"/>
+    <input id="gmembers" class="input mb-2" placeholder="user1,user2"/>
+    <button onclick="createGroup()" class="btn btn-primary w-full py-2">ایجاد</button>
+  </div>
+</div>
+<div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden"><div class="glass px-4 py-2 rounded-xl text-sm font-medium" id="tmsg"></div></div>
+
+<script>
+const APP_VERSION='2026.09.26-secure';
+const OWNER='hesam';
+const SUPABASE_URL='https://nwnmtsyqfjvaetyzwlop.supabase.co';
+const SUPABASE_KEY='sb_publishable_fCu4zOgzwbTDBNPl-DK5KQ_HlS5ZYhn';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const BAD_RAW=['کیر','کص','کسکش','جنده','حرومزاده','لاشی','مادرجنده','کونی','ننت','آشغال','fuck','shit','bitch','asshole'];
+const POL_RAW=['انقلاب','حکومت','رژیم','انتخابات','اصلاحات','اصولگرا','اصلاحطلب','رهبر','ولی‌فقیه','سپاه','بسیج','منافق','مجاهد','دیکتاتور','پهلوی','خامنه','روحانی','رئیسی','پزشکیان'];
+const HACKER_NAME=/هکر|هاکر|حکر|حاکر|hacker|haker/i;
+const CODE_RE=/(<script|javascript:|onerror\s*=|eval\s*\(|document\.cookie|union\s+select|drop\s+table)/i;
+const BOT_IMGS=['https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=70','https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&q=70','https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&q=70','https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=70','https://images.unsplash.com/photo-1502134249126-9f3755a50dcc?w=600&q=70'];
+const BOTS=[{name:'رصدگر',user:'bot_radar',avatar:'ر'},{name:'نبض',user:'bot_pulse',avatar:'ن'},{name:'کاوشگر',user:'bot_scout',avatar:'ک'}];
+/* متن‌های زیاد ربات تا تکرار دیر اتفاق بیفتد */
+const BOT_TEXTS=[
+'صبح بخیر لومرایی‌ها. امروز یک پست کوتاه و صادق بنویس.','کیفیت از کمیت جلوتر است؛ یک جمله قوی بهتر از ده جمله توخالی است.',
+'اگر ایده نداری، از یک تجربه شخصی ساده شروع کن.','احترام، قانون نانوشته‌ی اینجاست.',
+'اکسپلور جای دیده‌شدن است؛ عکس واضح بگذار.','دایرکت برای گفتگوی واقعی است، نه اسپم.',
+'پست بلند اخطار دارد؛ کوتاه بنویس.','ربات نگهبان بیدار است؛ فحش و حاشیه ممنوع.',
+'هر روز یک ایده کوچک منتشر کن.','نظر بده، لایک کن، گفتگو بساز.',
+'تم فضا حال‌وهوا را عوض می‌کند؛ امتحانش کن.','گروه بساز و ایده‌ها را جمع کنید.',
+'هوش مصنوعی لومرا پاسخ سوال‌های رایج را می‌دهد.','محتوای سالم جامعه را زنده نگه می‌دارد.',
+'اگر بن موقت گرفتی، ۵ روز صبر کن.','بن ادمین دائمی است؛ مراقب باش.',
+'سه پیام پشت‌سرهم زیاد است؛ فاصله بده.','استوری ۲۴ ساعته فرصت کوتاهی است.',
+'کانال تخصصی بساز و مخاطب جذب کن.','نام کاربری محترمانه انتخاب کن.',
+'عکس با نور خوب در اکسپلور می‌درخشد.','کپشن را با یک سوال تمام کن.',
+'امروز کسی را تشویق کن.','ایدهٔ شکست‌خورده هم می‌تواند درس باشد.',
+'سکوت گاهی بهتر از حاشیه است.','لومرا برای ساختن است، نه خراب کردن.',
+'ربات متن‌های تازه می‌آورد؛ تو هم تازه بمان.','تم خورشیدی انرژی می‌دهد.',
+'تم خونی فقط زیبایی است، نه خشونت.','موبایل و دسکتاپ هر دو پشتیبانی می‌شوند.',
+'AI را در نوار پایین پیدا کن.','سوال فنی؟ از AI بپرس.',
+'پروفایل کامل اعتماد می‌سازد.','آواتار واضح بگذار.',
+'شماره واقعی لازم است؛ شماره فیک رد می‌شود.','امنیت روی سرور چک می‌شود.',
+'نسخه قدیمی سایت کار نمی‌کند.','هر تخلف ثبت می‌شود.',
+'ایده‌ات را در یک خط خلاصه کن.','داستان کوتاه از روزت بنویس.',
+'یک نکته مفید برای بقیه بگو.','سوال باز بپرس تا بحث راه بیفتد.',
+'از اغراق دوری کن.','صادق باش، ساده بنویس.',
+'امروز چه چیزی یاد گرفتی؟','یک کتاب یا آهنگ خوب معرفی کن.',
+'فضای لومرا آرام است؛ آرومش نگه دار.','ربات گاهی عکس فضا هم می‌گذارد.',
+'گروه موضوعی بساز.','با غریبه‌ها محترمانه حرف بزن.',
+'اسپم مساوی بن است.','فحش نقطه‌دار هم تشخیص داده می‌شود.',
+'محتوای سیاسی اینجا جایی ندارد.','کد و اسکریپت ممنوع است.',
+'اگر اشتباه کردی عذرخواهی کن.','شروع دوباره همیشه ممکن است — مگر بن دائمی.',
+'نفس بکش و بعد منتشر کن.','یک لبخند مجازی هم گاهی کافی است.',
+'تم نئون شب‌ها قشنگ است.','تم اقیانوس آرامش می‌آورد.',
+'بروزرسانی را از کانال رسمی بگیر.','نسخه کرک‌شده کار نمی‌کند.',
+'هر پست یک فرصت است.','مخاطب را دست‌کم نگیر.',
+'جزئیات کوچک داستان را زنده می‌کند.','از تکرار بیهوده پرهیز کن.',
+'امروز فقط یک پست باارزش بگذار.','کیفیت را فدای عجله نکن.',
+'لومرا یعنی نور؛ روشن بنویس.','شب بخیر، فردا دوباره می‌سازیم.'
+];
+
+const AI_KB=[
+{k:['لومرا','چیست','چی هست','درباره'],a:'لومرا یک پلتفرم محتوای امن با حس فضایی است: پست، استوری، اکسپلور، دایرکت، گروه، کانال و AI داخلی. ربات نگهبان فحش، حاشیه سیاسی و اسپم را کنترل می‌کند.'},
+{k:['قانون','قوانین','ممنوع','قاعده'],a:'فحش (حتی با نقطه)، محتوای سیاسی، کد مخرب و اسپم ممنوع است. پست خیلی بلند اخطار می‌گیرد. بیش از ۳ پیام پشت‌سرهم بن موقت می‌آورد.'},
+{k:['پست','بنویس','کپشن','استوری'],a:'کوتاه، واضح و صادق بنویس. یک قلاب + یک نکته + دعوت به نظر. استوری ۲۴ ساعته است؛ پست در خانه و اکسپلور می‌ماند.'},
+{k:['رشد','دیده','فالو','مخاطب'],a:'منظم منتشر کن، در اکسپلور عکس باکیفیت بگذار، در گروه و دایرکت گفتگو کن، و تخصص مشخص داشته باش.'},
+{k:['بن','اخطار','مسدود'],a:'بن ربات معمولاً ۵ روزه است و خودکار باز می‌شود. بن مالک (ریپلای «بن») دائمی است. ۳ اخطار پست بلند هم می‌تواند بن بیاورد.'},
+{k:['حذف','ریپلای','ادمین'],a:'فقط سازنده: زیر پست ریپلای «حذف» = پاک شدن پست. ریپلای «بن» = بن دائمی نویسنده و حذف پست.'},
+{k:['گروه','دایرکت','چت'],a:'در دایرکت می‌توانی چت خصوصی یا گروه بسازی. نام گروه و نام کاربری اعضا را با کاما وارد کن.'},
+{k:['تم','رنگ','پس‌زمینه'],a:'از تنظیمات تم فضا، تیره، خورشیدی، خونی، اقیانوس یا نئون را انتخاب کن؛ پس‌زمینه عوض می‌شود.'},
+{k:['موبایل','گوشی','اندروید','آیفون'],a:'سایت برای موبایل بهینه است. AI هم در نوار پایین گوشی در دسترس است. می‌توانی به صفحه اصلی اضافه کنی.'},
+{k:['امنیت','هک','ربات'],a:'بخش زیادی از بررسی‌ها روی سرور انجام می‌شود. رمزهای حساس در کد سایت نیستند. نسخه قدیمی قفل می‌شود.'},
+{k:['سلام','درود','هی','hello','hi'],a:'سلام! من AI داخلی لومرا هستم. از قوانین، پست، رشد، بن یا امکانات بپرس.'},
+{k:['خداحافظ','بای','شب'],a:'خداحافظ. مواظب محتوایت باش و برگرد.'},
+{k:['اسم','تو کی','هوش'],a:'من دستیار متنی داخل لومرا هستم؛ به OpenAI وصل نیستم. جواب‌ها از دانش ازپیش‌تعیین‌شده لومرا می‌آید.'},
+{k:['شماره','ثبت','عضویت'],a:'برای عضویت نام، نام کاربری انگلیسی، موبایل ایران و رمز لازم است. شماره با رقم‌های یکسان پشت‌سرهم رد می‌شود.'}
+];
+
+let user=null,posts=[],stories=[],channels=[],dms=[],groups=[],groupMsgs=[],repliesMap={};
+let postMode='post',expFilter='all',mediaData=null,mediaType='text';
+let dmPeer=null,activeGroup=null,botTimer=null,clientIp='',clientFp='',ownerName=OWNER;
+let recentMsgTimes=[];
+
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return 'h'+Math.abs(h).toString(36)+s.length}
+function normPhone(p){return (p||'').replace(/\D/g,'').slice(0,11)}
+function isIranPhone(p){return /^09\d{9}$/.test(normPhone(p))}
+function hasTripleDigit(p){return /(\d)\1\1/.test(normPhone(p))}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.remove('hidden');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.add('hidden'),2600)}
+function openM(id){document.getElementById(id).classList.remove('hidden');document.getElementById(id).classList.add('flex')}
+function closeM(id){document.getElementById(id).classList.add('hidden');document.getElementById(id).classList.remove('flex')}
+function timeAgo(iso){if(!iso)return'';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return'الان';if(d<3600)return Math.floor(d/60)+'د';if(d<86400)return Math.floor(d/3600)+'س';return Math.floor(d/86400)+'ر'}
+function avUrl(u){if(u&&u.avatar_url)return u.avatar_url;const n=(u&&(u.display_name||u.username)||'?').charAt(0);return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect fill="#22d3ee" width="80" height="80"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="36" font-family="sans-serif">'+n+'</text></svg>')}
+function isOwner(u){return (u||'').toLowerCase()===String(ownerName||OWNER).toLowerCase()}
+function normalize(t){return (t||'').toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]/g,'')}
+
+function deviceInfo(){
+  const ua=navigator.userAgent||'';
+  let model='unknown';
+  if(/iPhone/.test(ua))model='iPhone';
+  else if(/Android/.test(ua)){const m=ua.match(/Android\s[\d.]+;\s*([^)]+)\)/);model=m?m[1].slice(0,40):'Android'}
+  else if(/Windows/.test(ua))model='Windows';
+  else if(/Mac/.test(ua))model='Mac';
+  else model=ua.slice(0,50);
+  return model;
+}
+
+async function getIp(){try{const r=await fetch('https://api.ipify.org?format=json',{signal:AbortSignal.timeout(3000)});const j=await r.json();return j.ip||''}catch(e){return ''}}
+async function getGeoApprox(){
+  try{
+    const r=await fetch('https://ipapi.co/json/',{signal:AbortSignal.timeout(3500)});
+    const j=await r.json();
+    if(j&&j.city)return (j.city||'')+','+(j.country_name||j.country||'');
+  }catch(e){}
+  return '';
+}
+function getFingerprint(){try{const s=[navigator.userAgent,navigator.language,screen.width+'x'+screen.height].join('|');let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return 'fp_'+Math.abs(h).toString(36)}catch(e){return 'fp_x'}}
+
+function clientModerationReason(text){
+  const n=normalize(text);const raw=(text||'').toLowerCase();
+  for(const w of BAD_RAW){if(n.includes(normalize(w))||raw.includes(w))return 'profanity'}
+  if(/ک\s*[\.\-_*]*\s*ی\s*[\.\-_*]*\s*ر|ک\s*[\.\-_*]*\s*ص/.test(raw))return 'profanity';
+  for(const w of POL_RAW){if(n.includes(normalize(w))||raw.includes(w))return 'political'}
+  if(CODE_RE.test(raw))return 'malicious_code';
+  return null;
+}
+
+async function hardBanUser(profile,reason,permanent){
+  if(!profile||isOwner(profile.username))return;
+  try{
+    await sb.rpc('safe_ban_user',{p_username:profile.username,p_reason:reason||'ban',p_permanent:!!permanent});
+    if(profile.phone)await sb.from('banned_phones').upsert({phone:profile.phone,reason:reason||''});
+    if(profile.last_ip)await sb.from('banned_ips').upsert({ip:profile.last_ip,reason:reason||''});
+    if(profile.fingerprint)await sb.from('banned_fingerprints').upsert({fingerprint:profile.fingerprint,reason:reason||''});
+  }catch(e){
+    try{await sb.from('profiles').update({is_banned:true,ban_type:permanent?'permanent':'temporary',banned_until:permanent?null:new Date(Date.now()+5*864e5).toISOString()}).eq('id',profile.id)}catch(e2){}
+  }
+}
+
+async function isBlocked(){
+  clientFp=getFingerprint();clientIp=await getIp();
+  if(clientIp){const {data}=await sb.from('banned_ips').select('ip').eq('ip',clientIp).maybeSingle();if(data)return 'IP مسدود'}
+  if(clientFp){const {data}=await sb.from('banned_fingerprints').select('fingerprint').eq('fingerprint',clientFp).maybeSingle();if(data)return 'دستگاه مسدود'}
+  return null;
+}
+
+async function checkSiteStatus(){
+  try{
+    const {data,error}=await sb.rpc('get_site_status');
+    if(error)return true;
+    if(data&&data.min_version&&data.min_version!==APP_VERSION&&data.min_version!=='2026.09.25-secure'){
+      /* allow previous secure version transition */
+    }
+    if(data&&data.owner_username)ownerName=data.owner_username;
+    const until=data&&data.site_locked_until;
+    if(until){const t=Date.parse(until);if(!isNaN(t)&&t>Date.now()){document.getElementById('lock').classList.remove('hidden');document.getElementById('auth').classList.add('hidden');document.getElementById('app').classList.add('hidden');document.getElementById('lock-msg').textContent='تا '+new Date(t).toLocaleTimeString('fa-IR');return false}}
+  }catch(e){}
+  return true;
+}
+
+function checkSpamFlood(){
+  if(isOwner(user&&user.username))return false;
+  const now=Date.now();
+  recentMsgTimes=recentMsgTimes.filter(t=>now-t<120000);
+  recentMsgTimes.push(now);
+  return recentMsgTimes.length>3;
+}
+
+function authTab(t){
+  document.getElementById('f-login').classList.toggle('hidden',t!=='login');
+  document.getElementById('f-reg').classList.toggle('hidden',t!=='register');
+  document.getElementById('t-login').classList.toggle('on',t==='login');
+  document.getElementById('t-reg').classList.toggle('on',t==='register');
+}
+
+async function collectAndSaveMeta(uid){
+  if(!uid)return;
+  const dev=deviceInfo();
+  const geo=await getGeoApprox();
+  const payload={last_ip:clientIp||'',fingerprint:clientFp||'',device_info:dev};
+  if(geo)payload.geo_info=geo;
+  try{await sb.from('profiles').update(payload).eq('id',uid)}catch(e){}
+}
+
+async function doLogin(){
+  const username=document.getElementById('l-user').value.trim().toLowerCase();
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  if(!username||!pass){err.textContent='نام کاربری و رمز لازم است';err.classList.remove('hidden');return}
+  if(HACKER_NAME.test(username)){err.textContent='نام غیرمجاز';err.classList.remove('hidden');return}
+  document.getElementById('btn-login').disabled=true;
+  try{
+    if(!(await checkSiteStatus()))return;
+    const blocked=await isBlocked();if(blocked){err.textContent=blocked;err.classList.remove('hidden');return}
+    const {data,error}=await sb.from('profiles').select('*').eq('username',username).maybeSingle();
+    if(error)throw error;
+    if(!data){err.textContent='کاربر یافت نشد';err.classList.remove('hidden');return}
+    // آنبن موقت منقضی
+    if(data.is_banned&&data.ban_type==='temporary'&&data.banned_until&&new Date(data.banned_until)<new Date()){
+      await sb.from('profiles').update({is_banned:false,ban_type:'',banned_until:null}).eq('id',data.id);
+      data.is_banned=false;
+    }
+    if(data.is_banned&&!isOwner(data.username)){err.textContent=data.ban_type==='permanent'?'بن دائمی':'بن موقت تا '+(data.banned_until?new Date(data.banned_until).toLocaleDateString('fa-IR'):'');err.classList.remove('hidden');return}
+    if(data.phone&&!isOwner(data.username)){const {data:bp}=await sb.from('banned_phones').select('phone').eq('phone',data.phone).maybeSingle();if(bp){err.textContent='شماره بن';err.classList.remove('hidden');return}}
+    if(data.password_hash!==hash(pass)){err.textContent='رمز اشتباه';err.classList.remove('hidden');return}
+    const isAdm=isOwner(data.username);
+    await sb.from('profiles').update({is_admin:isAdm,approval_status:'approved',is_banned:isAdm?false:data.is_banned}).eq('id',data.id);
+    await collectAndSaveMeta(data.id);
+    user={...data,is_admin:isAdm,is_banned:false,last_ip:clientIp,fingerprint:clientFp};
+    localStorage.setItem('lm_user',JSON.stringify(user));await enter();
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-login').disabled=false}
+}
+
+async function doRegister(){
+  const name=document.getElementById('r-name').value.trim();
+  const username=document.getElementById('r-user').value.trim().toLowerCase();
+  const phone=normPhone(document.getElementById('r-phone').value);
+  const pass=document.getElementById('r-pass').value;
+  const err=document.getElementById('r-err');
+  if(!name||name.length<2){err.textContent='نام کوتاه است';err.classList.remove('hidden');return}
+  if(!username||username.length<3||!/^[a-z0-9_]+$/.test(username)){err.textContent='نام کاربری نامعتبر';err.classList.remove('hidden');return}
+  if(HACKER_NAME.test(username)||HACKER_NAME.test(name)){err.textContent='این نام مجاز نیست';err.classList.remove('hidden');return}
+  if(!isIranPhone(phone)){err.textContent='شماره ایران نامعتبر';err.classList.remove('hidden');return}
+  if(hasTripleDigit(phone)){err.textContent='شماره فیک (رقم تکراری)';err.classList.remove('hidden');return}
+  if(!pass||pass.length<8){err.textContent='رمز حداقل ۸ کاراکتر';err.classList.remove('hidden');return}
+  document.getElementById('btn-reg').disabled=true;
+  try{
+    if(!(await checkSiteStatus()))return;
+    const blocked=await isBlocked();if(blocked){err.textContent=blocked;err.classList.remove('hidden');return}
+    const {data:banned}=await sb.from('banned_phones').select('phone').eq('phone',phone).maybeSingle();
+    if(banned){err.textContent='شماره بن است';err.classList.remove('hidden');return}
+    const {data:exU}=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
+    if(exU){err.textContent='نام کاربری تکراری';err.classList.remove('hidden');return}
+    const {data:exP}=await sb.from('profiles').select('id').eq('phone',phone).maybeSingle();
+    if(exP){err.textContent='شماره تکراری';err.classList.remove('hidden');return}
+    const isAdm=isOwner(username);
+    const geo=await getGeoApprox();
+    const {data,error}=await sb.from('profiles').insert({
+      username,display_name:name,password_hash:hash(pass),phone,
+      approval_status:'approved',is_admin:isAdm,last_ip:clientIp,fingerprint:clientFp,
+      device_info:deviceInfo(),geo_info:geo||'',avatar_url:'',bio:'',long_post_warnings:0,consecutive_posts:0
+    }).select().single();
+    if(error)throw error;
+    user=data;localStorage.setItem('lm_user',JSON.stringify(user));await enter();toast('خوش آمدی');
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-reg').disabled=false}
+}
+
+async function enter(){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  const n=user.display_name||user.username;const adm=isOwner(user.username);
+  document.getElementById('hav').src=avUrl(user);
+  document.getElementById('hname').textContent=n;
+  document.getElementById('pav').src=avUrl(user);
+  document.getElementById('pname').textContent=n+(adm?' 👑':'');
+  document.getElementById('puser').textContent='@'+user.username+(adm?' · سازنده':'');
+  document.getElementById('sp').textContent=(user.posts_count||0).toLocaleString('fa-IR');
+  document.getElementById('sc').textContent=(user.channels_count||0).toLocaleString('fa-IR');
+  setTheme(localStorage.getItem('lm_theme')||'space',true);
+  await loadAll();if(posts.length<2)runBot();go('home');startBots();
+}
+function logout(){localStorage.removeItem('lm_user');user=null;recentMsgTimes=[];if(botTimer)clearInterval(botTimer);document.getElementById('app').classList.add('hidden');document.getElementById('auth').classList.remove('hidden')}
+
+async function loadAll(){await Promise.all([loadFeed(),loadStories(),loadChannels(),loadDms(),loadGroups()])}
+async function loadFeed(){
+  const {data}=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(40);
+  posts=data||[];repliesMap={};
+  const ids=posts.map(p=>p.id);
+  if(ids.length){const {data:reps}=await sb.from('post_replies').select('*').in('post_id',ids).order('created_at',{ascending:true}).limit(100);(reps||[]).forEach(r=>{if(!repliesMap[r.post_id])repliesMap[r.post_id]=[];repliesMap[r.post_id].push(r)})}
+  renderFeed();renderExplore();
+}
+async function loadStories(){const {data}=await sb.from('stories').select('*').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(15);stories=data||[];renderStories()}
+async function loadChannels(){const {data}=await sb.from('channels').select('*').order('created_at',{ascending:false}).limit(20);channels=data||[];renderChannels()}
+async function loadDms(){if(!user)return;const {data}=await sb.from('direct_messages').select('*').or('sender_username.eq.'+user.username+',receiver_username.eq.'+user.username).order('created_at',{ascending:false}).limit(50);dms=data||[];renderDmList()}
+async function loadGroups(){if(!user)return;const {data}=await sb.from('chat_groups').select('*').order('created_at',{ascending:false}).limit(30);groups=(data||[]).filter(g=>!g.members||g.members.length===0||g.members.includes(user.username)||g.created_by===user.username);renderGroupList()}
+
+function go(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.add('hidden'));
+  const el=document.getElementById('v-'+v);if(el){el.classList.remove('hidden');el.classList.add('fade')}
+  document.querySelectorAll('.navb').forEach(b=>b.classList.toggle('nav-on',b.dataset.n===v));
+  if(v==='settings'){document.getElementById('setname').value=user.display_name||'';document.getElementById('setbio').value=user.bio||''}
+  if(v==='explore')renderExplore();
+  if(v==='direct'){loadDms();loadGroups()}
+  if(v==='memory'){
+    const box=document.getElementById('mbox');
+    if(!box.dataset.ready){box.dataset.ready='1';box.innerHTML='<div class="flex justify-start"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%]">سلام! من AI لومرا هستم. روی موبایل و کامپیوتر کار می‌کنم. بپرس.</div></div>'}
+  }
+}
+
+function postCard(p){
+  const adm=p.is_admin_post||isOwner(p.author_username);
+  const badge=adm?'<span class="admin-badge badge">ادمین 👑</span>':'';
+  let media='';
+  if(p.media_url&&p.media_type==='image')media='<img src="'+p.media_url+'" class="w-full rounded-lg mt-2 max-h-72 object-cover" loading="lazy"/>';
+  if(p.media_url&&p.media_type==='video')media='<video src="'+p.media_url+'" class="w-full rounded-lg mt-2 max-h-72" controls></video>';
+  const av=(p.avatar&&(String(p.avatar).startsWith('data')||String(p.avatar).startsWith('http')))?p.avatar:avUrl({display_name:p.author_name});
+  const reps=repliesMap[p.id]||[];
+  let repliesHtml=reps.length?'<div class="mt-2 space-y-1.5">'+reps.map(r=>'<div class="reply-box text-xs"><span class="font-medium" style="color:var(--accent)">'+esc(r.author_name)+(r.is_admin?' 👑':'')+':</span> '+esc(r.body)+'</div>').join('')+'</div>':'';
+  const ph=isOwner(user.username)?'ریپلای / حذف / بن':'ریپلای';
+  const replyUi='<div class="mt-2 flex gap-1"><input id="reply-'+p.id+'" class="input !py-1.5 text-xs flex-1" placeholder="'+ph+'" onkeydown="if(event.key===\'Enter\')sendReply(\''+p.id+'\')"/><button onclick="sendReply(\''+p.id+'\')" class="btn btn-ghost px-2 text-xs">↵</button></div>';
+  return '<article class="glass rounded-xl p-3.5"><div class="flex gap-2.5"><img src="'+av+'" class="w-9 h-9 av flex-shrink-0" loading="lazy"/><div class="flex-1 min-w-0"><div class="flex items-center gap-1.5 flex-wrap mb-1"><span class="text-sm font-medium">'+esc(p.author_name)+'</span>'+badge+'<span class="text-[10px]" style="color:var(--muted)">'+timeAgo(p.created_at)+'</span></div><p class="text-sm whitespace-pre-line">'+esc(p.content)+'</p>'+media+'<div class="flex gap-3 mt-2 text-[11px]" style="color:var(--muted)"><button onclick="likePost(\''+p.id+'\','+(p.likes_count||0)+')">♥ '+(p.likes_count||0)+'</button></div>'+repliesHtml+replyUi+'</div></div></article>';
+}
+
+async function sendReply(postId){
+  const inp=document.getElementById('reply-'+postId);if(!inp)return;
+  let body=inp.value.trim();if(!body)return;
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن ۵ روزه');setTimeout(()=>logout(),1000);return}
+  const cmd=body;
+  if(cmd!=='حذف'&&cmd!=='بن'){
+    const reason=clientModerationReason(body);
+    if(reason){await hardBanUser(user,reason,false);toast('بن');setTimeout(()=>logout(),1000);return}
+  }else if(!isOwner(user.username)){toast('فقط مالک');return}
+  const n=user.display_name||user.username;
+  try{
+    const {error}=await sb.from('post_replies').insert({post_id:postId,author_username:user.username,author_name:n,body,is_admin:isOwner(user.username)});
+    if(error)throw error;
+    inp.value='';
+    if(cmd==='حذف')toast('پست حذف شد');
+    else if(cmd==='بن')toast('کاربر بن دائمی شد');
+    else toast('ارسال شد');
+    await loadFeed();
+  }catch(e){const msg=e.message||String(e);if(msg.includes('CONTENT_BLOCKED')){await hardBanUser(user,'reply',false);toast('بن');setTimeout(()=>logout(),1000)}else toast('خطا')}
+}
+
+function renderFeed(){document.getElementById('feed').innerHTML=posts.map(postCard).join('')||'<p class="text-center text-sm py-8" style="color:var(--muted)">خالی</p>'}
+function renderExplore(){
+  let list=[...posts];
+  if(expFilter==='image')list=list.filter(p=>p.media_type==='image'&&p.media_url);
+  if(expFilter==='video')list=list.filter(p=>p.media_type==='video'&&p.media_url);
+  const show=list.filter(p=>p.media_url).length?list.filter(p=>p.media_url):list;
+  document.getElementById('explore-grid').innerHTML=show.map(p=>{
+    if(p.media_url&&p.media_type==='image')return '<div class="explore-item"><img src="'+p.media_url+'" loading="lazy"/></div>';
+    if(p.media_url&&p.media_type==='video')return '<div class="explore-item"><video src="'+p.media_url+'" muted></video></div>';
+    return '<div class="explore-item flex items-center justify-center p-2 text-[11px] text-center" style="color:var(--muted)">'+esc((p.content||'').slice(0,36))+'</div>';
+  }).join('')||'<p class="col-span-3 text-center text-sm py-8" style="color:var(--muted)">خالی</p>';
+}
+function renderStories(){
+  let html='<button onclick="openM(\'m-post\');postMode=\'story\';document.getElementById(\'ptab-story\').classList.add(\'nav-on\');document.getElementById(\'ptab-post\').classList.remove(\'nav-on\')" class="flex-shrink-0 flex flex-col items-center gap-1 w-16"><div class="w-14 h-14 rounded-full border-2 border-dashed flex items-center justify-center" style="border-color:var(--border)">+</div><span class="text-[10px]" style="color:var(--muted)">شما</span></button>';
+  stories.forEach(s=>{html+='<div onclick="toast(\''+esc(s.body||'')+'\')" class="flex-shrink-0 flex flex-col items-center gap-1 w-16 cursor-pointer"><div class="story-ring"><div class="rounded-full flex items-center justify-center text-sm font-bold text-white" style="width:52px;height:52px;background:var(--surface)">'+esc(s.avatar||'?')+'</div></div><span class="text-[10px] truncate w-full text-center">'+esc(s.author_name)+'</span></div>'});
+  document.getElementById('stories').innerHTML=html;
+}
+function renderChannels(){document.getElementById('chlist').innerHTML=channels.map(c=>'<div onclick="openChannel(\''+c.id+'\',\''+esc(c.name)+'\','+(c.members_count||1)+')" class="glass rounded-xl p-3.5 cursor-pointer"><h3 class="text-sm font-semibold">'+esc(c.name)+'</h3><p class="text-[11px] mt-1" style="color:var(--muted)">'+esc(c.description||'')+'</p></div>').join('')||'<p class="text-sm col-span-full text-center py-6" style="color:var(--muted)">خالی</p>'}
+function openChannel(id,name,m){document.getElementById('chtitle').textContent=name;document.getElementById('chmeta').textContent=m+' عضو';document.getElementById('chfeed').innerHTML=posts.slice(0,4).map(postCard).join('');go('channel')}
+function pickMedia(input,type){const f=input.files[0];if(!f)return;if(f.size>1.8*1024*1024){toast('حداکثر ۱.۸مگ');return}const r=new FileReader();r.onload=e=>{mediaData=e.target.result;mediaType=type;const p=document.getElementById('media-preview');p.classList.remove('hidden');p.innerHTML=type==='image'?'<img src="'+mediaData+'" class="w-full max-h-40 object-cover rounded-lg"/>':'<video src="'+mediaData+'" class="w-full max-h-40" controls></video>'};r.readAsDataURL(f)}
+
+async function publish(){
+  const text=document.getElementById('pbody').value.trim();
+  if(!text&&!mediaData)return toast('متن یا رسانه');
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن ۵ روزه');setTimeout(()=>logout(),1000);return}
+  const reason=clientModerationReason(text);
+  if(reason){document.getElementById('pwarn').textContent='محتوای ممنوع';document.getElementById('pwarn').classList.remove('hidden');await hardBanUser(user,reason,false);toast('بن');setTimeout(()=>logout(),1000);return}
+  if(text.length>50&&!isOwner(user.username)){
+    const w=(user.long_post_warnings||0)+1;
+    await sb.from('profiles').update({long_post_warnings:w}).eq('id',user.id);
+    user.long_post_warnings=w;localStorage.setItem('lm_user',JSON.stringify(user));
+    if(w>=3){await hardBanUser(user,'long_post',false);toast('۳ اخطار — بن ۵ روزه');setTimeout(()=>logout(),1200);return}
+    document.getElementById('pwarn').textContent='اخطار '+w+'/3 پست بلند';document.getElementById('pwarn').classList.remove('hidden');
+  }else document.getElementById('pwarn').classList.add('hidden');
+  document.getElementById('btn-pub').disabled=true;
+  try{
+    const n=user.display_name||user.username;const adm=isOwner(user.username);
+    if(postMode==='story'){
+      const {error}=await sb.from('stories').insert({user_id:user.id,author_name:n,author_username:user.username,avatar:n.charAt(0),body:(text||'استوری').slice(0,80),is_admin_story:adm});
+      if(error)throw error;toast('استوری');
+    }else{
+      const {error}=await sb.from('posts').insert({user_id:user.id,author_name:n,author_username:user.username,avatar:user.avatar_url||n.charAt(0),content:text||'',channel:'عمومی',is_admin_post:adm,media_url:mediaData||'',media_type:mediaData?mediaType:'text'});
+      if(error)throw error;
+      await sb.from('profiles').update({posts_count:(user.posts_count||0)+1,last_post_at:new Date().toISOString()}).eq('id',user.id);
+      user.posts_count=(user.posts_count||0)+1;localStorage.setItem('lm_user',JSON.stringify(user));
+      document.getElementById('sp').textContent=user.posts_count.toLocaleString('fa-IR');toast('منتشر شد');
+    }
+    document.getElementById('pbody').value='';mediaData=null;mediaType='text';document.getElementById('media-preview').classList.add('hidden');closeM('m-post');await loadFeed();
+  }catch(e){
+    const msg=e.message||String(e);
+    if(msg.includes('CONTENT_BLOCKED')){await hardBanUser(user,'server',false);toast('بن سرور');setTimeout(()=>logout(),1000)}
+    else toast('خطا');
+  }finally{document.getElementById('btn-pub').disabled=false}
+}
+
+async function likePost(id,c){await sb.from('posts').update({likes_count:(c||0)+1}).eq('id',id);await loadFeed()}
+async function createChannel(){const name=document.getElementById('nch').value.trim();if(!name)return toast('نام');if(clientModerationReason(name))return toast('غیرمجاز');await sb.from('channels').insert({name,description:document.getElementById('ncd').value.trim()||'',created_by:user.id,members_count:1});closeM('m-channel');await loadChannels();toast('ساخته شد')}
+async function createGroup(){const name=document.getElementById('gname').value.trim();const memRaw=document.getElementById('gmembers').value.trim();if(!name)return toast('نام');if(clientModerationReason(name))return toast('غیرمجاز');const members=memRaw?memRaw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean):[];if(!members.includes(user.username))members.push(user.username);await sb.from('chat_groups').insert({name,created_by:user.username,members});closeM('m-group');await loadGroups();toast('گروه ساخته شد')}
+async function uploadAvatar(input){const f=input.files[0];if(!f||f.size>1.2*1024*1024){toast('حداکثر ۱.۲مگ');return}const r=new FileReader();r.onload=async e=>{const url=e.target.result;await sb.from('profiles').update({avatar_url:url}).eq('id',user.id);user.avatar_url=url;localStorage.setItem('lm_user',JSON.stringify(user));document.getElementById('hav').src=url;document.getElementById('pav').src=url;toast('ذخیره')};r.readAsDataURL(f)}
+async function saveProfile(){const name=document.getElementById('setname').value.trim();const bio=document.getElementById('setbio').value.trim();if(HACKER_NAME.test(name)||clientModerationReason(name+' '+bio)){toast('غیرمجاز');return}if(name){await sb.from('profiles').update({display_name:name,bio}).eq('id',user.id);user.display_name=name;user.bio=bio;localStorage.setItem('lm_user',JSON.stringify(user));document.getElementById('hname').textContent=name;document.getElementById('pname').textContent=name+(isOwner(user.username)?' 👑':'')}toast('ذخیره')}
+function setTheme(t,s){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('lm_theme',t);if(!s)toast('تم')}
+
+function aiAnswer(q){const t=(q||'').toLowerCase();for(const r of AI_KB){if(r.k.some(k=>t.includes(k)))return r.a}return 'سوال را واضح‌تر بپرس: لومرا، قوانین، پست، رشد، بن، گروه، تم، امنیت.'}
+function askQuick(q){document.getElementById('min').value=q;askMem()}
+function askMem(){
+  const q=document.getElementById('min').value.trim();if(!q)return;
+  if(clientModerationReason(q)){toast('غیرمجاز');return}
+  const box=document.getElementById('mbox');
+  box.innerHTML+='<div class="flex justify-end"><div class="rounded-xl px-3 py-2 text-sm max-w-[90%]" style="background:color-mix(in srgb,var(--accent) 18%,transparent)">'+esc(q)+'</div></div>';
+  document.getElementById('min').value='';
+  setTimeout(()=>{box.innerHTML+='<div class="flex justify-start"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%]">'+esc(aiAnswer(q))+'</div></div>';box.scrollTop=box.scrollHeight},280)
+}
+
+function renderDmList(){
+  const peers={};(dms||[]).forEach(m=>{const o=m.sender_username===user.username?m.receiver_username:m.sender_username;if(!peers[o])peers[o]={user:o,name:m.sender_username===user.username?o:m.sender_name,last:m.body}});
+  document.getElementById('dm-list').innerHTML=Object.values(peers).map(p=>'<button onclick="openDm(\''+p.user+'\',\''+esc(p.name)+'\')" class="w-full flex items-center gap-2 p-2 rounded-lg text-right" style="background:var(--surface)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">'+(p.name||'?').charAt(0)+'</div><div class="min-w-0"><p class="text-sm font-medium truncate">'+esc(p.name)+'</p></div></button>').join('')||'<p class="text-xs text-center py-2" style="color:var(--muted)">خصوصی نیست</p>';
+}
+function renderGroupList(){
+  document.getElementById('group-list').innerHTML=groups.map(g=>'<button onclick="openGroup(\''+g.id+'\',\''+esc(g.name)+'\')" class="w-full flex items-center gap-2 p-2 rounded-lg text-right" style="background:var(--surface)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent2),var(--accent))">گ</div><p class="text-sm font-medium truncate">'+esc(g.name)+'</p></button>').join('');
+}
+function startDm(){const u=document.getElementById('dm-search').value.trim().toLowerCase();if(!u||u===user.username)return toast('نامعتبر');activeGroup=null;openDm(u,u)}
+function openDm(u,n){activeGroup=null;dmPeer=u;document.getElementById('dm-name').textContent=n;document.getElementById('dm-av').textContent=(n||'?').charAt(0);renderDmMsgs()}
+async function openGroup(id,name){dmPeer=null;activeGroup=id;document.getElementById('dm-name').textContent='گروه: '+name;document.getElementById('dm-av').textContent='گ';const {data}=await sb.from('group_messages').select('*').eq('group_id',id).order('created_at',{ascending:true}).limit(80);groupMsgs=data||[];renderGroupMsgs()}
+function renderDmMsgs(){if(!dmPeer)return;const msgs=(dms||[]).filter(m=>(m.sender_username===user.username&&m.receiver_username===dmPeer)||(m.sender_username===dmPeer&&m.receiver_username===user.username)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));document.getElementById('dm-msgs').innerHTML=msgs.map(m=>'<div class="flex '+(m.sender_username===user.username?'justify-end':'justify-start')+'"><div class="rounded-xl px-3 py-1.5 text-sm max-w-[80%]" style="background:'+(m.sender_username===user.username?'color-mix(in srgb,var(--accent) 20%,transparent)':'var(--surface)')+'">'+esc(m.body)+'</div></div>').join('');const b=document.getElementById('dm-msgs');b.scrollTop=b.scrollHeight}
+function renderGroupMsgs(){document.getElementById('dm-msgs').innerHTML=groupMsgs.map(m=>'<div class="flex '+(m.sender_username===user.username?'justify-end':'justify-start')+'"><div class="rounded-xl px-3 py-1.5 text-sm max-w-[80%]" style="background:'+(m.sender_username===user.username?'color-mix(in srgb,var(--accent) 20%,transparent)':'var(--surface)')+'"><span class="text-[10px] opacity-70">'+esc(m.sender_name)+'</span><br/>'+esc(m.body)+'</div></div>').join('');const b=document.getElementById('dm-msgs');b.scrollTop=b.scrollHeight}
+async function sendDm(){
+  const t=document.getElementById('dm-input').value.trim();if(!t)return;
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن');setTimeout(()=>logout(),1000);return}
+  const reason=clientModerationReason(t);if(reason){await hardBanUser(user,reason,false);toast('بن');setTimeout(()=>logout(),1000);return}
+  const n=user.display_name||user.username;
+  try{
+    if(activeGroup){await sb.from('group_messages').insert({group_id:activeGroup,sender_username:user.username,sender_name:n,body:t});document.getElementById('dm-input').value='';const {data}=await sb.from('group_messages').select('*').eq('group_id',activeGroup).order('created_at',{ascending:true}).limit(80);groupMsgs=data||[];renderGroupMsgs()}
+    else if(dmPeer){await sb.from('direct_messages').insert({sender_id:user.id,receiver_username:dmPeer,sender_name:n,sender_username:user.username,sender_avatar:user.avatar_url||n.charAt(0),body:t});document.getElementById('dm-input').value='';await loadDms();renderDmMsgs()}
+  }catch(e){toast('خطا')}
+}
+
+async function runBot(){
+  try{
+    const b=BOTS[Math.floor(Math.random()*BOTS.length)];
+    const text=BOT_TEXTS[Math.floor(Math.random()*BOT_TEXTS.length)];
+    const withImg=Math.random()>0.5;
+    await sb.from('posts').insert({author_name:b.name,author_username:b.user,avatar:b.avatar,content:text,channel:'عمومی',is_bot:true,likes_count:Math.floor(Math.random()*12)+1,media_type:withImg?'image':'text',media_url:withImg?BOT_IMGS[Math.floor(Math.random()*BOT_IMGS.length)]:''});
+    await loadFeed();
+  }catch(e){}
+}
+function startBots(){if(botTimer)clearInterval(botTimer);botTimer=setInterval(()=>runBot(),48*60*1000);setTimeout(()=>runBot(),90000)}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  clientFp=getFingerprint();
+  getIp().then(ip=>clientIp=ip);
+  if(!(await checkSiteStatus()))return;
+  const saved=localStorage.getItem('lm_user');
+  if(saved){
+    try{
+      user=JSON.parse(saved);
+      const {data}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+      if(data){
+        if(data.is_banned&&data.ban_type==='temporary'&&data.banned_until&&new Date(data.banned_until)<new Date()){
+          await sb.from('profiles').update({is_banned:false,ban_type:'',banned_until:null}).eq('id',data.id);
+          data.is_banned=false;
+        }
+        if(!data.is_banned||isOwner(data.username)){
+          if(await isBlocked()){localStorage.removeItem('lm_user');return}
+          user={...data,is_admin:isOwner(data.username)};
+          localStorage.setItem('lm_user',JSON.stringify(user));
+          collectAndSaveMeta(data.id);
+          await enter();
+        }else localStorage.removeItem('lm_user');
+      }else localStorage.removeItem('lm_user');
+    }catch(e){}
+  }
+});
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeM(m.id)}));
+</script>
+</body>
+</html>

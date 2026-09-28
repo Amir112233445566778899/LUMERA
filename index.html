@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="space">
+<head>
+<meta charset="UTF-8"/>
+<!-- lm-security-note -->
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>لومرا | Lumera</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#22d3ee"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="لومرا"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<meta name="lm-version" content="2026.09.26-secure"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{font-family:'Vazirmatn',system-ui,sans-serif;box-sizing:border-box}
+:root,[data-theme="dark"]{--bg:#030712;--surface:#0f172a;--border:#1e293b;--text:#e2e8f0;--muted:#64748b;--accent:#38bdf8;--accent2:#818cf8;--danger:#fb7185;--card:rgba(17,24,39,.88)}
+[data-theme="space"]{--bg:#020617;--surface:#0b1220;--border:#1e3a5f;--text:#e0f2fe;--muted:#7dd3fc;--accent:#22d3ee;--accent2:#a78bfa;--danger:#f472b6;--card:rgba(15,23,42,.82)}
+[data-theme="solar"]{--bg:#1c1917;--surface:#292524;--border:#44403c;--text:#fef3c7;--muted:#d6d3d1;--accent:#f59e0b;--accent2:#f97316;--danger:#ef4444;--card:rgba(41,37,36,.9)}
+[data-theme="blood"]{--bg:#0c0a0a;--surface:#1a1010;--border:#3f1a1a;--text:#fecaca;--muted:#f87171;--accent:#ef4444;--accent2:#f43f5e;--danger:#fb7185;--card:rgba(28,16,16,.9)}
+[data-theme="ocean"]{--bg:#042f2e;--surface:#134e4a;--border:#115e59;--text:#ccfbf1;--muted:#5eead4;--accent:#2dd4bf;--accent2:#22d3ee;--danger:#fb7185;--card:rgba(19,78,74,.88)}
+[data-theme="neon"]{--bg:#0a0a0a;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3;--accent:#a3e635;--accent2:#22d3ee;--danger:#f43f5e;--card:rgba(23,23,23,.9)}
+body{margin:0;min-height:100vh;overflow-x:hidden;color:var(--text);background-color:var(--bg);background-image:var(--bg-img,url('theme-space.png'));background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg-overlay,linear-gradient(180deg,rgba(2,6,23,.4) 0%,rgba(2,6,23,.62) 50%,rgba(2,6,23,.8) 100%))}
+[data-theme="space"]{--bg-img:url('theme-space.png');--bg-overlay:linear-gradient(180deg,rgba(2,6,23,.35) 0%,rgba(2,6,23,.55) 45%,rgba(2,6,23,.78) 100%)}
+[data-theme="dark"]{--bg-img:url('theme-dark.jpg');--bg-overlay:linear-gradient(180deg,rgba(3,7,18,.45) 0%,rgba(3,7,18,.65) 50%,rgba(3,7,18,.85) 100%)}
+[data-theme="solar"]{--bg-img:url('theme-solar.jpg');--bg-overlay:linear-gradient(180deg,rgba(28,25,23,.35) 0%,rgba(28,25,23,.55) 45%,rgba(28,25,23,.8) 100%)}
+[data-theme="blood"]{--bg-img:url('theme-blood.jpg');--bg-overlay:linear-gradient(180deg,rgba(12,10,10,.4) 0%,rgba(12,10,10,.6) 50%,rgba(12,10,10,.85) 100%)}
+[data-theme="ocean"]{--bg-img:url('theme-space.png');--bg-overlay:linear-gradient(180deg,rgba(4,47,46,.45) 0%,rgba(4,47,46,.65) 50%,rgba(4,47,46,.85) 100%)}
+[data-theme="neon"]{--bg-img:url('theme-dark.jpg');--bg-overlay:linear-gradient(180deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.7) 50%,rgba(10,10,10,.88) 100%)}
+#auth,#app,#lock{position:relative;z-index:1}
+.glass{background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.input{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text);width:100%}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px;border-radius:12px;border:none;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:rgba(251,113,133,.12);color:var(--danger);border:1px solid rgba(251,113,133,.3)}
+.badge{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500}
+.admin-badge{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.35)}
+.nav-on{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)!important}
+.scroll::-webkit-scrollbar{width:3px}.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.fade{animation:fade .2s ease}@keyframes fade{from{opacity:0}to{opacity:1}}
+.story-ring{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:2px;border-radius:50%}
+.warn-box{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:var(--danger)}
+.explore-item{aspect-ratio:1;overflow:hidden;border-radius:8px;background:var(--surface)}
+.explore-item img,.explore-item video{width:100%;height:100%;object-fit:cover}
+.av{border-radius:50%;object-fit:cover;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.reply-box{border-right:2px solid var(--accent);margin-right:8px;padding-right:8px}
+/* auth redesign */
+.auth-shell{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0}
+@media(min-width:640px){.auth-shell{justify-content:center;padding:24px}}
+.auth-card{border-radius:28px 28px 0 0;padding:28px 22px 32px;border:1px solid rgba(255,255,255,.08);border-bottom:none}
+@media(min-width:640px){.auth-card{border-radius:24px;border-bottom:1px solid rgba(255,255,255,.08);max-width:400px;margin:0 auto;width:100%}}
+.auth-tab{flex:1;padding:10px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:none;cursor:pointer}
+.auth-tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+#app{padding-bottom:0}
+@media(max-width:768px){#app main{padding-bottom:4px}}
+
+#game-area{touch-action:none;user-select:none}
+.chat-bubble{position:relative}
+.react-bar{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.react-bar button{font-size:14px;background:transparent;border:none;cursor:pointer;opacity:.85}
+.reply-preview{font-size:10px;opacity:.7;border-right:2px solid var(--accent);padding-right:6px;margin-bottom:4px}
+#dm-input:focus{outline:none;border-color:var(--accent)}
+
+html{scroll-behavior:smooth}
+.view{animation:lmIn .38s cubic-bezier(.22,1,.36,1)}
+@keyframes lmIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.glass{backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 8px 32px rgba(0,0,0,.18);transition:transform .2s ease,box-shadow .2s ease}
+.btn{transition:transform .15s ease,opacity .15s ease;border-radius:14px}
+.btn:active{transform:scale(.96)}
+.btn-primary{box-shadow:0 6px 20px color-mix(in srgb,var(--accent) 35%,transparent)}
+.input{border-radius:14px;transition:border-color .2s,box-shadow .2s}
+.input:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+#feed article{animation:lmIn .35s ease backwards}
+.navb{transition:all .2s ease}
+.modal > div{animation:lmIn .3s cubic-bezier(.22,1,.36,1);border-radius:22px}
+img,video{border-radius:14px}
+
+
+
+
+
+40%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+#intro-cinematic h1{margin-top:20px;opacity:0;animation:fadeIn 1s ease .8s forwards}
+@keyframes fadeIn{to{opacity:1}}
+body.night-cosmic{--bg:#000010;--card:rgba(20,20,50,.75);--text:#e8e8ff;--muted:#9aa0c0}
+body.night-cosmic::before{opacity:.55 !important;filter:hue-rotate(40deg)}
+body.cinema-mode header,body.cinema-mode nav,body.cinema-mode #home-game-btn{display:none !important}
+body.cinema-mode main{max-width:640px}
+.fp-badge{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:11px;font-weight:700}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.react-burst{position:fixed;pointer-events:none;z-index:150;font-size:28px;animation:burst 0.8s ease forwards}
+@keyframes burst{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.8) translateY(-40px);opacity:0}}
+#world-globe{width:100%;height:180px;border-radius:20px;background:radial-gradient(circle at 30% 30%,#67e8f9, #1e1b4b 60%,#020617);position:relative;overflow:hidden}
+.globe-hot{position:absolute;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-size:11px;cursor:pointer;backdrop-filter:blur(8px);transition:transform .2s}
+.globe-hot:active{transform:scale(.95)}
+
+
+#intro-cinematic{position:fixed;inset:0;z-index:200;background:radial-gradient(ellipse at bottom,#0f172a 0%,#020617 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity .9s ease}
+#intro-cinematic.hide{opacity:0;pointer-events:none}
+#intro-cinematic .stars-bg{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 80px 120px,#fff,transparent),radial-gradient(1px 1px at 160px 60px,rgba(255,255,255,.7),transparent),radial-gradient(1.5px 1.5px at 300px 200px,#fff,transparent);background-size:200px 200px;opacity:.5;animation:starMove 8s linear infinite}
+@keyframes starMove{to{transform:translateY(40px)}}
+.rocket-real{position:relative;width:56px;height:120px;animation:rocketFly 2.4s cubic-bezier(.2,.7,.3,1) forwards;z-index:2}
+.rocket-real .body{position:absolute;left:50%;transform:translateX(-50%);width:28px;height:70px;background:linear-gradient(90deg,#e2e8f0,#94a3b8,#e2e8f0);border-radius:14px 14px 6px 6px;top:0}
+.rocket-real .window{position:absolute;left:50%;transform:translateX(-50%);top:18px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#67e8f9,#0284c7);box-shadow:0 0 8px #22d3ee}
+.rocket-real .fin-l,.rocket-real .fin-r{position:absolute;bottom:42px;width:0;height:0;border-style:solid}
+.rocket-real .fin-l{left:2px;border-width:0 0 22px 14px;border-color:transparent transparent #f97316 transparent}
+.rocket-real .fin-r{right:2px;border-width:0 14px 22px 0;border-color:transparent #f97316 transparent transparent}
+.rocket-real .flame{position:absolute;left:50%;transform:translateX(-50%);bottom:28px;width:16px;height:36px;background:linear-gradient(to bottom,#fde047,#f97316,#ef4444,transparent);border-radius:0 0 50% 50%;animation:flame 0.15s infinite alternate;filter:blur(.5px)}
+@keyframes flame{from{height:28px;opacity:.85}to{height:40px;opacity:1}}
+@keyframes rocketFly{0%{transform:translateY(80px) scale(.8);opacity:0}15%{opacity:1}70%{transform:translateY(-10px) scale(1)}100%{transform:translateY(-180px) scale(.6);opacity:0}}
+#intro-cinematic .intro-title{margin-top:8px;opacity:0;animation:fadeIn 1s ease 1.2s forwards;color:#fff;font-size:28px;font-weight:800;letter-spacing:.08em;text-shadow:0 0 24px rgba(34,211,238,.5);z-index:2}
+#intro-cinematic .intro-sub{opacity:0;animation:fadeIn 1s ease 1.6s forwards;color:rgba(255,255,255,.55);font-size:13px;margin-top:6px;z-index:2}
+.vip-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1c1917}
+#vip-gate{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px}
+#vip-gate.show{display:flex}
+
+
+#menu-fx{position:fixed;inset:0;z-index:180;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s ease}
+#menu-fx.on{opacity:1;pointer-events:auto}
+#menu-fx span{color:#fff;font-size:32px;font-weight:800;letter-spacing:.12em;opacity:0;transform:scale(.9);transition:opacity .35s ease .2s,transform .35s ease .2s;text-shadow:0 0 30px rgba(34,211,238,.6)}
+#menu-fx.on span{opacity:1;transform:scale(1)}
+.voice-btn{border-radius:50%;width:40px;height:40px}
+body.font-big{font-size:17px}body.reduce-anim *{animation:none!important;transition:none!important}
+</style>
+</head>
+<body>
+<div id="menu-fx"><span>LUMERA</span></div>
+
+<div id="intro-cinematic">
+  <div class="stars-bg"></div>
+  <div class="rocket-real" aria-hidden="true">
+    <div class="body"><div class="window"></div></div>
+    <div class="fin-l"></div>
+    <div class="fin-r"></div>
+    <div class="flame"></div>
+  </div>
+  <div class="intro-title">LUMERA</div>
+  <div class="intro-sub">ورود به مدار...</div>
+</div>
+<h1 class="text-2xl font-bold text-white tracking-wide">LUMERA</h1>
+  <p class="text-sm text-white/60 mt-2">ورود به مدار...</p>
+</div>
+
+<div id="lock" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background:rgba(0,0,0,.92)">
+  <div class="glass rounded-2xl p-6 max-w-sm text-center">
+    <h1 class="text-lg font-bold mb-2" style="color:var(--danger)">قفل امنیتی</h1>
+    <p class="text-sm" style="color:var(--muted)" id="lock-msg">چند دقیقه دیگر...</p>
+  </div>
+</div>
+
+<!-- ورود جدید (شبیه اپ موبایل، نه نکسو) -->
+<div id="auth" class="auth-shell fixed inset-0 z-50" style="background:url('auth-bg.png') center/cover no-repeat">
+  <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(2,6,23,.25) 0%,rgba(2,6,23,.55) 45%,rgba(2,6,23,.92) 100%)"></div>
+  <div class="relative z-10 flex-1 flex flex-col justify-end sm:justify-center">
+    <div class="px-5 pt-16 pb-4 text-center sm:pb-8">
+      <p class="text-xs tracking-[0.2em] uppercase mb-2" style="color:rgba(125,211,252,.7)">SECURE SPACE</p>
+      <h1 class="text-5xl font-extrabold" style="background:linear-gradient(135deg,#67e8f9,#c4b5fd,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 20px rgba(34,211,238,.35))">لومرا</h1>
+      <p class="mt-3 text-sm" style="color:rgba(224,242,254,.75)">جهان محتوا · با ربات نگهبان</p>
+    </div>
+    <div class="auth-card glass w-full">
+      <div class="flex gap-1 p-1 rounded-full mb-5" style="background:rgba(15,23,42,.6)">
+        <button id="t-login" class="auth-tab on" onclick="authTab('login')">ورود</button>
+        <button id="t-reg" class="auth-tab" onclick="authTab('register')">عضویت</button>
+      </div>
+      <div id="f-login" class="space-y-3">
+        <div>
+          <label class="text-[11px] mb-1 block" style="color:var(--muted)">نام کاربری</label>
+          <input id="l-user" class="input" placeholder="username" autocomplete="username"/>
+        </div>
+        <div>
+          <label class="text-[11px] mb-1 block" style="color:var(--muted)">رمز عبور</label>
+          <input id="l-pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <p id="l-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doLogin()" class="btn btn-primary w-full py-3.5 text-sm mt-1" id="btn-login">ورود به لومرا</button>
+      </div>
+      <div id="f-reg" class="space-y-3 hidden">
+        <input id="r-name" class="input" placeholder="نام نمایشی"/>
+        <input id="r-user" class="input" placeholder="نام کاربری انگلیسی"/>
+        <input id="r-phone" class="input" type="tel" inputmode="numeric" placeholder="09xxxxxxxxx" maxlength="11"/>
+        <input id="r-pass" class="input" type="password" placeholder="رمز حداقل ۸ کاراکتر"/>
+        <p id="r-err" class="text-xs hidden" style="color:var(--danger)"></p>
+        <button onclick="doRegister()" class="btn btn-primary w-full py-3.5 text-sm" id="btn-reg">ساخت حساب</button>
+      </div>
+      <p class="text-center text-[10px] mt-4" style="color:var(--muted)">با ورود، قوانین لومرا را می‌پذیرید</p>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="hidden min-h-screen flex flex-col pb-14 md:pb-0">
+  <header class="glass sticky top-0 z-40 border-b" style="border-color:var(--border)">
+    <div class="max-w-6xl mx-auto px-3 h-[50px] flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">
+          <svg width="15" height="15" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="font-bold text-[15px]">لومرا</span>
+        <span class="badge" style="background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)">امن</span>
+      </div>
+      <nav class="hidden md:flex gap-0.5 p-0.5 rounded-full" style="background:var(--surface)">
+        <button data-n="home" onclick="go('home')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">خانه</button>
+        <button data-n="explore" onclick="go('explore')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">اکسپلور</button>
+        <button data-n="direct" onclick="go('direct')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">دایرکت</button>
+        <button data-n="channels" onclick="go('channels')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">کانال‌ها</button>
+        <button data-n="memory" onclick="go('memory')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">AI</button>
+        <button data-n="tools" onclick="go('tools')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">ابزارها</button>
+        <button data-n="game" onclick="go('game')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">بازی</button>
+        <button data-n="menu" onclick="go('menu')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">امکانات</button>
+        <button data-n="wow" onclick="go('wow')" class="navb px-3 py-1.5 rounded-full text-xs font-medium" style="color:var(--muted)">ویژه</button>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button onclick="openM('m-post')" class="hidden sm:inline-flex btn btn-primary px-3 py-1.5 text-xs">انتشار</button>
+        <button onclick="go('profile')" class="flex items-center gap-1.5 glass rounded-lg px-1.5 py-1">
+          <img id="hav" class="w-7 h-7 av" alt=""/>
+          <span id="hname" class="text-xs font-medium hidden sm:block max-w-[70px] truncate"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 py-4">
+    <section id="v-home" class="view space-y-4 fade">
+      <button type="button" id="home-game-btn" onclick="go('game')" class="w-full glass rounded-xl p-3 flex items-center justify-between">
+        <span class="text-sm font-bold">🎮 بازی مدار لومرا</span>
+        <span class="text-[10px] px-2 py-1 rounded-full" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff">شروع</span>
+      </button>
+      <div class="flex gap-2.5 overflow-x-auto pb-1" style="scrollbar-width:none" id="stories"></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">جریان</h2>
+        <button onclick="loadFeed()" class="text-[11px]" style="color:var(--accent)">بروز</button>
+      </div>
+      <div id="feed" class="space-y-3"></div>
+    </section>
+
+    <section id="v-explore" class="view hidden space-y-3 fade">
+      <h1 class="text-base font-bold">اکسپلور</h1>
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        <button onclick="expFilter='all';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">همه</button>
+        <button onclick="expFilter='image';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">عکس</button>
+        <button onclick="expFilter='video';renderExplore()" class="badge border cursor-pointer" style="border-color:var(--border)">ویدیو</button>
+      </div>
+      <div id="explore-grid" class="grid grid-cols-3 gap-1 sm:gap-2"></div>
+    </section>
+
+    <section id="v-direct" class="view hidden fade">
+      <div id="dm-list-view" class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h1 class="text-base font-bold">چت</h1>
+          <button onclick="openM('m-group')" class="btn btn-ghost px-2 py-1 text-[10px]">گروه</button>
+        </div>
+        <div class="flex gap-2">
+          <input id="dm-search" class="input flex-1 !py-2 text-xs" placeholder="نام کاربری برای شروع چت..." onkeydown="if(event.key==='Enter')startDm()"/>
+          <button onclick="startDm()" class="btn btn-primary px-3 text-xs">شروع</button>
+        </div>
+        <div id="dm-list" class="space-y-1"></div>
+        <div id="group-list" class="space-y-1"></div>
+      </div>
+      <div id="dm-chat-view" class="hidden flex flex-col" style="height:calc(100vh - 110px);max-height:calc(100vh - 110px)">
+        <div class="flex items-center gap-2 mb-2 glass rounded-xl px-2 py-2">
+          <button onclick="closeDmChat()" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:var(--surface)">→</button>
+          <div id="dm-av" class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">?</div>
+          <div class="flex-1 min-w-0">
+            <p id="dm-name" class="text-sm font-medium truncate">گفتگو</p>
+            <p class="text-[10px]" style="color:var(--muted)" id="dm-status">آنلاین</p>
+          </div>
+          <button type="button" onclick="if(dmPeer)blockUser(dmPeer)" class="btn btn-ghost text-[10px] px-2 py-1">بلاک</button>
+          <button type="button" onclick="if(dmPeer)reportUser(dmPeer)" class="btn btn-ghost text-[10px] px-2 py-1">گزارش</button>
+        </div>
+        <div id="dm-msgs" class="flex-1 overflow-y-auto scroll space-y-2 px-1 py-2" style="background:rgba(0,0,0,.15);border-radius:12px"></div>
+        <div class="flex gap-2 mt-2 items-end">
+          <input id="dm-input" class="input flex-1 !py-2.5 text-sm" placeholder="پیام..." inputmode="text" enterkeyhint="send" autocomplete="off" onkeydown="if(event.key==='Enter')sendDm()"/>
+          <button onclick="sendDm()" class="btn btn-primary px-4 py-2.5 text-sm">ارسال</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-channels" class="view hidden space-y-3 fade">
+      <div class="flex items-center justify-between">
+        <h1 class="text-base font-bold">کانال‌ها</h1>
+        <button onclick="openM('m-channel')" class="btn btn-primary px-3 py-1.5 text-xs">جدید</button>
+      </div>
+      <div id="chlist" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section id="v-channel" class="view hidden fade">
+      <div class="flex items-center gap-2 mb-3">
+        <button onclick="go('channels')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <div class="flex-1 min-w-0"><h1 id="chtitle" class="text-base font-bold truncate"></h1><p id="chmeta" class="text-[11px]" style="color:var(--muted)"></p></div>
+      </div>
+      <div id="chfeed" class="space-y-3"></div>
+    </section>
+
+    <!-- AI موبایل‌فرندلی -->
+    <section id="v-memory" class="view hidden fade space-y-3">
+      <div class="text-center px-2">
+        <h1 class="text-lg font-bold">AI لومرا</h1>
+        <p class="text-xs mt-1" style="color:var(--muted)">AI آنلاین · رایگان تا ۱۰۰۰ حرف/روز · VIP نامحدود</p>
+      </div>
+      <div class="w-full max-w-lg mx-auto flex flex-col" style="height:min(62vh,520px)">
+        <div class="flex flex-wrap gap-1.5 mb-2 justify-center px-1">
+          <button onclick="askQuick('لومرا چیست؟')" class="badge border cursor-pointer" style="border-color:var(--border)">لومرا</button>
+          <button onclick="askQuick('قوانین چیست؟')" class="badge border cursor-pointer" style="border-color:var(--border)">قوانین</button>
+          <button onclick="askQuick('چطور پست بنویسم؟')" class="badge border cursor-pointer" style="border-color:var(--border)">پست</button>
+          <button onclick="askQuick('چطور رشد کنم؟')" class="badge border cursor-pointer" style="border-color:var(--border)">رشد</button>
+          <button onclick="askQuick('بن یعنی چه؟')" class="badge border cursor-pointer" style="border-color:var(--border)">بن</button>
+        </div>
+        <div id="mbox" class="glass rounded-xl p-3 flex-1 overflow-y-auto scroll space-y-2.5 mb-2"></div>
+        <div class="flex gap-2 pb-1">
+          <input id="min" class="input flex-1" placeholder="از AI بپرس..." onkeydown="if(event.key==='Enter')askMem()"/>
+          <button onclick="askMem()" class="btn btn-primary px-4">ارسال</button>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="v-tools" class="view hidden fade space-y-3">
+      <h1 class="text-base font-bold">ابزارهای لومرا</h1>
+      <button type="button" id="tool-game-link" onclick="go('game')" class="btn btn-primary w-full py-2 text-xs">🎮 برو به بازی مدار لومرا</button>
+      <div class="flex gap-1.5 overflow-x-auto pb-1" style="scrollbar-width:none">
+        <button onclick="toolTab('goals')" class="ttab badge border cursor-pointer nav-on" data-tt="goals" style="border-color:var(--border)">اهداف</button>
+        <button onclick="toolTab('focus')" class="ttab badge border cursor-pointer" data-tt="focus" style="border-color:var(--border)">تمرکز</button>
+        <button onclick="toolTab('notes')" class="ttab badge border cursor-pointer" data-tt="notes" style="border-color:var(--border)">یادداشت</button>
+        <button onclick="toolTab('qa')" class="ttab badge border cursor-pointer" data-tt="qa" style="border-color:var(--border)">بپرس</button>
+        <button onclick="toolTab('saves')" class="ttab badge border cursor-pointer" data-tt="saves" style="border-color:var(--border)">ذخیره</button>
+        <button onclick="toolTab('mood')" class="ttab badge border cursor-pointer" data-tt="mood" style="border-color:var(--border)">حال</button>
+        <button onclick="toolTab('cards')" class="ttab badge border cursor-pointer" data-tt="cards" style="border-color:var(--border)">فلش‌کارت</button>
+        <button onclick="toolTab('mission')" class="ttab badge border cursor-pointer" data-tt="mission" style="border-color:var(--border)">مأموریت</button>
+        <button onclick="toolTab('habits')" class="ttab badge border cursor-pointer" data-tt="habits" style="border-color:var(--border)">عادت</button>
+        <button onclick="toolTab('plan')" class="ttab badge border cursor-pointer" data-tt="plan" style="border-color:var(--border)">برنامه</button>
+        <button onclick="toolTab('count')" class="ttab badge border cursor-pointer" data-tt="count" style="border-color:var(--border)">شمارش</button>
+        <button onclick="toolTab('calc')" class="ttab badge border cursor-pointer" data-tt="calc" style="border-color:var(--border)">محاسبه</button>
+        <button onclick="toolTab('quiz')" class="ttab badge border cursor-pointer" data-tt="quiz" style="border-color:var(--border)">کوییز</button>
+        <button onclick="toolTab('idea')" class="ttab badge border cursor-pointer" data-tt="idea" style="border-color:var(--border)">ایده</button>
+        <button onclick="toolTab('search')" class="ttab badge border cursor-pointer" data-tt="search" style="border-color:var(--border)">جستجو</button>
+        <button onclick="toolTab('notif')" class="ttab badge border cursor-pointer" data-tt="notif" style="border-color:var(--border)">اعلان</button>
+      </div>
+      <div id="tool-goals" class="tool-panel space-y-2">
+        <p class="text-xs" style="color:var(--muted)">اهداف امروز</p>
+        <div class="flex gap-2"><input id="goal-in" class="input flex-1" placeholder="هدف جدید..." onkeydown="if(event.key==='Enter')addGoal()"/><button onclick="addGoal()" class="btn btn-primary px-3">+</button></div>
+        <div id="goal-list" class="space-y-1.5"></div>
+      </div>
+      <div id="tool-focus" class="tool-panel hidden space-y-3">
+        <div class="glass rounded-xl p-6 text-center">
+          <p id="focus-time" class="text-4xl font-bold tabular-nums">25:00</p>
+          <div class="flex gap-2 justify-center mt-4">
+            <button onclick="focusStart()" class="btn btn-primary px-4 py-2">شروع</button>
+            <button onclick="focusPause()" class="btn btn-ghost px-4 py-2">توقف</button>
+            <button onclick="focusReset()" class="btn btn-ghost px-4 py-2">ریست</button>
+          </div>
+          <p id="focus-stat" class="text-xs mt-3" style="color:var(--muted)"></p>
+        </div>
+      </div>
+      <div id="tool-notes" class="tool-panel hidden space-y-2">
+        <input id="note-title" class="input" placeholder="عنوان"/>
+        <textarea id="note-body" class="input resize-none" rows="4" placeholder="یادداشت خصوصی..."></textarea>
+        <button onclick="saveNote()" class="btn btn-primary w-full py-2">ذخیره</button>
+        <div id="note-list" class="space-y-2"></div>
+      </div>
+      <div id="tool-qa" class="tool-panel hidden space-y-2">
+        <input id="q-title" class="input" placeholder="عنوان سوال"/>
+        <textarea id="q-body" class="input resize-none" rows="2" placeholder="توضیح"></textarea>
+        <select id="q-topic" class="input"><option>عمومی</option><option>درسی</option><option>فنی</option><option>کاری</option><option>زندگی</option></select>
+        <button onclick="askQ()" class="btn btn-primary w-full py-2">ثبت سوال</button>
+        <div id="q-list" class="space-y-2"></div>
+      </div>
+      <div id="tool-saves" class="tool-panel hidden space-y-2">
+        <p class="text-xs" style="color:var(--muted)">از خانه با دکمه ذخیره اضافه کن</p>
+        <div id="save-list" class="space-y-2"></div>
+      </div>
+      <div id="tool-mood" class="tool-panel hidden space-y-2">
+        <div class="flex gap-2 justify-center text-2xl">
+          <button onclick="setMood(1)" class="btn btn-ghost px-3">1</button>
+          <button onclick="setMood(2)" class="btn btn-ghost px-3">2</button>
+          <button onclick="setMood(3)" class="btn btn-ghost px-3">3</button>
+          <button onclick="setMood(4)" class="btn btn-ghost px-3">4</button>
+          <button onclick="setMood(5)" class="btn btn-ghost px-3">5</button>
+        </div>
+        <input id="mood-note" class="input" placeholder="یک جمله اختیاری"/>
+        <div id="mood-hist" class="text-xs space-y-1" style="color:var(--muted)"></div>
+      </div>
+      <div id="tool-cards" class="tool-panel hidden space-y-2">
+        <input id="fc-front" class="input" placeholder="روی کارت"/>
+        <input id="fc-back" class="input" placeholder="پشت کارت"/>
+        <button onclick="addCard()" class="btn btn-primary w-full py-2">افزودن</button>
+        <div id="fc-study" class="glass rounded-xl p-4 text-center hidden">
+          <p id="fc-show" class="text-sm min-h-[60px]"></p>
+          <button onclick="flipCard()" class="btn btn-ghost mt-2 text-xs">برگردان</button>
+          <button onclick="nextCard()" class="btn btn-primary mt-2 text-xs">بعدی</button>
+        </div>
+        <button onclick="startCards()" class="btn btn-ghost w-full py-2 text-xs">شروع مرور</button>
+        <div id="fc-list" class="text-xs space-y-1" style="color:var(--muted)"></div>
+      </div>
+      <div id="tool-mission" class="tool-panel hidden space-y-2">
+        <div id="mission-list" class="space-y-2"></div>
+      </div>
+      <div id="tool-habits" class="tool-panel hidden space-y-2">
+        <div class="flex gap-2"><input id="hab-in" class="input flex-1" placeholder="عادت جدید"/><button onclick="addHabit()" class="btn btn-primary px-3">+</button></div>
+        <div id="hab-list" class="space-y-1"></div>
+      </div>
+      <div id="tool-plan" class="tool-panel hidden space-y-2">
+        <select id="plan-day" class="input"><option>شنبه</option><option>یکشنبه</option><option>دوشنبه</option><option>سه‌شنبه</option><option>چهارشنبه</option><option>پنجشنبه</option><option>جمعه</option></select>
+        <div class="flex gap-2"><input id="plan-task" class="input flex-1" placeholder="کار این روز"/><button onclick="addPlan()" class="btn btn-primary px-3">+</button></div>
+        <div id="plan-list" class="space-y-1"></div>
+      </div>
+      <div id="tool-count" class="tool-panel hidden space-y-2">
+        <input id="cd-title" class="input" placeholder="عنوان (مثلا کنکور)"/>
+        <input id="cd-date" class="input" type="datetime-local"/>
+        <button onclick="addCountdown()" class="btn btn-primary w-full py-2">ثبت شمارش معکوس</button>
+        <div id="cd-list" class="space-y-2 text-sm"></div>
+      </div>
+      <div id="tool-calc" class="tool-panel hidden space-y-2">
+        <p class="text-xs" style="color:var(--muted)">میانگین نمرات (با کاما جدا کن)</p>
+        <input id="calc-scores" class="input" placeholder="18,19,17.5"/>
+        <button onclick="calcAvg()" class="btn btn-primary w-full py-2">محاسبه</button>
+        <p id="calc-out" class="text-sm font-bold"></p>
+      </div>
+      <div id="tool-quiz" class="tool-panel hidden space-y-2">
+        <p id="quiz-q" class="text-sm glass rounded-xl p-3">...</p>
+        <div id="quiz-opts" class="space-y-1"></div>
+        <button onclick="nextQuiz()" class="btn btn-ghost w-full py-2 text-xs">سوال بعد</button>
+      </div>
+      <div id="tool-idea" class="tool-panel hidden space-y-2">
+        <p id="idea-box" class="glass rounded-xl p-4 text-sm text-center min-h-[80px]">برای ایده بزن</p>
+        <button onclick="randomIdea()" class="btn btn-primary w-full py-2">ایده تصادفی</button>
+      </div>
+      <div id="tool-search" class="tool-panel hidden space-y-2">
+        <input id="search-in" class="input" placeholder="جستجوی پست یا کاربر..." onkeydown="if(event.key==='Enter')doSearch()"/>
+        <button onclick="doSearch()" class="btn btn-primary w-full py-2">جستجو</button>
+        <div id="search-out" class="space-y-2"></div>
+      </div>
+      <div id="tool-notif" class="tool-panel hidden space-y-2">
+        <button onclick="loadNotifs()" class="btn btn-ghost w-full py-1 text-xs">بروزرسانی</button>
+        <div id="notif-list" class="space-y-1"></div>
+      </div>
+    </section>
+
+    
+    <section id="v-game" class="view hidden fade space-y-3">
+      <h1 class="text-base font-bold">بازی‌ها و کلن</h1>
+      <div class="flex gap-1 overflow-x-auto pb-1" style="scrollbar-width:none">
+        <button type="button" onclick="gHub('list')" class="badge border cursor-pointer nav-on" id="gh-list" style="border-color:var(--border)">لیست بازی</button>
+        <button type="button" onclick="gHub('clan')" class="badge border cursor-pointer" id="gh-clan" style="border-color:var(--border)">کلن</button>
+        <button type="button" onclick="gHub('room')" class="badge border cursor-pointer" id="gh-room" style="border-color:var(--border)">اتاق چندنفره</button>
+      </div>
+      <div id="ghub-list" class="space-y-2">
+        <div class="grid grid-cols-2 gap-2" id="games-grid"></div>
+      </div>
+      <div id="ghub-clan" class="hidden space-y-2">
+        <input id="clan-name" class="input text-xs" placeholder="اسم کلن جدید"/>
+        <button type="button" onclick="createClan()" class="btn btn-primary w-full py-2 text-xs">ساخت کلن</button>
+        <input id="clan-code" class="input text-xs" placeholder="کد کلن برای عضویت"/>
+        <button type="button" onclick="joinClan()" class="btn btn-ghost w-full py-2 text-xs">عضویت در کلن</button>
+        <div id="clan-info" class="text-xs glass rounded-xl p-3" style="color:var(--muted)">کلن نداری</div>
+      </div>
+      <div id="ghub-room" class="hidden space-y-2">
+        <select id="room-game" class="input text-xs">
+          <option value="stars">مدار ستاره (چندنفره)</option>
+          <option value="rps">سنگ کاغذ قیچی</option>
+          <option value="num">حدس عدد</option>
+          <option value="quiz">کوییز گروهی</option>
+        </select>
+        <button type="button" onclick="createRoom()" class="btn btn-primary w-full py-2 text-xs">ساخت اتاق</button>
+        <div class="flex gap-2">
+          <input id="room-join" class="input flex-1 text-xs" placeholder="کد اتاق"/>
+          <button type="button" onclick="joinRoom()" class="btn btn-ghost px-3 text-xs">ورود</button>
+        </div>
+        <p id="room-code-show" class="text-xs text-center" style="color:var(--accent)"></p>
+      </div>
+      <div id="game-play" class="hidden space-y-2">
+        <div class="flex items-center justify-between">
+          <button type="button" onclick="exitGame()" class="btn btn-ghost text-xs px-2">→ برگشت</button>
+          <b id="game-title" class="text-sm">بازی</b>
+          <span id="g-score2" class="text-xs">0</span>
+        </div>
+        <div id="game-area" class="relative rounded-xl overflow-hidden glass" style="height:42vh;background:radial-gradient(ellipse at bottom,#0f172a 0%,#020617 70%)">
+          <canvas id="game-canvas" class="w-full h-full"></canvas>
+          <div id="game-overlay" class="absolute inset-0 flex flex-col items-center justify-center gap-3" style="background:rgba(0,0,0,.45)">
+            <p class="text-sm font-medium" id="game-overlay-text">شروع</p>
+            <button type="button" onclick="restartCurrentGame()" class="btn btn-primary px-6 py-2">شروع</button>
+          </div>
+        </div>
+        <div id="rps-box" class="hidden grid grid-cols-3 gap-2">
+          <button type="button" onclick="rpsPlay('سنگ')" class="btn btn-ghost py-3">✊</button>
+          <button type="button" onclick="rpsPlay('کاغذ')" class="btn btn-ghost py-3">✋</button>
+          <button type="button" onclick="rpsPlay('قیچی')" class="btn btn-ghost py-3">✌</button>
+        </div>
+        <p id="rps-result" class="text-center text-sm hidden"></p>
+        <div id="num-box" class="hidden space-y-2">
+          <p class="text-xs" style="color:var(--muted)">عددی بین ۱ تا ۱۰۰ حدس بزن</p>
+          <div class="flex gap-2"><input id="num-guess" class="input flex-1" type="number"/><button type="button" onclick="numGuess()" class="btn btn-primary px-3">حدس</button></div>
+          <p id="num-hint" class="text-xs text-center"></p>
+        </div>
+        <div class="glass rounded-xl p-2">
+          <p class="text-[10px] mb-1" style="color:var(--muted)">چت بازی / کلن</p>
+          <div id="gchat" class="h-24 overflow-y-auto scroll text-xs space-y-1 mb-2"></div>
+          <div class="flex gap-1">
+            <input id="gchat-in" class="input flex-1 !py-1.5 text-xs" placeholder="پیام..." onkeydown="if(event.key==='Enter')sendGameChat()"/>
+            <button type="button" onclick="sendGameChat()" class="btn btn-primary px-2 text-xs">ارسال</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="v-menu" class="view hidden fade space-y-3">
+      <h1 class="text-base font-bold">امکانات لومرا</h1>
+      <p class="text-xs" style="color:var(--muted)">هر چی می‌خوای از اینجا برو</p>
+      <div class="grid grid-cols-2 gap-2" id="menu-grid">
+        <button type="button" onclick="go('home')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">خانه</div><div class="text-[10px]" style="color:var(--muted)">فید و استوری</div></button>
+        <button type="button" onclick="go('explore')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">اکسپلور</div><div class="text-[10px]" style="color:var(--muted)">کشف محتوا</div></button>
+        <button type="button" onclick="go('direct')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">چت</div><div class="text-[10px]" style="color:var(--muted)">دایرکت و گروه</div></button>
+        <button type="button" onclick="go('channels')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">کانال‌ها</div><div class="text-[10px]" style="color:var(--muted)">موضوعی</div></button>
+        <button type="button" onclick="go('memory')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">AI</div><div class="text-[10px]" style="color:var(--muted)">هوش مصنوعی</div></button>
+        <button type="button" onclick="go('game')" class="glass rounded-xl p-3 text-right" style="border:1px solid var(--accent)"><div class="text-sm font-bold">🎮 بازی</div><div class="text-[10px]" style="color:var(--muted)">مدار لومرا</div></button>
+        <button type="button" onclick="go('tools')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">ابزارها</div><div class="text-[10px]" style="color:var(--muted)">همه ابزارها</div></button>
+        <button type="button" onclick="go('profile')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">پروفایل</div><div class="text-[10px]" style="color:var(--muted)">من</div></button>
+        <button type="button" onclick="go('settings')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">تنظیمات</div><div class="text-[10px]" style="color:var(--muted)">تم و وضعیت</div></button>
+        <button type="button" onclick="openM('m-post')" class="glass rounded-xl p-3 text-right"><div class="text-sm font-bold">انتشار</div><div class="text-[10px]" style="color:var(--muted)">پست و استوری</div></button>
+        <button type="button" onclick="go('wow')" class="glass rounded-xl p-3 text-right" style="border:1px solid var(--accent)"><div class="text-sm font-bold">✨ ویژه</div><div class="text-[10px]" style="color:var(--muted)">اتاق زنده و بیشتر</div></button>
+      </div>
+      <h2 class="text-xs font-semibold mt-2" style="color:var(--muted)">ابزارهای سریع</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('goals')},100)" class="btn btn-ghost py-2 text-xs">اهداف</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('focus')},100)" class="btn btn-ghost py-2 text-xs">تمرکز</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('notes')},100)" class="btn btn-ghost py-2 text-xs">یادداشت</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('qa')},100)" class="btn btn-ghost py-2 text-xs">بپرس</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('saves')},100)" class="btn btn-ghost py-2 text-xs">ذخیره</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('mood')},100)" class="btn btn-ghost py-2 text-xs">حال</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('cards')},100)" class="btn btn-ghost py-2 text-xs">فلش‌کارت</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('mission')},100)" class="btn btn-ghost py-2 text-xs">مأموریت</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('habits')},100)" class="btn btn-ghost py-2 text-xs">عادت</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('plan')},100)" class="btn btn-ghost py-2 text-xs">برنامه</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('count')},100)" class="btn btn-ghost py-2 text-xs">شمارش</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('calc')},100)" class="btn btn-ghost py-2 text-xs">محاسبه</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('quiz')},100)" class="btn btn-ghost py-2 text-xs">کوییز</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('idea')},100)" class="btn btn-ghost py-2 text-xs">ایده</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('search')},100)" class="btn btn-ghost py-2 text-xs">جستجو</button>
+        <button type="button" onclick="go('tools');setTimeout(function(){toolTab('notif')},100)" class="btn btn-ghost py-2 text-xs">اعلان</button>
+        <button type="button" onclick="toggleFontBig()" class="btn btn-ghost py-2 text-xs">فونت درشت</button>
+        <button type="button" onclick="toggleCinema()" class="btn btn-ghost py-2 text-xs">سینما</button>
+        <button type="button" onclick="toggleNightCosmic()" class="btn btn-ghost py-2 text-xs">شب کیهانی</button>
+        <button type="button" onclick="luckyPost()" class="btn btn-ghost py-2 text-xs">پست شانسی</button>
+        <button type="button" onclick="copyInvite()" class="btn btn-ghost py-2 text-xs">کپی دعوت</button>
+        <button type="button" onclick="playPulse()" class="btn btn-ghost py-2 text-xs">پالس</button>
+        <button type="button" onclick="randomCompanion()" class="btn btn-ghost py-2 text-xs">همراه</button>
+        <button type="button" onclick="go('wow')" class="btn btn-ghost py-2 text-xs">ویژه</button>
+        <button type="button" onclick="go('game')" class="btn btn-ghost py-2 text-xs">بازی‌ها</button>
+      </div>
+    </section>
+
+    
+    <section id="v-wow" class="view hidden fade space-y-3">
+      <h1 class="text-base font-bold">✨ ویژه لومرا</h1>
+      <div id="world-globe">
+        <button type="button" class="globe-hot" style="top:20%;left:12%" onclick="go('explore')">اکسپلور</button>
+        <button type="button" class="globe-hot" style="top:30%;right:14%" onclick="go('game')">بازی</button>
+        <button type="button" class="globe-hot" style="bottom:28%;left:20%" onclick="joinLive('study')">مطالعه</button>
+        <button type="button" class="globe-hot" style="bottom:22%;right:18%" onclick="joinLive('talk')">حرف</button>
+        <button type="button" class="globe-hot" style="top:48%;left:40%" onclick="go('direct')">چت</button>
+      </div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">مدارهای زنده</h2>
+      <div class="grid grid-cols-1 gap-2">
+        <button type="button" onclick="joinLive('study')" class="glass rounded-xl p-3 text-right flex justify-between items-center"><span><b>📚 مدار مطالعه</b><br/><span class="text-[10px]" style="color:var(--muted)">تایمر مشترک</span></span><span class="live-dot"></span></button>
+        <button type="button" onclick="joinLive('talk')" class="glass rounded-xl p-3 text-right flex justify-between items-center"><span><b>💬 مدار حرف</b><br/><span class="text-[10px]" style="color:var(--muted)">چت جمعی</span></span><span class="live-dot"></span></button>
+        <button type="button" onclick="joinLive('play')" class="glass rounded-xl p-3 text-right flex justify-between items-center"><span><b>🎮 مدار بازی</b><br/><span class="text-[10px]" style="color:var(--muted)">بازی + چت</span></span><span class="live-dot"></span></button>
+      </div>
+      <div id="live-panel" class="hidden glass rounded-xl p-3 space-y-2">
+        <div class="flex justify-between items-center"><b id="live-title">اتاق</b><button type="button" onclick="leaveLive()" class="btn btn-ghost text-xs">خروج</button></div>
+        <p id="live-timer" class="text-center text-2xl font-bold tabular-nums">25:00</p>
+        <div class="flex gap-2 justify-center"><button type="button" onclick="liveTimerStart()" class="btn btn-primary text-xs px-3">شروع تایمر</button><button type="button" onclick="liveTimerReset()" class="btn btn-ghost text-xs px-3">ریست</button></div>
+        <div id="live-chat" class="h-28 overflow-y-auto scroll text-xs space-y-1"></div>
+        <div class="flex gap-1"><input id="live-in" class="input flex-1 !py-1.5 text-xs" placeholder="پیام اتاق..." onkeydown="if(event.key==='Enter')sendLiveChat()"/><button type="button" onclick="sendLiveChat()" class="btn btn-primary px-2 text-xs">↵</button></div>
+      </div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">دوئل محتوا</h2>
+      <input id="duel-topic" class="input text-xs" placeholder="موضوع دوئل"/>
+      <textarea id="duel-text" class="input text-xs" rows="2" placeholder="جمله تو..."></textarea>
+      <button type="button" onclick="createDuel()" class="btn btn-primary w-full py-2 text-xs">شروع دوئل</button>
+      <div id="duel-list" class="space-y-2"></div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">جعبه زمان</h2>
+      <textarea id="cap-body" class="input text-xs" rows="2" placeholder="پیام برای آینده..."></textarea>
+      <input id="cap-date" class="input text-xs" type="datetime-local"/>
+      <label class="text-xs flex gap-2 items-center" style="color:var(--muted)"><input type="checkbox" id="cap-pub"/> عمومی بعد از باز شدن</label>
+      <button type="button" onclick="saveCapsule()" class="btn btn-primary w-full py-2 text-xs">قفل کن</button>
+      <div id="cap-list" class="space-y-1 text-xs"></div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">دیوار کهکشان امشب</h2>
+      <div class="flex gap-2"><input id="gal-line" class="input flex-1 text-xs" placeholder="یک جمله برای آسمان..."/><button type="button" onclick="postGalaxy()" class="btn btn-primary px-3 text-xs">ثبت</button></div>
+      <div id="gal-list" class="text-xs space-y-1" style="color:var(--muted)"></div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">بازار ایده</h2>
+      <div class="flex gap-2"><input id="idea-in" class="input flex-1 text-xs" placeholder="ایده‌ات..."/><button type="button" onclick="postIdea()" class="btn btn-primary px-3 text-xs">بذار</button></div>
+      <div id="idea-list" class="space-y-1"></div>
+      <h2 class="text-xs font-semibold" style="color:var(--muted)">آینه حال لومرا</h2>
+      <div class="flex gap-2 justify-center">
+        <button type="button" onclick="pushMood(1)" class="btn btn-ghost">😔</button>
+        <button type="button" onclick="pushMood(3)" class="btn btn-ghost">🙂</button>
+        <button type="button" onclick="pushMood(5)" class="btn btn-ghost">🔥</button>
+      </div>
+      <p id="mood-mirror" class="text-center text-sm">—</p>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" onclick="toggleCinema()" class="btn btn-ghost py-2 text-xs">حالت سینما</button>
+        <button type="button" onclick="toggleNightCosmic()" class="btn btn-ghost py-2 text-xs">شیفت شب کیهانی</button>
+        <button type="button" onclick="playPulse()" class="btn btn-ghost py-2 text-xs">پالس فضایی</button>
+        <button type="button" onclick="randomCompanion()" class="btn btn-ghost py-2 text-xs">همراه نامرئی</button>
+      </div>
+      <div class="glass rounded-xl p-3 flex items-center gap-3">
+        <div id="fp-badge" class="fp-badge" style="background:linear-gradient(135deg,#22d3ee,#a78bfa)">LM</div>
+        <div><p class="text-xs font-bold">نشان یکتای تو</p><p class="text-[10px]" style="color:var(--muted)">از روی یوزرنیم ساخته می‌شود</p></div>
+      </div>
+    </section>
+
+    <section id="v-profile" class="view hidden fade space-y-3">
+      <div class="glass rounded-xl overflow-hidden">
+        <div class="h-16" style="background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,transparent),color-mix(in srgb,var(--accent2) 30%,transparent))"></div>
+        <div class="px-4 pb-4 -mt-8 flex flex-col sm:flex-row items-center gap-3">
+          <div class="relative">
+            <img id="pav" class="w-16 h-16 av border-4" style="border-color:var(--bg)" alt=""/>
+            <label class="absolute bottom-0 left-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] cursor-pointer text-white" style="background:var(--accent)">+
+              <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(this)"/>
+            </label>
+          </div>
+          <div class="text-center sm:text-right flex-1">
+            <h1 id="pname" class="text-base font-bold"></h1>
+            <p id="puser" class="text-xs" style="color:var(--muted)"></p>
+          </div>
+          <button onclick="go('settings')" class="btn btn-ghost px-3 py-1.5 text-xs">تنظیمات</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <div class="glass rounded-xl p-2 text-center"><p class="text-sm font-bold" id="sp">۰</p><p class="text-[9px]" style="color:var(--muted)">پست</p></div>
+        <div class="glass rounded-xl p-2 text-center"><p class="text-sm font-bold" id="sc">۰</p><p class="text-[9px]" style="color:var(--muted)">کانال</p></div>
+        <div class="glass rounded-xl p-2 text-center"><p class="text-sm font-bold" id="p-points">۰</p><p class="text-[9px]" style="color:var(--muted)">امتیاز</p></div>
+        <div class="glass rounded-xl p-2 text-center"><p class="text-sm font-bold" id="p-level">۱</p><p class="text-[9px]" style="color:var(--muted)">سطح</p></div>
+      </div>
+      <div class="glass rounded-xl p-3 text-xs" style="color:var(--muted)">وضعیت: <span id="p-status">—</span></div>
+      <button onclick="logout()" class="btn btn-danger px-4 py-2 text-xs">خروج</button>
+    </section>
+
+    <section id="v-settings" class="view hidden fade space-y-4">
+      <div class="flex items-center gap-2">
+        <button onclick="go('profile')" class="w-8 h-8 rounded-lg glass flex items-center justify-center">←</button>
+        <h1 class="text-base font-bold">تنظیمات</h1>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-3">
+        <h2 class="text-xs font-semibold" style="color:var(--muted)">تم</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button onclick="setTheme('space')" class="btn btn-ghost py-2.5 text-xs">فضا</button>
+          <button onclick="setTheme('dark')" class="btn btn-ghost py-2.5 text-xs">تیره</button>
+          <button onclick="setTheme('solar')" class="btn btn-ghost py-2.5 text-xs">خورشیدی</button>
+          <button onclick="setTheme('blood')" class="btn btn-ghost py-2.5 text-xs">خونی</button>
+          <button onclick="setTheme('ocean')" class="btn btn-ghost py-2.5 text-xs">اقیانوس</button>
+          <button onclick="setTheme('neon')" class="btn btn-ghost py-2.5 text-xs">نئون</button>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-2">
+        <input id="setname" class="input" placeholder="نام نمایشی"/>
+        <textarea id="setbio" class="input resize-none" rows="2" placeholder="درباره"></textarea>
+        <button onclick="saveProfile()" class="btn btn-primary w-full py-2">ذخیره</button>
+      </div>
+      <div class="glass rounded-xl p-4 space-y-2">
+        <p class="text-xs font-semibold" style="color:var(--muted)">وضعیت</p>
+        <div class="flex flex-wrap gap-1">
+          <button type="button" onclick="setStatus('آنلاین')" class="btn btn-ghost text-[10px] px-2 py-1">آنلاین</button>
+          <button type="button" onclick="setStatus('درسا می‌خونم')" class="btn btn-ghost text-[10px] px-2 py-1">درسا</button>
+          <button type="button" onclick="setStatus('سر کار')" class="btn btn-ghost text-[10px] px-2 py-1">کار</button>
+          <button type="button" onclick="setStatus('آفلاین')" class="btn btn-ghost text-[10px] px-2 py-1">آفلاین</button>
+        </div>
+        <p class="text-xs mt-2" style="color:var(--muted)">کد دعوت شما: <b id="inv-code">—</b></p>
+      </div>
+      <div class="glass rounded-xl p-4 text-[11px] leading-relaxed" style="color:var(--muted)">
+        ریپلای ادمین: <b>حذف</b> = پاک پست · <b>بن</b> = بن دائمی نویسنده<br/>
+        بیش از ۳ پیام پشت‌سرهم = بن موقت ۵ روز · بن ربات بعد ۵ روز آنبن می‌شود
+      </div>
+    </section>
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 inset-x-0 glass border-t z-40" style="border-color:var(--border);padding-bottom:env(safe-area-inset-bottom,0)">
+    <div class="flex items-center justify-around py-1 px-1">
+      <button onclick="go('home')" class="px-2 py-1 text-[10px] font-medium" style="color:var(--muted)">خانه</button>
+      <button onclick="go('direct')" class="px-2 py-1 text-[10px] font-medium" style="color:var(--muted)">چت</button>
+      <button onclick="openM('m-post')" class="w-9 h-9 rounded-full flex items-center justify-center text-white text-lg" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">+</button>
+      <button onclick="go('menu')" class="px-3 py-1.5 text-[11px] font-bold rounded-full" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff">امکانات</button>
+      <button onclick="go('profile')" class="px-2 py-1 text-[10px] font-medium" style="color:var(--muted)">من</button>
+    </div>
+  </nav>
+</div>
+
+<div id="m-post" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
+  <div class="glass rounded-2xl w-full max-w-md p-4 relative max-h-[90vh] overflow-y-auto scroll">
+    <button onclick="closeM('m-post')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">انتشار</h2>
+    <div class="flex gap-2 mb-2">
+      <button id="ptab-post" onclick="postMode='post';this.classList.add('nav-on');document.getElementById('ptab-story').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs nav-on">پست</button>
+      <button id="ptab-story" onclick="postMode='story';this.classList.add('nav-on');document.getElementById('ptab-post').classList.remove('nav-on')" class="btn btn-ghost px-3 py-1 text-xs">استوری</button>
+    </div>
+    <textarea id="pbody" rows="3" class="input resize-none mb-2" placeholder="متن..."></textarea>
+    <div class="flex gap-2 mb-2">
+      <label class="btn btn-ghost px-3 py-1.5 text-xs cursor-pointer flex-1">📷<input type="file" accept="image/*" class="hidden" onchange="pickMedia(this,'image')"/></label>
+      <label class="btn btn-ghost px-3 py-1.5 text-xs cursor-pointer flex-1">🎬<input type="file" accept="video/*" class="hidden" onchange="pickMedia(this,'video')"/></label>
+    </div>
+    <div id="media-preview" class="mb-2 hidden rounded-lg overflow-hidden"></div>
+    <input id="p-tags" class="input mb-2 text-xs" placeholder="هشتگ‌ها با فاصله: فضا درس"/>
+    <label class="flex items-center gap-2 text-xs mb-2" style="color:var(--muted)"><input type="checkbox" id="p-anon"/> انتشار ناشناس</label>
+    <input id="p-poll" class="input mb-2 text-xs" placeholder="نظرسنجی (اختیاری) گزینه1|گزینه2|گزینه3"/>
+    <input id="p-schedule" class="input mb-2 text-xs" type="datetime-local"/>
+    <p class="text-[10px] mb-2" style="color:var(--muted)">اگر تاریخ بگذاری، زمان‌بندی می‌شود</p>
+    <div id="pwarn" class="warn-box rounded-lg p-2 text-xs mb-2 hidden"></div>
+    <div class="flex gap-2"><button type="button" onclick="saveDraft()" class="btn btn-ghost flex-1 py-2 text-xs">پیش‌نویس</button><button onclick="publish()" class="btn btn-primary flex-1 py-2 text-xs" id="btn-pub">انتشار</button></div>
+  </div>
+</div>
+<div id="m-channel" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+    <button onclick="closeM('m-channel')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">کانال</h2>
+    <input id="nch" class="input mb-2" placeholder="نام"/>
+    <textarea id="ncd" class="input resize-none mb-2" rows="2" placeholder="توضیح"></textarea>
+    <button onclick="createChannel()" class="btn btn-primary w-full py-2">ایجاد</button>
+  </div>
+</div>
+<div id="m-group" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.7)">
+  <div class="glass rounded-2xl w-full max-w-sm p-4 relative">
+    <button onclick="closeM('m-group')" class="absolute top-3 left-3" style="color:var(--muted)">×</button>
+    <h2 class="text-sm font-bold mb-2">گروه</h2>
+    <input id="gname" class="input mb-2" placeholder="نام گروه"/>
+    <input id="gmembers" class="input mb-2" placeholder="user1,user2"/>
+    <button onclick="createGroup()" class="btn btn-primary w-full py-2">ایجاد</button>
+  </div>
+</div>
+
+<div id="m-story" class="modal fixed inset-0 z-[70] hidden items-center justify-center p-0" style="background:rgba(0,0,0,.92)" onclick="if(event.target===this)closeM('m-story')">
+  <div class="w-full max-w-md h-full sm:h-auto sm:max-h-[90vh] flex flex-col relative">
+    <button onclick="closeM('m-story')" class="absolute top-3 left-3 z-10 w-9 h-9 rounded-full flex items-center justify-center text-white" style="background:rgba(0,0,0,.5)">×</button>
+    <div class="px-4 pt-12 pb-2 flex items-center gap-2">
+      <div id="story-av" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">?</div>
+      <div>
+        <p id="story-name" class="text-sm font-medium text-white"></p>
+        <p id="story-time" class="text-[10px] text-white/60"></p>
+      </div>
+    </div>
+    <div id="story-body" class="flex-1 flex items-center justify-center p-4 overflow-hidden"></div>
+    <p id="story-text" class="px-4 pb-8 text-sm text-white text-center"></p>
+  </div>
+</div>
+
+
+<div id="vip-gate" onclick="if(event.target===this)closeVipGate()">
+  <div class="glass rounded-2xl p-5 max-w-sm w-full text-center space-y-3" onclick="event.stopPropagation()">
+    <p class="text-lg font-bold">✨ لومرا VIP</p>
+    <p class="text-xs leading-relaxed" style="color:var(--muted)" id="vip-gate-msg">این قابلیت برای کاربران VIP باز است.</p>
+    <ul class="text-[11px] text-right space-y-1" style="color:var(--muted)">
+      <li>• هوش مصنوعی نامحدود</li>
+      <li>• پست بلندتر و امکانات ویژه</li>
+      <li>• نشان VIP کنار اسم</li>
+      <li>• اتاق‌ها و دوئل بدون محدودیت</li>
+    </ul>
+    <p class="text-[10px]" style="color:var(--muted)">فعلاً با ریپلای مالک فعال می‌شود · به‌زودی خرید مستقیم</p>
+    <button type="button" onclick="closeVipGate()" class="btn btn-primary w-full py-2 text-xs">باشه</button>
+  </div>
+</div>
+<div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden"><div class="glass px-4 py-2 rounded-xl text-sm font-medium" id="tmsg"></div></div>
+
+<script>
+const APP_VERSION='2026.09.28-mega';
+const OWNER='hesam';
+const SUPABASE_URL='https://nwnmtsyqfjvaetyzwlop.supabase.co';
+const SUPABASE_KEY='sb_publishable_fCu4zOgzwbTDBNPl-DK5KQ_HlS5ZYhn';
+let sb=null;
+try{
+  if(typeof supabase!=='undefined'){
+    sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  }else{
+    console.error('supabase CDN failed');
+  }
+}catch(e){console.error('supabase init',e);}
+function needSb(){
+  if(!sb){toast('اتصال سرور برقرار نیست');return false}
+  return true;
+}
+
+
+const BAD_RAW=['کیر','کص','کسکش','جنده','حرومزاده','لاشی','مادرجنده','کونی','ننت','آشغال','گوه','بی‌شرف','fuck','shit','bitch','asshole','fucker','porn','xxx'];
+const POL_RAW=['انقلاب','حکومت','رژیم','انتخابات','اصلاحات','اصولگرا','اصلاحطلب','رهبر','ولی‌فقیه','سپاه','بسیج','منافق','مجاهد','دیکتاتور','پهلوی','خامنه','روحانی','رئیسی','پزشکیان'];
+const HACKER_NAME=/هکر|هاکر|حکر|حاکر|hacker|haker/i;
+const CODE_RE=/(<script|javascript:|onerror\s*=|eval\s*\(|document\.cookie|union\s+select|drop\s+table)/i;
+function botImg(i){
+  var prompts=['beautiful landscape photo','cute cat closeup','mountain sunset','ocean waves','city night lights','forest path','coffee flatlay','abstract colorful art','flower macro','desert dunes','northern lights','library books','rainy window','bicycle street','hot air balloons','neon city','snow mountains','tropical beach','street food','aurora sky'];
+  var p=encodeURIComponent(prompts[i%prompts.length]+' detail '+i);
+  return 'https://image.pollinations.ai/prompt/'+p+'?width=640&height=640&seed='+(i*17+3)+'&nologo=true';
+}
+const BOT_IMGS=Array.from({length:60},function(_,i){return botImg(i)});
+const BOTS=[{name:'رصدگر',user:'bot_radar',avatar:'ر'},{name:'نبض',user:'bot_pulse',avatar:'ن'},{name:'کاوشگر',user:'bot_scout',avatar:'ک'}];
+/* متن‌های زیاد ربات تا تکرار دیر اتفاق بیفتد */
+const BOT_TEXTS=[
+'صبح بخیر لومرایی‌ها. امروز یک پست کوتاه و صادق بنویس.','کیفیت از کمیت جلوتر است؛ یک جمله قوی بهتر از ده جمله توخالی است.',
+'اگر ایده نداری، از یک تجربه شخصی ساده شروع کن.','احترام، قانون نانوشته‌ی اینجاست.',
+'اکسپلور جای دیده‌شدن است؛ عکس واضح بگذار.','دایرکت برای گفتگوی واقعی است، نه اسپم.',
+'پست بلند اخطار دارد؛ کوتاه بنویس.','ربات نگهبان بیدار است؛ فحش و حاشیه ممنوع.',
+'هر روز یک ایده کوچک منتشر کن.','نظر بده، لایک کن، گفتگو بساز.',
+'تم فضا حال‌وهوا را عوض می‌کند؛ امتحانش کن.','گروه بساز و ایده‌ها را جمع کنید.',
+'هوش مصنوعی لومرا پاسخ سوال‌های رایج را می‌دهد.','محتوای سالم جامعه را زنده نگه می‌دارد.',
+'اگر بن موقت گرفتی، ۵ روز صبر کن.','بن ادمین دائمی است؛ مراقب باش.',
+'سه پیام پشت‌سرهم زیاد است؛ فاصله بده.','استوری ۲۴ ساعته فرصت کوتاهی است.',
+'کانال تخصصی بساز و مخاطب جذب کن.','نام کاربری محترمانه انتخاب کن.',
+'عکس با نور خوب در اکسپلور می‌درخشد.','کپشن را با یک سوال تمام کن.',
+'امروز کسی را تشویق کن.','ایدهٔ شکست‌خورده هم می‌تواند درس باشد.',
+'سکوت گاهی بهتر از حاشیه است.','لومرا برای ساختن است، نه خراب کردن.',
+'ربات متن‌های تازه می‌آورد؛ تو هم تازه بمان.','تم خورشیدی انرژی می‌دهد.',
+'تم خونی فقط زیبایی است، نه خشونت.','موبایل و دسکتاپ هر دو پشتیبانی می‌شوند.',
+'AI را در نوار پایین پیدا کن.','سوال فنی؟ از AI بپرس.',
+'پروفایل کامل اعتماد می‌سازد.','آواتار واضح بگذار.',
+'شماره واقعی لازم است؛ شماره فیک رد می‌شود.','امنیت روی سرور چک می‌شود.',
+'نسخه قدیمی سایت کار نمی‌کند.','هر تخلف ثبت می‌شود.',
+'ایده‌ات را در یک خط خلاصه کن.','داستان کوتاه از روزت بنویس.',
+'یک نکته مفید برای بقیه بگو.','سوال باز بپرس تا بحث راه بیفتد.',
+'از اغراق دوری کن.','صادق باش، ساده بنویس.',
+'امروز چه چیزی یاد گرفتی؟','یک کتاب یا آهنگ خوب معرفی کن.',
+'فضای لومرا آرام است؛ آرومش نگه دار.','ربات گاهی عکس فضا هم می‌گذارد.',
+'گروه موضوعی بساز.','با غریبه‌ها محترمانه حرف بزن.',
+'اسپم مساوی بن است.','فحش نقطه‌دار هم تشخیص داده می‌شود.',
+'محتوای سیاسی اینجا جایی ندارد.','کد و اسکریپت ممنوع است.',
+'اگر اشتباه کردی عذرخواهی کن.','شروع دوباره همیشه ممکن است — مگر بن دائمی.',
+'نفس بکش و بعد منتشر کن.','یک لبخند مجازی هم گاهی کافی است.',
+'تم نئون شب‌ها قشنگ است.','تم اقیانوس آرامش می‌آورد.',
+'بروزرسانی را از کانال رسمی بگیر.','نسخه کرک‌شده کار نمی‌کند.',
+'هر پست یک فرصت است.','مخاطب را دست‌کم نگیر.',
+'جزئیات کوچک داستان را زنده می‌کند.','از تکرار بیهوده پرهیز کن.',
+'امروز فقط یک پست باارزش بگذار.','کیفیت را فدای عجله نکن.',
+'لومرا یعنی نور؛ روشن بنویس.','شب بخیر، فردا دوباره می‌سازیم.'
+];
+
+const AI_KB=[
+{k:['لومرا','چیست','چی هست','درباره'],a:'لومرا یک پلتفرم محتوای امن با حس فضایی است: پست، استوری، اکسپلور، دایرکت، گروه، کانال و AI داخلی. ربات نگهبان فحش، حاشیه سیاسی و اسپم را کنترل می‌کند.'},
+{k:['قانون','قوانین','ممنوع','قاعده'],a:'فحش (حتی با نقطه)، محتوای سیاسی، کد مخرب و اسپم ممنوع است. پست خیلی بلند اخطار می‌گیرد. بیش از ۳ پیام پشت‌سرهم بن موقت می‌آورد.'},
+{k:['پست','بنویس','کپشن','استوری'],a:'کوتاه، واضح و صادق بنویس. یک قلاب + یک نکته + دعوت به نظر. استوری ۲۴ ساعته است؛ پست در خانه و اکسپلور می‌ماند.'},
+{k:['رشد','دیده','فالو','مخاطب'],a:'منظم منتشر کن، در اکسپلور عکس باکیفیت بگذار، در گروه و دایرکت گفتگو کن، و تخصص مشخص داشته باش.'},
+{k:['بن','اخطار','مسدود'],a:'بن ربات معمولاً ۵ روزه است و خودکار باز می‌شود. بن مالک (ریپلای «بن») دائمی است. ۳ اخطار پست بلند هم می‌تواند بن بیاورد.'},
+{k:['حذف','ریپلای','ادمین'],a:'فقط سازنده: زیر پست ریپلای «حذف» = پاک شدن پست. ریپلای «بن» = بن دائمی نویسنده و حذف پست.'},
+{k:['گروه','دایرکت','چت'],a:'در دایرکت می‌توانی چت خصوصی یا گروه بسازی. نام گروه و نام کاربری اعضا را با کاما وارد کن.'},
+{k:['تم','رنگ','پس‌زمینه'],a:'از تنظیمات تم فضا، تیره، خورشیدی، خونی، اقیانوس یا نئون را انتخاب کن؛ پس‌زمینه عوض می‌شود.'},
+{k:['موبایل','گوشی','اندروید','آیفون'],a:'سایت برای موبایل بهینه است. AI هم در نوار پایین گوشی در دسترس است. می‌توانی به صفحه اصلی اضافه کنی.'},
+{k:['امنیت','هک','ربات'],a:'بخش زیادی از بررسی‌ها روی سرور انجام می‌شود. رمزهای حساس در کد سایت نیستند. نسخه قدیمی قفل می‌شود.'},
+{k:['سلام','درود','هی','hello','hi'],a:'سلام! من AI داخلی لومرا هستم. از قوانین، پست، رشد، بن یا امکانات بپرس.'},
+{k:['خداحافظ','بای','شب'],a:'خداحافظ. مواظب محتوایت باش و برگرد.'},
+{k:['اسم','تو کی','هوش'],a:'من دستیار متنی داخل لومرا هستم؛ به OpenAI وصل نیستم. جواب‌ها از دانش ازپیش‌تعیین‌شده لومرا می‌آید.'},
+{k:['شماره','ثبت','عضویت'],a:'برای عضویت نام، نام کاربری انگلیسی، موبایل ایران و رمز لازم است. شماره با رقم‌های یکسان پشت‌سرهم رد می‌شود.'}
+];
+
+let user=null,posts=[],stories=[],channels=[],dms=[],groups=[],groupMsgs=[],repliesMap={};
+let postMode='post',expFilter='all',mediaData=null,mediaType='text';
+let dmPeer=null,activeGroup=null,botTimer=null,clientIp='',clientFp='',ownerName=OWNER;
+let recentMsgTimes=[];
+
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return 'h'+Math.abs(h).toString(36)+s.length}
+function normPhone(p){return (p||'').replace(/\D/g,'').slice(0,11)}
+function isIranPhone(p){return /^09\d{9}$/.test(normPhone(p))}
+function hasTripleDigit(p){return /(\d)\1\1/.test(normPhone(p))}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.remove('hidden');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.add('hidden'),2600)}
+function openM(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('hidden');el.classList.add('flex'); if(id==='m-post') try{loadDraft()}catch(e){}}
+function closeM(id){const el=document.getElementById(id);if(!el)return;el.classList.add('hidden');el.classList.remove('flex')}
+function timeAgo(iso){if(!iso)return'';const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return'الان';if(d<3600)return Math.floor(d/60)+'د';if(d<86400)return Math.floor(d/3600)+'س';return Math.floor(d/86400)+'ر'}
+function avUrl(u){if(u&&u.avatar_url)return u.avatar_url;const n=(u&&(u.display_name||u.username)||'?').charAt(0);return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect fill="#22d3ee" width="80" height="80"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="36" font-family="sans-serif">'+n+'</text></svg>')}
+function isOwner(u){return (u||'').toLowerCase()===String(ownerName||OWNER).toLowerCase()}
+function normalize(t){return (t||'').toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]/g,'')}
+
+function deviceInfo(){
+  const ua=navigator.userAgent||'';
+  let model='unknown';
+  if(/iPhone/.test(ua))model='iPhone';
+  else if(/Android/.test(ua)){const m=ua.match(/Android\s[\d.]+;\s*([^)]+)\)/);model=m?m[1].slice(0,40):'Android'}
+  else if(/Windows/.test(ua))model='Windows';
+  else if(/Mac/.test(ua))model='Mac';
+  else model=ua.slice(0,50);
+  return model;
+}
+
+async function getIp(){try{const ctrl=typeof AbortController!=='undefined'?new AbortController():null;const t=ctrl?setTimeout(()=>ctrl.abort(),3000):null;const r=await fetch('https://api.ipify.org?format=json',ctrl?{signal:ctrl.signal}:{});if(t)clearTimeout(t);const j=await r.json();return j.ip||''}catch(e){return ''}}
+async function getGeoApprox(){
+  try{
+    const ctrl=typeof AbortController!=='undefined'?new AbortController():null;const t=ctrl?setTimeout(()=>ctrl.abort(),3500):null;const r=await fetch('https://ipapi.co/json/',ctrl?{signal:ctrl.signal}:{});if(t)clearTimeout(t);
+    const j=await r.json();
+    if(j&&j.city)return (j.city||'')+','+(j.country_name||j.country||'');
+  }catch(e){}
+  return '';
+}
+function getFingerprint(){try{const s=[navigator.userAgent,navigator.language,screen.width+'x'+screen.height].join('|');let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return 'fp_'+Math.abs(h).toString(36)}catch(e){return 'fp_x'}}
+
+function clientModerationReason(text){
+  if(isObsceneText(text)) return "obscene";
+  const n=normalize(text);const raw=(text||'').toLowerCase();
+  for(const w of BAD_RAW){if(n.includes(normalize(w))||raw.includes(w))return 'profanity'}
+  if(/ک\s*[\.\-_*]*\s*ی\s*[\.\-_*]*\s*ر|ک\s*[\.\-_*]*\s*ص/.test(raw))return 'profanity';
+  for(const w of POL_RAW){if(n.includes(normalize(w))||raw.includes(w))return 'political'}
+  if(CODE_RE.test(raw))return 'malicious_code';
+  if(/(https?:\/\/|www\.)/i.test(raw) && (raw.match(/https?:\/\/|www\./gi)||[]).length>=3)return 'link_spam';
+  if(/(.)\1{7,}/.test(raw))return 'char_spam';
+  if((raw.match(/@\w+/g)||[]).length>=5)return 'mention_spam';
+  return null;
+}
+
+async function hardBanUser(profile,reason,permanent){
+  if(!profile||isOwner(profile.username))return;
+  try{
+    await sb.rpc('safe_ban_user',{p_username:profile.username,p_reason:reason||'ban',p_permanent:!!permanent});
+    if(profile.phone)await sb.from('banned_phones').upsert({phone:profile.phone,reason:reason||''});
+    if(profile.last_ip)await sb.from('banned_ips').upsert({ip:profile.last_ip,reason:reason||''});
+    if(profile.fingerprint)await sb.from('banned_fingerprints').upsert({fingerprint:profile.fingerprint,reason:reason||''});
+  }catch(e){
+    try{await sb.from('profiles').update({is_banned:true,ban_type:permanent?'permanent':'temporary',banned_until:permanent?null:new Date(Date.now()+5*864e5).toISOString()}).eq('id',profile.id)}catch(e2){}
+  }
+}
+
+async function isBlocked(){
+  clientFp=getFingerprint();clientIp=await getIp();
+  if(clientIp){const {data}=await sb.from('banned_ips').select('ip').eq('ip',clientIp).maybeSingle();if(data)return 'IP مسدود'}
+  if(clientFp){const {data}=await sb.from('banned_fingerprints').select('fingerprint').eq('fingerprint',clientFp).maybeSingle();if(data)return 'دستگاه مسدود'}
+  return null;
+}
+
+async function checkSiteStatus(){
+  try{
+    const {data,error}=await sb.rpc('get_site_status');
+    if(error)return true;
+    if(data&&data.min_version&&data.min_version!==APP_VERSION&&data.min_version!=='2026.09.25-secure'){
+      /* allow previous secure version transition */
+    }
+    if(data&&data.owner_username)ownerName=data.owner_username;
+    const until=data&&data.site_locked_until;
+    if(until){const t=Date.parse(until);if(!isNaN(t)&&t>Date.now()){document.getElementById('lock').classList.remove('hidden');document.getElementById('auth').classList.add('hidden');document.getElementById('app').classList.add('hidden');document.getElementById('lock-msg').textContent='تا '+new Date(t).toLocaleTimeString('fa-IR');return false}}
+  }catch(e){}
+  return true;
+}
+
+function checkSpamFlood(){
+  if(isOwner(user&&user.username))return false;
+  const now=Date.now();
+  recentMsgTimes=recentMsgTimes.filter(t=>now-t<90000);
+  recentMsgTimes.push(now);
+  return recentMsgTimes.length>3;
+}
+
+function authTab(t){
+  try{
+    const fl=document.getElementById('f-login'),fr=document.getElementById('f-reg');
+    const tl=document.getElementById('t-login'),tr=document.getElementById('t-reg');
+    if(fl) fl.classList.toggle('hidden',t!=='login');
+    if(fr) fr.classList.toggle('hidden',t!=='register');
+    if(tl) tl.classList.toggle('on',t==='login');
+    if(tr) tr.classList.toggle('on',t==='register');
+  }catch(e){console.error(e)}
+}
+
+async function collectAndSaveMeta(uid,opts){
+  if(!uid)return;
+  opts=opts||{};
+  const dev=deviceInfo();
+  const geo=await getGeoApprox();
+  const payload={last_ip:clientIp||'',fingerprint:clientFp||'',device_info:dev};
+  if(geo)payload.geo_info=geo;
+  if(opts.login)payload.last_login_at=new Date().toISOString();
+  if(opts.logout)payload.last_logout_at=new Date().toISOString();
+  try{await sb.from('profiles').update(payload).eq('id',uid)}catch(e){}
+}
+
+async function doLogin(){
+  if(typeof needSb==='function' && !needSb())return;
+  const username=document.getElementById('l-user').value.trim().toLowerCase();
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  if(!username||!pass){err.textContent='نام کاربری و رمز لازم است';err.classList.remove('hidden');return}
+  if(HACKER_NAME.test(username)){err.textContent='نام غیرمجاز';err.classList.remove('hidden');return}
+  document.getElementById('btn-login').disabled=true;
+  try{
+    if(!(await checkSiteStatus()))return;
+    const blocked=await isBlocked();if(blocked){err.textContent=blocked;err.classList.remove('hidden');return}
+    const {data,error}=await sb.from('profiles').select('*').eq('username',username).maybeSingle();
+    if(error)throw error;
+    if(!data){err.textContent='کاربر یافت نشد';err.classList.remove('hidden');return}
+    // آنبن موقت منقضی
+    if(data.is_banned&&data.ban_type==='temporary'&&data.banned_until&&new Date(data.banned_until)<new Date()){
+      await sb.from('profiles').update({is_banned:false,ban_type:'',banned_until:null}).eq('id',data.id);
+      data.is_banned=false;
+    }
+    if(data.is_banned&&!isOwner(data.username)){err.textContent=data.ban_type==='permanent'?'بن دائمی':'بن موقت تا '+(data.banned_until?new Date(data.banned_until).toLocaleDateString('fa-IR'):'');err.classList.remove('hidden');return}
+    if(data.phone&&!isOwner(data.username)){const {data:bp}=await sb.from('banned_phones').select('phone').eq('phone',data.phone).maybeSingle();if(bp){err.textContent='شماره بن';err.classList.remove('hidden');return}}
+    if(data.password_hash!==hash(pass)){err.textContent='رمز اشتباه';err.classList.remove('hidden');return}
+    const isAdm=isOwner(data.username);
+    await sb.from('profiles').update({is_admin:isAdm,approval_status:'approved',is_banned:isAdm?false:data.is_banned}).eq('id',data.id);
+    await collectAndSaveMeta(data.id,{login:true});
+    user={...data,is_admin:isAdm,is_banned:false,is_vip:!!data.is_vip||isOwner(data.username),last_ip:clientIp,fingerprint:clientFp};
+    localStorage.setItem('lm_user',JSON.stringify(user));await enter();
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-login').disabled=false}
+}
+
+async function doRegister(){
+  if(typeof needSb==='function' && !needSb())return;
+  const name=document.getElementById('r-name').value.trim();
+  const username=document.getElementById('r-user').value.trim().toLowerCase();
+  const phone=normPhone(document.getElementById('r-phone').value);
+  const pass=document.getElementById('r-pass').value;
+  const err=document.getElementById('r-err');
+  if(!name||name.length<2){err.textContent='نام کوتاه است';err.classList.remove('hidden');return}
+  if(!username||username.length<3||!/^[a-z0-9_]+$/.test(username)){err.textContent='نام کاربری نامعتبر';err.classList.remove('hidden');return}
+  if(HACKER_NAME.test(username)||HACKER_NAME.test(name)){err.textContent='این نام مجاز نیست';err.classList.remove('hidden');return}
+  if(!isIranPhone(phone)){err.textContent='شماره ایران نامعتبر';err.classList.remove('hidden');return}
+  if(hasTripleDigit(phone)){err.textContent='شماره فیک (رقم تکراری)';err.classList.remove('hidden');return}
+  if(!pass||pass.length<8){err.textContent='رمز حداقل ۸ کاراکتر';err.classList.remove('hidden');return}
+  document.getElementById('btn-reg').disabled=true;
+  try{
+    if(!(await checkSiteStatus()))return;
+    const blocked=await isBlocked();if(blocked){err.textContent=blocked;err.classList.remove('hidden');return}
+    const {data:banned}=await sb.from('banned_phones').select('phone').eq('phone',phone).maybeSingle();
+    if(banned){err.textContent='شماره بن است';err.classList.remove('hidden');return}
+    const {data:exU}=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
+    if(exU){err.textContent='نام کاربری تکراری';err.classList.remove('hidden');return}
+    const {data:exP}=await sb.from('profiles').select('id').eq('phone',phone).maybeSingle();
+    if(exP){err.textContent='شماره تکراری';err.classList.remove('hidden');return}
+    const isAdm=isOwner(username);
+    const geo=await getGeoApprox();
+    const {data,error}=await sb.from('profiles').insert({
+      username,display_name:name,password_hash:hash(pass),phone,
+      approval_status:'approved',is_admin:isAdm,last_ip:clientIp,fingerprint:clientFp,
+      device_info:deviceInfo(),geo_info:geo||'',last_login_at:new Date().toISOString(),avatar_url:'',bio:'',long_post_warnings:0,consecutive_posts:0
+    }).select().single();
+    if(error)throw error;
+    user=data;localStorage.setItem('lm_user',JSON.stringify(user));await enter();toast('خوش آمدی');
+  }catch(e){err.textContent='خطا: '+(e.message||e);err.classList.remove('hidden')}
+  finally{document.getElementById('btn-reg').disabled=false}
+}
+
+async function enter(){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  const n=user.display_name||user.username;const adm=isOwner(user.username);
+  document.getElementById('hav').src=avUrl(user);
+  document.getElementById('hname').textContent=n;
+  document.getElementById('pav').src=avUrl(user);
+  document.getElementById('pname').textContent=n+(adm?' 👑':'');
+  document.getElementById('puser').textContent='@'+user.username+(adm?' · سازنده':'');
+  document.getElementById('sp').textContent=(user.posts_count||0).toLocaleString('fa-IR');
+  document.getElementById('sc').textContent=(user.channels_count||0).toLocaleString('fa-IR');
+  setTheme(localStorage.getItem('lm_theme')||'space',true);
+  await loadAll();if(posts.length<2)runBot();go('home');startBots(); try{var ic=document.getElementById('inv-code'); if(ic) ic.textContent=myInvite();}catch(e){}
+}
+async function logout(){
+  try{if(user&&user.id)await collectAndSaveMeta(user.id,{logout:true})}catch(e){}
+  localStorage.removeItem('lm_user');user=null;recentMsgTimes=[];
+  if(botTimer)clearInterval(botTimer);
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('auth').classList.remove('hidden');
+}
+
+async function loadAll(){await Promise.all([loadFeed(),loadStories(),loadChannels(),loadDms(),loadGroups()])}
+async function loadFeed(){
+  const {data}=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(40);
+  posts=data||[];repliesMap={};
+  const ids=posts.map(p=>p.id);
+  if(ids.length){const {data:reps}=await sb.from('post_replies').select('*').in('post_id',ids).order('created_at',{ascending:true}).limit(100);(reps||[]).forEach(r=>{if(!repliesMap[r.post_id])repliesMap[r.post_id]=[];repliesMap[r.post_id].push(r)})}
+  renderFeed();renderExplore();
+}
+async function loadStories(){const {data}=await sb.from('stories').select('*').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(15);stories=data||[];renderStories()}
+async function loadChannels(){const {data}=await sb.from('channels').select('*').order('created_at',{ascending:false}).limit(20);channels=data||[];renderChannels()}
+async function loadDms(){if(!user)return;const {data}=await sb.from('direct_messages').select('*').or('sender_username.eq.'+user.username+',receiver_username.eq.'+user.username).order('created_at',{ascending:false}).limit(50);dms=data||[];renderDmList()}
+async function loadGroups(){if(!user)return;const {data}=await sb.from('chat_groups').select('*').order('created_at',{ascending:false}).limit(30);groups=(data||[]).filter(g=>!g.members||g.members.length===0||g.members.includes(user.username)||g.created_by===user.username);renderGroupList()}
+
+function go(v){
+  if(v==='menu'){
+    try{
+      var fx=document.getElementById('menu-fx');
+      if(fx){
+        fx.classList.add('on');
+        setTimeout(function(){
+          goAfterFx('menu');
+          setTimeout(function(){ fx.classList.remove('on'); }, 280);
+        }, 500);
+        return;
+      }
+    }catch(e){}
+  }
+  goAfterFx(v);
+}
+function goAfterFx(v){
+  try{
+    document.querySelectorAll('.view').forEach(e=>e.classList.add('hidden'));
+    const el=document.getElementById('v-'+v);
+    if(el){el.classList.remove('hidden');el.classList.remove('fade');void el.offsetWidth;el.classList.add('fade')}
+    document.querySelectorAll('.navb').forEach(b=>{
+      if(b.dataset && b.dataset.n) b.classList.toggle('nav-on', b.dataset.n===v);
+    });
+    if(v==='settings' && user){
+      try{ var gk=document.getElementById('gemini-key'); if(gk) gk.value=localStorage.getItem('lm_gemini_key')||''; }catch(e){}
+
+      const sn=document.getElementById('setname'); const sbio=document.getElementById('setbio');
+      if(sn) sn.value=user.display_name||'';
+      if(sbio) sbio.value=user.bio||'';
+    }
+    if(v==='explore'){ try{renderExplore()}catch(e){console.log(e)} }
+    if(v==='direct'){ try{loadDms();loadGroups()}catch(e){console.log(e)} }
+    if(v==='tools'){ try{toolTab('goals')}catch(e){console.log(e)} }
+    if(v==='wow'){ try{loadWow()}catch(e){} }
+    if(v==='game'){ try{gHub('list');renderGamesGrid();}catch(e){try{gameShowBest()}catch(e2){}} }
+    if(v==='memory'){ try{refreshAiQuota()}catch(e){} 
+      const box=document.getElementById('mbox');
+      if(box && !box.dataset.ready){
+        box.dataset.ready='1';
+        box.innerHTML='<div class="flex justify-start"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%]">سلام! من AI لومرا هستم. بپرس.</div></div>';
+      }
+    }
+  }catch(e){ console.error('go error', e); }
+}
+
+function pollHtml(p){
+  try{
+    var opts=(p.poll_options||'').split('|').map(function(s){return s.trim()}).filter(Boolean);
+    if(!opts.length)return '';
+    var votes={}; try{votes=JSON.parse(p.poll_votes||'{}')}catch(e){}
+    return '<div class="mt-2 space-y-1">'+opts.map(function(o,i){
+      var c=votes[i]||0;
+      return '<button type="button" class="btn btn-ghost w-full py-1 text-[10px]" onclick="votePoll(\''+p.id+'\','+i+')">'+esc(o)+' ('+c+')</button>';
+    }).join('')+'</div>';
+  }catch(e){return ''}
+}
+async function votePoll(pid,idx){
+  try{
+    var p=posts.find(function(x){return x.id===pid}); if(!p)return;
+    var votes={}; try{votes=JSON.parse(p.poll_votes||'{}')}catch(e){}
+    votes[idx]=(votes[idx]||0)+1;
+    await sb.from('posts').update({poll_votes:JSON.stringify(votes)}).eq('id',pid);
+    toast('رای ثبت شد'); loadFeed();
+  }catch(e){toast('خطا رای')}
+}
+function postCard(p){
+  const adm=p.is_admin_post||isOwner(p.author_username);
+  const badge=adm?'<span class="admin-badge badge">ادمین 👑</span>':'';
+  let media='';
+  if(p.media_url&&p.media_type==='image')media='<img src="'+p.media_url+'" class="w-full rounded-lg mt-2 max-h-72 object-cover" loading="lazy"/>';
+  if(p.media_url&&p.media_type==='video')media='<video src="'+p.media_url+'" class="w-full rounded-lg mt-2 max-h-72" controls></video>';
+  const av=(p.avatar&&(String(p.avatar).startsWith('data')||String(p.avatar).startsWith('http')))?p.avatar:avUrl({display_name:p.author_name});
+  const reps=repliesMap[p.id]||[];
+  let repliesHtml=reps.length?'<div class="mt-2 space-y-1.5">'+reps.map(r=>'<div class="reply-box text-xs"><span class="font-medium" style="color:var(--accent)">'+esc(r.author_name)+(r.is_admin?' 👑':'')+':</span> '+esc(r.body)+'</div>').join('')+'</div>':'';
+  const ph=isOwner(user.username)?'ریپلای / حذف / بن':'ریپلای';
+  const replyUi='<div class="mt-2 flex gap-1"><input id="reply-'+p.id+'" class="input !py-1.5 text-xs flex-1" placeholder="'+ph+'" onkeydown="if(event.key===\'Enter\')sendReply(\''+p.id+'\')"/><button onclick="sendReply(\''+p.id+'\')" class="btn btn-ghost px-2 text-xs">↵</button></div>';
+  return '<article class="glass rounded-xl p-3.5"><div class="flex gap-2.5"><img src="'+av+'" class="w-9 h-9 av flex-shrink-0" loading="lazy"/><div class="flex-1 min-w-0"><div class="flex items-center gap-1.5 flex-wrap mb-1"><span class="text-sm font-medium">'+esc(p.author_name)+'</span>'+(isOwner(p.author_username)?' <span class="vip-badge">VIP</span>':'')+badge+'<span class="text-[10px]" style="color:var(--muted)">'+timeAgo(p.created_at)+'</span></div><p class="text-sm whitespace-pre-line">'+esc(p.content)+'</p>'+media+'<div class="flex gap-3 mt-2 text-[11px]" style="color:var(--muted)"><button onclick="likePost(\''+p.id+'\','+(p.likes_count||0)+')">♥ '+(p.likes_count||0)+'</button><button onclick="savePost(\''+p.id+'\')"> save</button><button onclick="savePost(\''+p.id+'\')"> save</button></div>'+repliesHtml+replyUi+'</div></div></article>';
+}
+
+async function sendReply(postId){
+  const inp=document.getElementById('reply-'+postId);if(!inp)return;
+  let body=inp.value.trim();if(!body)return;
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن ۵ روزه');setTimeout(function(){logout()},1000);return}
+  const cmd=body;
+  if(cmd!=='حذف'&&cmd!=='بن'){
+    const reason=clientModerationReason(body);
+    if(reason){await hardBanUser(user,reason,false);toast('بن');setTimeout(function(){logout()},1000);return}
+  }else if(!isOwner(user.username)){toast('فقط مالک');return}
+  const n=user.display_name||user.username;
+  const post=posts.find(function(x){return x.id===postId});
+  try{
+    if(cmd==='حذف'&&isOwner(user.username)){
+      await sb.from('posts').delete().eq('id',postId);
+      toast('پست حذف شد'); await loadFeed(); return;
+    }
+    if(cmd==='بن'&&isOwner(user.username)){
+      if(post&&post.author_username) await hardBanUser({username:post.author_username,id:post.user_id},'owner_ban',true);
+      toast('کاربر بن دائمی شد'); await loadFeed(); return;
+    }
+    const {error}=await sb.from('post_replies').insert({post_id:postId,author_username:user.username,author_name:n,body:body,is_admin:isOwner(user.username)});
+    if(error)throw error;
+    inp.value='';
+    if(isOwner(user.username) && post && post.author_username && !isOwner(post.author_username) && /^vip\s*$/i.test(body.trim())){
+      await grantVip(post.author_username);
+      toast('VIP برای @'+post.author_username+' فعال شد');
+    } else if(isOwner(user.username) && /^vip\s*$/i.test(body.trim())){
+      toast('کاربر پست پیدا نشد');
+    } else {
+      toast('ارسال شد');
+    }
+    await loadFeed();
+  }catch(e){
+    var msg=e.message||String(e);
+    if(msg.indexOf('CONTENT_BLOCKED')>=0){await hardBanUser(user,'reply',false);toast('بن');setTimeout(function(){logout()},1000)}
+    else toast('خطا');
+  }
+}
+
+function renderFeed(){document.getElementById('feed').innerHTML=posts.map(postCard).join('')||'<p class="text-center text-sm py-8" style="color:var(--muted)">خالی</p>'}
+function renderExplore(){
+  let list=[...posts];
+  if(expFilter==='image')list=list.filter(p=>p.media_type==='image'&&p.media_url);
+  if(expFilter==='video')list=list.filter(p=>p.media_type==='video'&&p.media_url);
+  const show=list.filter(p=>p.media_url).length?list.filter(p=>p.media_url):list;
+  document.getElementById('explore-grid').innerHTML=show.map(p=>{
+    if(p.media_url&&p.media_type==='image')return '<div class="explore-item"><img src="'+p.media_url+'" loading="lazy"/></div>';
+    if(p.media_url&&p.media_type==='video')return '<div class="explore-item"><video src="'+p.media_url+'" muted></video></div>';
+    return '<div class="explore-item flex items-center justify-center p-2 text-[11px] text-center" style="color:var(--muted)">'+esc((p.content||'').slice(0,36))+'</div>';
+  }).join('')||'<p class="col-span-3 text-center text-sm py-8" style="color:var(--muted)">خالی</p>';
+}
+function renderStories(){
+  let html='<button onclick="openM(\'m-post\');postMode=\'story\';document.getElementById(\'ptab-story\').classList.add(\'nav-on\');document.getElementById(\'ptab-post\').classList.remove(\'nav-on\')" class="flex-shrink-0 flex flex-col items-center gap-1 w-14"><div class="w-12 h-12 rounded-full border-2 border-dashed flex items-center justify-center text-sm" style="border-color:var(--border)">+</div><span class="text-[9px]" style="color:var(--muted)">شما</span></button>';
+  stories.forEach((s,i)=>{
+    html+='<div onclick="openStory('+i+')" class="flex-shrink-0 flex flex-col items-center gap-1 w-14 cursor-pointer"><div class="story-ring"><div class="rounded-full flex items-center justify-center text-sm font-bold text-white overflow-hidden" style="width:44px;height:44px;background:var(--surface)">'+(s.media_url&&s.media_type==='image'?'<img src="'+s.media_url+'" class="w-full h-full object-cover"/>':esc(s.avatar||'?'))+'</div></div><span class="text-[9px] truncate w-full text-center">'+esc(s.author_name)+'</span></div>';
+  });
+  document.getElementById('stories').innerHTML=html;
+}
+function openStory(i){
+  const s=stories[i];if(!s)return;
+  document.getElementById('story-name').textContent=s.author_name||'';
+  document.getElementById('story-time').textContent=timeAgo(s.created_at);
+  document.getElementById('story-av').textContent=(s.avatar||s.author_name||'?').toString().charAt(0);
+  document.getElementById('story-text').textContent=s.body||'';
+  const body=document.getElementById('story-body');
+  if(s.media_url&&s.media_type==='video'){
+    body.innerHTML='<video src="'+s.media_url+'" class="max-w-full max-h-[70vh] rounded-xl" controls autoplay playsinline></video>';
+  }else if(s.media_url&&(s.media_type==='image'||String(s.media_url).startsWith('data:image'))){
+    body.innerHTML='<img src="'+s.media_url+'" class="max-w-full max-h-[70vh] rounded-xl object-contain"/>';
+  }else if(s.media_url){
+    body.innerHTML='<img src="'+s.media_url+'" class="max-w-full max-h-[70vh] rounded-xl object-contain" onerror="this.style.display=\'none\'"/>';
+  }else{
+    body.innerHTML='<div class="text-white/80 text-center text-lg px-6">'+esc(s.body||'استوری')+'</div>';
+  }
+  openM('m-story');
+}
+function renderChannels(){document.getElementById('chlist').innerHTML=channels.map(c=>'<div onclick="openChannel(\''+c.id+'\',\''+esc(c.name)+'\','+(c.members_count||1)+')" class="glass rounded-xl p-3.5 cursor-pointer"><h3 class="text-sm font-semibold">'+esc(c.name)+'</h3><p class="text-[11px] mt-1" style="color:var(--muted)">'+esc(c.description||'')+'</p></div>').join('')||'<p class="text-sm col-span-full text-center py-6" style="color:var(--muted)">خالی</p>'}
+function openChannel(id,name,m){document.getElementById('chtitle').textContent=name;document.getElementById('chmeta').textContent=m+' عضو';document.getElementById('chfeed').innerHTML=posts.slice(0,4).map(postCard).join('');go('channel')}
+function pickMedia(input,type){const f=input.files[0];if(!f)return;if(f.size>1.8*1024*1024){toast('حداکثر ۱.۸مگ');return}const r=new FileReader();r.onload=e=>{mediaData=e.target.result;mediaType=type;const p=document.getElementById('media-preview');p.classList.remove('hidden');p.innerHTML=type==='image'?'<img src="'+mediaData+'" class="w-full max-h-40 object-cover rounded-lg"/>':'<video src="'+mediaData+'" class="w-full max-h-40" controls></video>'};r.readAsDataURL(f)}
+
+async function publish(){
+  const text=document.getElementById('pbody').value.trim();
+  if(!text&&!mediaData)return toast('متن یا رسانه');
+  if(isObsceneText(text)){await banObscene('obscene_text');return;}
+  if(mediaData&&isObsceneText(String(mediaType)+String(document.getElementById('pbody')&&document.getElementById('pbody').value))){await banObscene('obscene_media');return;}
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن ۵ روزه');setTimeout(function(){logout()},1000);return}
+  const reason=clientModerationReason(text);
+  if(reason){
+    var pw=document.getElementById('pwarn'); if(pw){pw.textContent='محتوای ممنوع';pw.classList.remove('hidden')}
+    await hardBanUser(user,reason,false);toast('بن');setTimeout(function(){logout()},1000);return
+  }
+  if(text.length>50&&!isOwner(user.username)){
+    const w=(user.long_post_warnings||0)+1;
+    await sb.from('profiles').update({long_post_warnings:w}).eq('id',user.id);
+    user.long_post_warnings=w;localStorage.setItem('lm_user',JSON.stringify(user));
+    if(w>=3){await hardBanUser(user,'long_post',false);toast('۳ اخطار — بن ۵ روزه');setTimeout(function(){logout()},1200);return}
+    var pw2=document.getElementById('pwarn'); if(pw2){pw2.textContent='اخطار '+w+'/3 پست بلند';pw2.classList.remove('hidden')}
+  }else{ var pw3=document.getElementById('pwarn'); if(pw3) pw3.classList.add('hidden'); }
+  document.getElementById('btn-pub').disabled=true;
+  try{
+    const n=user.display_name||user.username; const adm=isOwner(user.username);
+    const tagsEl=document.getElementById('p-tags'); const tags=tagsEl?tagsEl.value.trim():'';
+    const anon=document.getElementById('p-anon')&&document.getElementById('p-anon').checked;
+    const poll=document.getElementById('p-poll')?document.getElementById('p-poll').value.trim():'';
+    const sched=document.getElementById('p-schedule')?document.getElementById('p-schedule').value:'';
+    const authorName=anon?'ناشناس':n;
+    const authorUser=anon?('anon_'+(user.username||'').slice(0,4)):user.username;
+    if(postMode==='story'){
+      const res=await sb.from('stories').insert({user_id:user.id,author_name:n,author_username:user.username,avatar:n.charAt(0),body:(text||'استوری').slice(0,120),is_admin_story:adm,media_url:mediaData||'',media_type:mediaData?mediaType:'text'});
+      if(res.error)throw res.error; toast('استوری');
+    }else if(sched){
+      const res=await sb.from('scheduled_posts').insert({user_id:user.id,username:user.username,content:text||'',media_url:mediaData||'',media_type:mediaData?mediaType:'text',publish_at:new Date(sched).toISOString()});
+      if(res.error)throw res.error; toast('زمان‌بندی شد');
+    }else{
+      const res=await sb.from('posts').insert({user_id:user.id,author_name:authorName,author_username:authorUser,avatar:anon?'?':(user.avatar_url||n.charAt(0)),content:text||'',channel:'عمومی',is_admin_post:adm,media_url:mediaData||'',media_type:mediaData?mediaType:'text',hashtags:tags,is_anonymous:!!anon,poll_options:poll,poll_votes:'{}'});
+      if(res.error)throw res.error;
+      await sb.from('profiles').update({posts_count:(user.posts_count||0)+1,last_post_at:new Date().toISOString()}).eq('id',user.id);
+      user.posts_count=(user.posts_count||0)+1; localStorage.setItem('lm_user',JSON.stringify(user));
+      var sp=document.getElementById('sp'); if(sp) sp.textContent=user.posts_count.toLocaleString('fa-IR');
+      try{addPoints(5)}catch(e){}
+      toast('منتشر شد'); try{missionProgress('post')}catch(e){}
+      localStorage.removeItem('lm_draft');
+    }
+    document.getElementById('pbody').value=''; mediaData=null; mediaType='text';
+    var mp=document.getElementById('media-preview'); if(mp) mp.classList.add('hidden');
+    var pt=document.getElementById('p-tags'); if(pt) pt.value='';
+    var pa=document.getElementById('p-anon'); if(pa) pa.checked=false;
+    var ppo=document.getElementById('p-poll'); if(ppo) ppo.value='';
+    var psc=document.getElementById('p-schedule'); if(psc) psc.value='';
+    closeM('m-post'); await loadFeed();
+  }catch(e){
+    var msg=e.message||String(e);
+    if(msg.indexOf('CONTENT_BLOCKED')>=0){await hardBanUser(user,'server',false);toast('بن سرور');setTimeout(function(){logout()},1000)}
+    else toast('خطا');
+  }finally{ var bp=document.getElementById('btn-pub'); if(bp) bp.disabled=false; }
+}
+async function likePost(id,c){ try{burstReact("❤️");haptic()}catch(e){} await sb.from('posts').update({likes_count:(c||0)+1}).eq('id',id);await loadFeed()}
+async function createChannel(){const name=document.getElementById('nch').value.trim();if(!name)return toast('نام');if(clientModerationReason(name))return toast('غیرمجاز');await sb.from('channels').insert({name,description:document.getElementById('ncd').value.trim()||'',created_by:user.id,members_count:1});closeM('m-channel');await loadChannels();toast('ساخته شد')}
+async function createGroup(){const name=document.getElementById('gname').value.trim();const memRaw=document.getElementById('gmembers').value.trim();if(!name)return toast('نام');if(clientModerationReason(name))return toast('غیرمجاز');const members=memRaw?memRaw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean):[];if(!members.includes(user.username))members.push(user.username);await sb.from('chat_groups').insert({name,created_by:user.username,members});closeM('m-group');await loadGroups();toast('گروه ساخته شد')}
+async function uploadAvatar(input){const f=input.files[0];if(!f||f.size>1.2*1024*1024){toast('حداکثر ۱.۲مگ');return}const r=new FileReader();r.onload=async e=>{const url=e.target.result;await sb.from('profiles').update({avatar_url:url}).eq('id',user.id);user.avatar_url=url;localStorage.setItem('lm_user',JSON.stringify(user));document.getElementById('hav').src=url;document.getElementById('pav').src=url;toast('ذخیره')};r.readAsDataURL(f)}
+async function saveProfile(){const name=document.getElementById('setname').value.trim();const bio=document.getElementById('setbio').value.trim();if(HACKER_NAME.test(name)||clientModerationReason(name+' '+bio)){toast('غیرمجاز');return}if(name){await sb.from('profiles').update({display_name:name,bio}).eq('id',user.id);user.display_name=name;user.bio=bio;localStorage.setItem('lm_user',JSON.stringify(user));document.getElementById('hname').textContent=name;document.getElementById('pname').textContent=name+(isOwner(user.username)?' 👑':'')}toast('ذخیره')}
+function setTheme(t,s){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('lm_theme',t);if(!s)toast('تم')}
+
+
+
+function renderDmList(){
+  const peers={};(dms||[]).forEach(m=>{const o=m.sender_username===user.username?m.receiver_username:m.sender_username;if(!peers[o])peers[o]={user:o,name:m.sender_username===user.username?o:m.sender_name,last:m.body}});
+  document.getElementById('dm-list').innerHTML=Object.values(peers).map(p=>'<button onclick="openDm(\''+p.user+'\',\''+esc(p.name)+'\')" class="w-full flex items-center gap-2 p-2 rounded-lg text-right" style="background:var(--surface)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent),var(--accent2))">'+(p.name||'?').charAt(0)+'</div><div class="min-w-0"><p class="text-sm font-medium truncate">'+esc(p.name)+'</p></div></button>').join('')||'<p class="text-xs text-center py-2" style="color:var(--muted)">خصوصی نیست</p>';
+}
+function renderGroupList(){
+  document.getElementById('group-list').innerHTML=groups.map(g=>'<button onclick="openGroup(\''+g.id+'\',\''+esc(g.name)+'\')" class="w-full flex items-center gap-2 p-2 rounded-lg text-right" style="background:var(--surface)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,var(--accent2),var(--accent))">گ</div><p class="text-sm font-medium truncate">'+esc(g.name)+'</p></button>').join('');
+}
+function startDm(){
+  const u=(document.getElementById('dm-search').value||'').trim().toLowerCase();
+  if(!u){toast('نام کاربری را بنویس');return}
+  if(u===user.username){toast('با خودت؟');return}
+  activeGroup=null;openDm(u,u);
+}
+function openDm(u,n){
+  activeGroup=null;dmPeer=u;replyToMsg=null;
+  document.getElementById('dm-name').textContent=n||u;
+  document.getElementById('dm-av').textContent=(n||u||'?').charAt(0);
+  document.getElementById('dm-list-view').classList.add('hidden');
+  document.getElementById('dm-chat-view').classList.remove('hidden');
+  document.getElementById('dm-chat-view').classList.add('flex');
+  renderDmMsgs();
+  setTimeout(function(){
+    var inp=document.getElementById('dm-input');
+    if(inp){inp.focus();inp.click();}
+  },300);
+}
+function closeDmChat(){
+  dmPeer=null;activeGroup=null;
+  document.getElementById('dm-chat-view').classList.add('hidden');
+  document.getElementById('dm-chat-view').classList.remove('flex');
+  document.getElementById('dm-list-view').classList.remove('hidden');
+  loadDms();loadGroups();
+}
+async function openGroup(id,name){
+  dmPeer=null;activeGroup=id;
+  document.getElementById('dm-name').textContent='گروه: '+name;
+  document.getElementById('dm-av').textContent='گ';
+  document.getElementById('dm-list-view').classList.add('hidden');
+  document.getElementById('dm-chat-view').classList.remove('hidden');
+  document.getElementById('dm-chat-view').classList.add('flex');
+  const {data}=await sb.from('group_messages').select('*').eq('group_id',id).order('created_at',{ascending:true}).limit(100);
+  groupMsgs=data||[];renderGroupMsgs();
+}
+function renderDmMsgs(){
+  if(!dmPeer)return;
+  if(isBlockedUser(dmPeer)){
+    document.getElementById('dm-msgs').innerHTML='<p class="text-center text-xs py-8" style="color:var(--muted)">این کاربر بلاک است</p>';
+    return;
+  }
+  const msgs=(dms||[]).filter(m=>(m.sender_username===user.username&&m.receiver_username===dmPeer)||(m.sender_username===dmPeer&&m.receiver_username===user.username)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  document.getElementById('dm-msgs').innerHTML=msgs.map(m=>{
+    const mine=m.sender_username===user.username;
+    const body=esc(m.body||'');
+    const rid=m.id||('t'+Math.random());
+    return '<div class="flex '+(mine?'justify-end':'justify-start')+'"><div class="chat-bubble rounded-2xl px-3 py-2 text-sm max-w-[80%] shadow-sm" style="background:'+(mine?'linear-gradient(135deg,color-mix(in srgb,var(--accent) 35%,transparent),color-mix(in srgb,var(--accent2) 25%,transparent))':'var(--surface)')+'">'+body+'<div class="text-[9px] mt-1 opacity-50">'+(timeAgo(m.created_at)||'')+'</div><div class="react-bar"><button type="button" onclick="reactMsg(\''+rid+'_like\')">👍</button><button type="button" onclick="reactMsg(\''+rid+'_heart\')">❤️</button><button type="button" onclick="setReply(\''+rid+'\',\''+body.replace(/'/g,'')+'\')">↩</button></div></div></div>';
+  }).join('')||'<p class="text-center text-xs py-8" style="color:var(--muted)">هنوز پیامی نیست — بنویس</p>';
+  const b=document.getElementById('dm-msgs');b.scrollTop=b.scrollHeight;
+}
+function renderGroupMsgs(){document.getElementById('dm-msgs').innerHTML=groupMsgs.map(m=>'<div class="flex '+(m.sender_username===user.username?'justify-end':'justify-start')+'"><div class="rounded-xl px-3 py-1.5 text-sm max-w-[80%]" style="background:'+(m.sender_username===user.username?'color-mix(in srgb,var(--accent) 20%,transparent)':'var(--surface)')+'"><span class="text-[10px] opacity-70">'+esc(m.sender_name)+'</span><br/>'+esc(m.body)+'</div></div>').join('');const b=document.getElementById('dm-msgs');b.scrollTop=b.scrollHeight}
+async function sendDm(){
+  let t=document.getElementById('dm-input').value.trim();if(!t)return; if(replyToMsg){ t='↩ '+replyToMsg.text+'\n'+t; clearReply(); }
+  if(checkSpamFlood()){await hardBanUser(user,'flood',false);toast('اسپم — بن');setTimeout(()=>logout(),1000);return}
+  const reason=clientModerationReason(t);if(reason){await hardBanUser(user,reason,false);toast('بن');setTimeout(()=>logout(),1000);return}
+  const n=user.display_name||user.username;
+  try{
+    if(activeGroup){await sb.from('group_messages').insert({group_id:activeGroup,sender_username:user.username,sender_name:n,body:t});document.getElementById('dm-input').value='';const {data}=await sb.from('group_messages').select('*').eq('group_id',activeGroup).order('created_at',{ascending:true}).limit(80);groupMsgs=data||[];renderGroupMsgs()}
+    else if(dmPeer){await sb.from('direct_messages').insert({sender_id:user.id,receiver_username:dmPeer,sender_name:n,sender_username:user.username,sender_avatar:user.avatar_url||n.charAt(0),body:t});document.getElementById('dm-input').value='';await loadDms();renderDmMsgs()}
+  }catch(e){toast('خطا')}
+}
+
+async function runBot(){
+  try{
+    const b=BOTS[Math.floor(Math.random()*BOTS.length)];
+    const text=BOT_TEXTS[Math.floor(Math.random()*BOT_TEXTS.length)];
+    const withImg=Math.random()>0.2;
+    await sb.from('posts').insert({author_name:b.name,author_username:b.user,avatar:b.avatar,content:text,channel:'عمومی',is_bot:true,likes_count:Math.floor(Math.random()*12)+1,media_type:withImg?'image':'text',media_url:withImg?BOT_IMGS[Math.floor(Math.random()*BOT_IMGS.length)]:''});
+    await loadFeed();
+  }catch(e){}
+}
+function startBots(){if(botTimer)clearInterval(botTimer);botTimer=setInterval(()=>runBot(),30*60*1000);setTimeout(()=>runBot(),20000);setTimeout(()=>runBot(),120000)}
+
+
+let focusLeft=25*60,focusTimer=null,focusRun=false,fcList=[],fcIdx=0,fcFlip=false;
+function toolTab(name){
+  document.querySelectorAll('.tool-panel').forEach(e=>e.classList.add('hidden'));
+  const el=document.getElementById('tool-'+name);if(el)el.classList.remove('hidden');
+  document.querySelectorAll('.ttab').forEach(b=>b.classList.toggle('nav-on',b.dataset.tt===name));
+  if(name==='goals')loadGoals();
+  if(name==='notes')loadNotes();
+  if(name==='qa')loadQuestions();
+  if(name==='saves')loadSaves();
+  if(name==='mood')loadMoods();
+  if(name==='cards')loadCards();
+  if(name==='mission')loadMissions();
+  if(name==='focus')loadFocusStat();
+}
+async function addGoal(){
+  const t=document.getElementById('goal-in').value.trim();if(!t)return;
+  if(clientModerationReason(t)){toast('غيرمجاز');return}
+  await sb.from('user_goals').insert({user_id:user.id,username:user.username,title:t,done:false,day:new Date().toISOString().slice(0,10)});
+  document.getElementById('goal-in').value='';loadGoals();missionProgress('goal');
+}
+async function loadGoals(){
+  const day=new Date().toISOString().slice(0,10);
+  const {data}=await sb.from('user_goals').select('*').eq('username',user.username).eq('day',day).order('created_at');
+  document.getElementById('goal-list').innerHTML=(data||[]).map(g=>'<div class="glass rounded-lg px-3 py-2 flex items-center gap-2 text-sm"><button onclick="toggleGoal(\''+g.id+'\','+(!g.done)+')">'+(g.done?'[x]':'[ ]')+'</button><span class="flex-1">'+esc(g.title)+'</span></div>').join('')||'<p class="text-xs" style="color:var(--muted)">خالي</p>';
+}
+async function toggleGoal(id,done){await sb.from('user_goals').update({done:done}).eq('id',id);loadGoals()}
+function focusRender(){const m=Math.floor(focusLeft/60),s=focusLeft%60;document.getElementById('focus-time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function focusStart(){if(focusRun)return;focusRun=true;focusTimer=setInterval(async()=>{focusLeft--;focusRender();if(focusLeft<=0){clearInterval(focusTimer);focusRun=false;focusLeft=25*60;focusRender();await sb.from('focus_logs').insert({user_id:user.id,username:user.username,minutes:25});toast('25 min OK');loadFocusStat();missionProgress('focus')}},1000)}
+function focusPause(){focusRun=false;if(focusTimer)clearInterval(focusTimer)}
+function focusReset(){focusPause();focusLeft=25*60;focusRender()}
+async function loadFocusStat(){const {data}=await sb.from('focus_logs').select('minutes').eq('username',user.username);const sum=(data||[]).reduce((a,b)=>a+(b.minutes||0),0);const el=document.getElementById('focus-stat');if(el)el.textContent='مجموع: '+sum+' دقیقه'}
+async function saveNote(){
+  const title=document.getElementById('note-title').value.trim();
+  const body=document.getElementById('note-body').value.trim();
+  if(!body)return toast('متن خالي');
+  if(clientModerationReason(title+' '+body)){toast('غيرمجاز');return}
+  await sb.from('user_notes').insert({user_id:user.id,username:user.username,title:title||'note',body,is_private:true});
+  document.getElementById('note-title').value='';document.getElementById('note-body').value='';loadNotes();toast('OK');
+}
+async function loadNotes(){
+  const {data}=await sb.from('user_notes').select('*').eq('username',user.username).order('created_at',{ascending:false}).limit(30);
+  document.getElementById('note-list').innerHTML=(data||[]).map(n=>'<div class="glass rounded-lg p-3"><p class="text-sm font-medium">'+esc(n.title)+'</p><p class="text-xs mt-1 whitespace-pre-line" style="color:var(--muted)">'+esc(n.body)+'</p></div>').join('')||'<p class="text-xs" style="color:var(--muted)">خالي</p>';
+}
+async function askQ(){
+  const title=document.getElementById('q-title').value.trim();
+  const body=document.getElementById('q-body').value.trim();
+  const topic=document.getElementById('q-topic').value;
+  if(!title)return toast('عنوان');
+  if(clientModerationReason(title+' '+body)){toast('غيرمجاز');return}
+  await sb.from('questions').insert({user_id:user.id,author_username:user.username,author_name:user.display_name||user.username,topic,title,body});
+  document.getElementById('q-title').value='';document.getElementById('q-body').value='';loadQuestions();missionProgress('help');toast('OK');
+}
+async function loadQuestions(){
+  const {data}=await sb.from('questions').select('*').order('created_at',{ascending:false}).limit(20);
+  document.getElementById('q-list').innerHTML=(data||[]).map(q=>'<div class="glass rounded-lg p-3"><span class="badge border text-[10px]" style="border-color:var(--border)">'+esc(q.topic)+'</span><p class="text-sm font-medium mt-1">'+esc(q.title)+'</p><p class="text-xs mt-1" style="color:var(--muted)">'+esc(q.body)+'</p><div class="flex gap-1 mt-2"><input id="ans-'+q.id+'" class="input !py-1 text-xs flex-1" placeholder="جواب"/><button onclick="sendAns(\''+q.id+'\')" class="btn btn-ghost text-xs px-2">OK</button></div><div id="anslist-'+q.id+'" class="mt-1 space-y-1 text-xs"></div></div>').join('')||'<p class="text-xs" style="color:var(--muted)">خالي</p>';
+  (data||[]).forEach(q=>loadAns(q.id));
+}
+async function loadAns(qid){
+  const {data}=await sb.from('answers').select('*').eq('question_id',qid).order('created_at').limit(10);
+  const el=document.getElementById('anslist-'+qid);if(!el)return;
+  el.innerHTML=(data||[]).map(a=>'<div class="reply-box">'+esc(a.author_name)+': '+esc(a.body)+'</div>').join('');
+}
+async function sendAns(qid){
+  const inp=document.getElementById('ans-'+qid);if(!inp)return;const body=inp.value.trim();if(!body)return;
+  if(clientModerationReason(body)){toast('غيرمجاز');return}
+  await sb.from('answers').insert({question_id:qid,author_username:user.username,author_name:user.display_name||user.username,body});
+  inp.value='';loadAns(qid);missionProgress('help');
+}
+async function savePost(pid){
+  const p=posts.find(x=>x.id===pid);if(!p)return toast('نه');
+  await sb.from('saved_posts').insert({user_id:user.id,username:user.username,post_id:pid,folder:'general',snapshot:(p.content||'').slice(0,200)});
+  toast('ذخیره شد');missionProgress('save');
+}
+async function loadSaves(){
+  const {data}=await sb.from('saved_posts').select('*').eq('username',user.username).order('created_at',{ascending:false}).limit(40);
+  document.getElementById('save-list').innerHTML=(data||[]).map(s=>'<div class="glass rounded-lg p-3 text-sm">'+esc(s.snapshot||'post')+'</div>').join('')||'<p class="text-xs" style="color:var(--muted)">خالي</p>';
+}
+async function setMood(score){
+  const note=document.getElementById('mood-note').value.trim();
+  if(clientModerationReason(note)){toast('غيرمجاز');return}
+  const day=new Date().toISOString().slice(0,10);
+  await sb.from('moods').delete().eq('username',user.username).eq('day',day);
+  await sb.from('moods').insert({user_id:user.id,username:user.username,score,note,day});
+  toast('OK');loadMoods();
+}
+async function loadMoods(){
+  const {data}=await sb.from('moods').select('*').eq('username',user.username).order('day',{ascending:false}).limit(7);
+  document.getElementById('mood-hist').innerHTML=(data||[]).map(m=>'<div>'+m.day+': '+m.score+' '+esc(m.note||'')+'</div>').join('')||'---';
+}
+async function addCard(){
+  const f=document.getElementById('fc-front').value.trim(),b=document.getElementById('fc-back').value.trim();
+  if(!f||!b)return toast('هر دو');
+  if(clientModerationReason(f+' '+b)){toast('غيرمجاز');return}
+  await sb.from('flashcards').insert({user_id:user.id,username:user.username,front:f,back:b});
+  document.getElementById('fc-front').value='';document.getElementById('fc-back').value='';loadCards();
+}
+async function loadCards(){
+  const {data}=await sb.from('flashcards').select('*').eq('username',user.username).order('created_at',{ascending:false}).limit(50);
+  fcList=data||[];
+  document.getElementById('fc-list').innerHTML=fcList.slice(0,12).map(c=>'- '+esc(c.front)).join('<br>')||'---';
+}
+function startCards(){if(!fcList.length){toast('کارت بساز');return}fcIdx=0;fcFlip=false;document.getElementById('fc-study').classList.remove('hidden');document.getElementById('fc-show').textContent=fcList[0].front}
+function flipCard(){if(!fcList[fcIdx])return;fcFlip=!fcFlip;document.getElementById('fc-show').textContent=fcFlip?fcList[fcIdx].back:fcList[fcIdx].front}
+function nextCard(){fcIdx=(fcIdx+1)%fcList.length;fcFlip=false;document.getElementById('fc-show').textContent=fcList[fcIdx].front}
+const MISSIONS=[{key:'goal',title:'یک هدف بنویس'},{key:'focus',title:'25 دقیقه تمرکز'},{key:'help',title:'سوال یا جواب'},{key:'save',title:'ذخیره یک پست'},{key:'post',title:'یک پست بگذار'}];
+async function loadMissions(){
+  const day=new Date().toISOString().slice(0,10);
+  const {data}=await sb.from('daily_missions').select('*').eq('username',user.username).eq('day',day);
+  const done=new Set((data||[]).filter(x=>x.done).map(x=>x.mission_key));
+  document.getElementById('mission-list').innerHTML=MISSIONS.map(m=>'<div class="glass rounded-lg px-3 py-2 text-sm">'+(done.has(m.key)?'[x]':'[ ]')+' '+m.title+'</div>').join('');
+}
+async function missionProgress(key){
+  try{
+    const day=new Date().toISOString().slice(0,10);
+    const {data}=await sb.from('daily_missions').select('id').eq('username',user.username).eq('day',day).eq('mission_key',key).maybeSingle();
+    if(data)await sb.from('daily_missions').update({done:true}).eq('id',data.id);
+    else await sb.from('daily_missions').insert({user_id:user.id,username:user.username,mission_key:key,day,done:true});
+  }catch(e){}
+}
+
+window.onerror=function(msg,url,line){console.error('ERR',msg,line);try{toast('خطا: '+msg)}catch(e){} return false;};
+window.addEventListener('unhandledrejection',function(ev){console.error('PROMISE',ev.reason)});
+
+
+/* ===== GAMES HUB + CLAN + CHAT ===== */
+var gScore=0,gTime=30,gTimer=null,gAnim=null,gStars=[],gRunning=false;
+var currentGame='stars', roomCode='', numSecret=0, numTries=0;
+var GAMES_LIST=[
+  {id:'circle',name:'دایره کامل',multi:false,desc:'بهترین دایره را بکش'},
+  {id:'train',name:'قطار تصمیم',multi:false,desc:'مسیر را عوض کن یا نه'},
+  {id:'cs',name:'لومرا شوتر',multi:false,desc:'مثل کانتر موبایل'},
+  {id:'catch',name:'بگیر ستاره',multi:false,desc:'ستاره‌ها را لمس کن'},
+  {id:'rps',name:'سنگ کاغذ قیچی',multi:true,desc:'کلاسیک'},
+  {id:'guess',name:'حدس عدد',multi:true,desc:'۱ تا ۵۰'},
+  {id:'speed',name:'سرعت انگشت',multi:false,desc:'۱۵ ثانیه'},
+  {id:'pairs',name:'جفت‌ها',multi:false,desc:'کارت حافظه'},
+  {id:'green',name:'صبر کن سبز',multi:false,desc:'واکنش'},
+  {id:'sum',name:'جمع سریع',multi:false,desc:'ریاضی'},
+  {id:'word',name:'کلمه برعکس',multi:false,desc:'برعکس بنویس'},
+  {id:'path',name:'مسیر سیمون',multi:false,desc:'ترتیب رنگ‌ها'},
+  {id:'hold',name:'نگه دار',multi:false,desc:'۳ ثانیه'},
+  {id:'count',name:'بشمار',multi:false,desc:'ستاره ببین'}
+];
+
+function gHub(tab){
+  ['list','clan','room'].forEach(function(t){
+    var el=document.getElementById('ghub-'+t); if(el) el.classList.toggle('hidden', t!==tab);
+    var b=document.getElementById('gh-'+t); if(b) b.classList.toggle('nav-on', t===tab);
+  });
+  var play=document.getElementById('game-play'); if(play) play.classList.add('hidden');
+  if(tab==='list') renderGamesGrid();
+  if(tab==='clan') loadClan();
+}
+
+function renderGamesGrid(){
+  var g=document.getElementById('games-grid'); if(!g)return;
+  g.innerHTML=GAMES_LIST.map(function(x){
+    return '<button type="button" data-gid="'+x.id+'" class="glass rounded-xl p-3 text-right gpick"><div class="text-sm font-bold">'+x.name+(x.multi?' *':'')+'</div><div class="text-[10px]" style="color:var(--muted)">'+x.desc+'</div></button>';
+  }).join('');
+  g.querySelectorAll('.gpick').forEach(function(btn){
+    btn.onclick=function(){ startGameType(btn.getAttribute('data-gid')); };
+  });
+}
+
+function startGameType(id){
+  currentGame=id;
+  ['ghub-list','ghub-clan','ghub-room'].forEach(function(x){var e=document.getElementById(x);if(e)e.classList.add('hidden')});
+  var play=document.getElementById('game-play'); if(play) play.classList.remove('hidden');
+  var title=GAMES_LIST.find(function(x){return x.id===id});
+  var gt=document.getElementById('game-title'); if(gt) gt.textContent=title?title.name:id;
+  var rps=document.getElementById('rps-box'); if(rps) rps.classList.add('hidden');
+  var num=document.getElementById('num-box'); if(num) num.classList.add('hidden');
+  var area=document.getElementById('game-area'); if(area) area.classList.remove('hidden');
+  var rr=document.getElementById('rps-result'); if(rr) rr.classList.add('hidden');
+  if(id==='rps'){ if(area)area.classList.add('hidden'); if(rps)rps.classList.remove('hidden'); if(rr){rr.classList.remove('hidden');rr.textContent='انتخاب کن';} }
+  if(id==='guess'){ if(area)area.classList.add('hidden'); if(num)num.classList.remove('hidden'); numSecret=Math.floor(Math.random()*50)+1; numTries=0; var nh=document.getElementById('num-hint'); if(nh)nh.textContent='بین ۱ و ۵۰'; }
+  restartCurrentGame();
+  try{loadGameChat()}catch(e){}
+}
+
+function restartCurrentGame(){
+  gRunning=false; if(gTimer)clearInterval(gTimer); if(gAnim)cancelAnimationFrame(gAnim);
+  var ov=document.getElementById('game-overlay');
+  if(currentGame==='cs'){ return startCSGame(); }
+  if(currentGame==='circle'){ return startCircleGame(); }
+  if(currentGame==='train'){ return startTrainGame(); }
+  if(currentGame==='catch'||currentGame==='dodge2'){ if(ov){ov.style.display='flex'; ov.innerHTML='<p class="text-sm">آماده؟</p><button type="button" onclick="gameStartCatch()" class="btn btn-primary px-6 py-2">شروع</button>';} return; }
+  if(currentGame==='speed') return gameSpeed();
+  if(currentGame==='pairs') return memoryGame();
+  if(currentGame==='green') return reactGame();
+  if(currentGame==='sum') return mathGame();
+  if(currentGame==='word') return wordGame();
+  if(currentGame==='hold') return holdGame();
+  if(currentGame==='count') return countGame();
+  if(currentGame==='path') return pathGame();
+  if(currentGame==='rps'||currentGame==='guess'){ if(ov)ov.style.display='none'; return; }
+  if(ov){ov.style.display='flex'; ov.innerHTML='<button type="button" onclick="gameStartCatch()" class="btn btn-primary px-6 py-2">شروع</button>';}
+}
+
+function startCircleGame(){
+  var area=document.getElementById('game-area'); var canvas=document.getElementById('game-canvas');
+  var ov=document.getElementById('game-overlay'); if(ov)ov.style.display='none';
+  if(area)area.classList.remove('hidden');
+  canvas.width=area.clientWidth; canvas.height=area.clientHeight;
+  var ctx=canvas.getContext('2d');
+  var drawing=false, pts=[];
+  function redraw(){
+    ctx.fillStyle='#020617'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle='rgba(34,211,238,.25)'; ctx.lineWidth=2;
+    var cx=canvas.width/2, cy=canvas.height/2, R=Math.min(cx,cy)*0.35;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+    if(pts.length>1){ ctx.strokeStyle='#67e8f9'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y); for(var i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y); ctx.stroke(); }
+  }
+  redraw();
+  function pos(e){ var r=canvas.getBoundingClientRect(); var t=e.touches?e.touches[0]:e; return {x:(t.clientX-r.left)*(canvas.width/r.width), y:(t.clientY-r.top)*(canvas.height/r.height)}; }
+  canvas.onmousedown=canvas.ontouchstart=function(e){ e.preventDefault(); drawing=true; pts=[pos(e)]; };
+  canvas.onmousemove=canvas.ontouchmove=function(e){ if(!drawing)return; e.preventDefault(); pts.push(pos(e)); redraw(); };
+  function endDraw(){
+    if(!drawing)return; drawing=false;
+    if(pts.length<12){ toast('کامل‌تر بکش'); return; }
+    var cx=0,cy=0; pts.forEach(function(p){cx+=p.x;cy+=p.y}); cx/=pts.length; cy/=pts.length;
+    var rs=pts.map(function(p){return Math.hypot(p.x-cx,p.y-cy)});
+    var mean=rs.reduce(function(a,b){return a+b},0)/rs.length;
+    var variance=rs.reduce(function(a,b){return a+(b-mean)*(b-mean)},0)/rs.length;
+    var score=Math.max(0, Math.min(100, Math.round(100-Math.sqrt(variance))));
+    toast('امتیاز دایره: '+score);
+    if(score>=85) try{addPoints(5)}catch(e){}
+    var o=document.getElementById('game-overlay');
+    o.style.display='flex'; o.innerHTML='<p class="text-sm">امتیاز: '+score+'/100</p><button type="button" onclick="startCircleGame()" class="btn btn-primary px-4 py-2">دوباره</button>';
+  }
+  canvas.onmouseup=canvas.ontouchend=endDraw;
+}
+
+function startTrainGame(){
+  var area=document.getElementById('game-area'); var canvas=document.getElementById('game-canvas');
+  var ov=document.getElementById('game-overlay'); if(ov)ov.style.display='none';
+  area.classList.remove('hidden');
+  canvas.width=area.clientWidth; canvas.height=Math.max(280, area.clientHeight);
+  var ctx=canvas.getContext('2d');
+  var switched=false, done=false, frame=0;
+  function draw(state){
+    ctx.fillStyle='#0f172a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    // tracks
+    ctx.strokeStyle='#64748b'; ctx.lineWidth=8;
+    ctx.beginPath(); ctx.moveTo(0, canvas.height*0.55); ctx.lineTo(canvas.width, canvas.height*0.55); ctx.stroke();
+    if(switched){
+      ctx.strokeStyle='#22d3ee'; ctx.beginPath(); ctx.moveTo(canvas.width*0.45, canvas.height*0.55); ctx.quadraticCurveTo(canvas.width*0.6, canvas.height*0.55, canvas.width*0.75, canvas.height*0.25); ctx.stroke();
+    }
+    // lever
+    ctx.fillStyle=switched?'#22c55e':'#f59e0b';
+    ctx.fillRect(canvas.width*0.42, canvas.height*0.62, 50, 14);
+    ctx.fillStyle='#e2e8f0'; ctx.fillRect(canvas.width*0.48, canvas.height*0.58, 8, 40);
+    // train
+    var tx = (state/100)*canvas.width*0.7;
+    ctx.fillStyle='#ef4444'; ctx.fillRect(tx, canvas.height*0.55-28, 54, 28);
+    ctx.fillStyle='#fde047'; ctx.fillRect(tx+8, canvas.height*0.55-22, 12, 10);
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(tx+12, canvas.height*0.55, 6,0,Math.PI*2); ctx.arc(tx+40, canvas.height*0.55, 6,0,Math.PI*2); ctx.fill();
+    // person
+    if(!switched){ ctx.fillStyle='#38bdf8'; ctx.beginPath(); ctx.arc(canvas.width*0.82, canvas.height*0.55-18, 10,0,Math.PI*2); ctx.fill(); }
+    else { ctx.fillStyle='#a3e635'; ctx.beginPath(); ctx.arc(canvas.width*0.55, canvas.height*0.35, 10,0,Math.PI*2); ctx.fill(); }
+    ctx.fillStyle='#94a3b8'; ctx.font='14px sans-serif';
+    ctx.fillText(switched?'مسیر عوض شد':'اهرم را بزن یا صبر کن', 12, 24);
+  }
+  draw(0);
+  canvas.onclick=function(){ if(done)return; switched=!switched; draw(frame); };
+  var iv=setInterval(function(){
+    frame+=2; draw(frame);
+    if(frame>=100){
+      clearInterval(iv); done=true;
+      var msg=switched?'قطار منحرف شد — یک انتخاب کردی':'قطار رفت — انتخاب نکردی';
+      toast(msg);
+      ov.style.display='flex';
+      ov.innerHTML='<p class="text-sm">'+msg+'</p><button type="button" onclick="startTrainGame()" class="btn btn-primary px-4 py-2">دوباره</button>';
+      try{addPoints(3)}catch(e){}
+    }
+  }, 50);
+}
+
+function startCSGame(){
+  var ov=document.getElementById('game-overlay');
+  var area=document.getElementById('game-area');
+  area.classList.remove('hidden');
+  // Lumera loading like CS
+  ov.style.display='flex';
+  ov.innerHTML='<div class="text-center space-y-3"><div class="text-2xl font-bold tracking-widest" style="color:#67e8f9">LUMERA</div><p class="text-xs" style="color:var(--muted)">LOADING...</p><div class="w-40 h-1 mx-auto rounded overflow-hidden" style="background:#1e293b"><div id="cs-loadbar" style="height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#a78bfa);transition:width .1s"></div></div></div>';
+  var w=0;
+  var lid=setInterval(function(){
+    w+=4; var b=document.getElementById('cs-loadbar'); if(b)b.style.width=w+'%';
+    if(w>=100){ clearInterval(lid); runCSAim(); }
+  }, 40);
+}
+function runCSAim(){
+  var ov=document.getElementById('game-overlay'); if(ov)ov.style.display='none';
+  var canvas=document.getElementById('game-canvas'); var area=document.getElementById('game-area');
+  canvas.width=area.clientWidth; canvas.height=Math.max(320, area.clientHeight);
+  var ctx=canvas.getContext('2d');
+  var score=0, time=30, targets=[], running=true;
+  function spawn(){ targets.push({x:40+Math.random()*(canvas.width-80), y:40+Math.random()*(canvas.height-80), r:16+Math.random()*10, life:120}); }
+  for(var i=0;i<3;i++) spawn();
+  var timer=setInterval(function(){ time--; if(time<=0){ running=false; clearInterval(timer); endCS(score);} },1000);
+  function loop(){
+    if(!running)return;
+    ctx.fillStyle='#1a1f16'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    // grid floor vibe
+    ctx.strokeStyle='rgba(100,120,60,.15)';
+    for(var g=0;g<canvas.width;g+=40){ ctx.beginPath(); ctx.moveTo(g,0); ctx.lineTo(g,canvas.height); ctx.stroke(); }
+    ctx.fillStyle='#a3e635'; ctx.font='bold 14px monospace';
+    ctx.fillText('KILLS '+score+' | TIME '+time, 10, 20);
+    // crosshair center hint
+    targets.forEach(function(t){
+      t.life--;
+      ctx.beginPath(); ctx.arc(t.x,t.y,t.r,0,Math.PI*2);
+      ctx.fillStyle='#ef4444'; ctx.fill();
+      ctx.strokeStyle='#fef08a'; ctx.stroke();
+    });
+    targets=targets.filter(function(t){return t.life>0});
+    if(targets.length<3) spawn();
+    // crosshair
+    var cx=canvas.width/2, cy=canvas.height/2;
+    ctx.strokeStyle='#a3e635'; ctx.beginPath(); ctx.moveTo(cx-12,cy); ctx.lineTo(cx+12,cy); ctx.moveTo(cx,cy-12); ctx.lineTo(cx,cy+12); ctx.stroke();
+    requestAnimationFrame(loop);
+  }
+  loop();
+  canvas.onclick=function(e){
+    if(!running)return;
+    var r=canvas.getBoundingClientRect();
+    var x=(e.clientX-r.left)*(canvas.width/r.width), y=(e.clientY-r.top)*(canvas.height/r.height);
+    var hit=false;
+    targets=targets.filter(function(t){
+      if(Math.hypot(t.x-x,t.y-y)<=t.r+4){ score++; hit=true; return false; }
+      return true;
+    });
+    if(hit) try{playPulse()}catch(e){}
+  };
+}
+function endCS(score){
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-sm font-mono">MATCH ENDED</p><p class="text-lg font-bold">KILLS: '+score+'</p><button type="button" onclick="startCSGame()" class="btn btn-primary px-4 py-2">دوباره</button>';
+  try{addPoints(Math.min(15,score))}catch(e){}
+}
+
+function gameStartCatch(){
+  gScore=0;gTime=20;gStars=[];gRunning=true;
+  var sc=document.getElementById('g-score2'); if(sc)sc.textContent='0';
+  var ov=document.getElementById('game-overlay'); if(ov)ov.style.display='none';
+  var canvas=document.getElementById('game-canvas'); if(!canvas)return;
+  var area=document.getElementById('game-area');
+  canvas.width=area.clientWidth; canvas.height=area.clientHeight;
+  if(gTimer)clearInterval(gTimer);
+  gTimer=setInterval(function(){ gTime--; if(gTime<=0) gameEnd(); },1000);
+  function spawn(){
+    if(!gRunning)return;
+    var bad=currentGame==='dodge2' && Math.random()>0.55;
+    gStars.push({x:Math.random()*(canvas.width-24)+12,y:-16,r:bad?16:12+Math.random()*10,v:2+Math.random()*2.5,bad:bad,c:bad?'#ef4444':['#67e8f9','#c4b5fd','#fbbf24','#a3e635'][Math.floor(Math.random()*4)]});
+    setTimeout(spawn,380);
+  }
+  spawn();
+  function loop(){
+    if(!gRunning)return;
+    var ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    gStars.forEach(function(s){ s.y+=s.v; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=s.c; ctx.fill(); });
+    gStars=gStars.filter(function(s){return s.y<canvas.height+30});
+    gAnim=requestAnimationFrame(loop);
+  }
+  loop();
+}
+function gameSpeed(){
+  gScore=0; gTime=15; gRunning=true;
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-3xl font-bold" id="spd-sc">0</p><button type="button" id="spd-btn" class="btn btn-primary px-10 py-6 text-lg">بزن!</button><p class="text-xs mt-2" id="spd-t">15</p>';
+  var t=setInterval(function(){ gTime--; var el=document.getElementById('spd-t'); if(el)el.textContent=gTime; if(gTime<=0){ clearInterval(t); gRunning=false; ov.innerHTML='<p class="text-sm">امتیاز: '+gScore+'</p><button type="button" onclick="gameSpeed()" class="btn btn-primary px-4 py-2">دوباره</button>'; try{addPoints(Math.min(8,gScore/5)|0)}catch(e){} } },1000);
+  document.getElementById('spd-btn').onclick=function(){ if(!gRunning)return; gScore++; document.getElementById('spd-sc').textContent=gScore; };
+}
+function wordGame(){
+  var words=['فضا','ستاره','موشک','مدار','نور','آسمان','کهکشان'];
+  var w=words[Math.floor(Math.random()*words.length)];
+  var rev=w.split('').reverse().join('');
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-sm mb-2">برعکس این را بنویس:</p><p class="text-xl font-bold mb-2">'+w+'</p><input id="wd-in" class="input text-center"/><button type="button" class="btn btn-primary mt-2" id="wd-ok">ثبت</button>';
+  document.getElementById('wd-ok').onclick=function(){
+    var v=(document.getElementById('wd-in').value||'').trim();
+    toast(v===rev?'درست!':'جواب: '+rev);
+    if(v===rev) try{addPoints(3)}catch(e){}
+    setTimeout(wordGame,700);
+  };
+}
+function holdGame(){
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-sm mb-2">۳ ثانیه نگه دار</p><button type="button" id="hold-btn" class="btn btn-primary px-8 py-6">نگه دار</button><p id="hold-msg" class="text-xs mt-2"></p>';
+  var t0=0,timer=null;
+  var btn=document.getElementById('hold-btn');
+  function down(){ t0=Date.now(); document.getElementById('hold-msg').textContent='...'; }
+  function up(){
+    var d=Date.now()-t0;
+    if(d>=3000&&d<4500){ toast('عالی!'); try{addPoints(4)}catch(e){} document.getElementById('hold-msg').textContent='موفق '+d+'ms'; }
+    else document.getElementById('hold-msg').textContent='دوباره — '+d+'ms';
+  }
+  btn.addEventListener('mousedown',down); btn.addEventListener('mouseup',up);
+  btn.addEventListener('touchstart',function(e){e.preventDefault();down()},{passive:false});
+  btn.addEventListener('touchend',function(e){e.preventDefault();up()},{passive:false});
+}
+function countGame(){
+  var n=3+Math.floor(Math.random()*6);
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  var stars='⭐'.repeat(n);
+  ov.innerHTML='<p class="text-2xl mb-2">'+stars+'</p><p class="text-xs mb-2">چند تا؟</p><input id="ct-in" class="input text-center" type="number"/><button type="button" class="btn btn-primary mt-2" id="ct-ok">ثبت</button>';
+  document.getElementById('ct-ok').onclick=function(){
+    var v=parseInt(document.getElementById('ct-in').value,10);
+    toast(v===n?'درست!':'جواب '+n);
+    if(v===n) try{addPoints(2)}catch(e){}
+    setTimeout(countGame,600);
+  };
+}
+function pathGame(){
+  var seq=[]; var step=0; var showing=true;
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-xs mb-2">ترتیب را تکرار کن</p><div class="grid grid-cols-2 gap-2 w-full px-6" id="path-grid"></div>';
+  var colors=['#22d3ee','#a78bfa','#fbbf24','#f472b6'];
+  var grid=document.getElementById('path-grid');
+  var btns=[];
+  for(var i=0;i<4;i++){
+    var b=document.createElement('button'); b.className='btn h-14'; b.style.background=colors[i]; b.dataset.i=i;
+    grid.appendChild(b); btns.push(b);
+  }
+  function flash(i,cb){ btns[i].style.opacity='0.3'; setTimeout(function(){ btns[i].style.opacity='1'; if(cb)cb(); },350); }
+  function playSeq(){
+    showing=true; var i=0;
+    function next(){ if(i>=seq.length){ showing=false; return; } flash(seq[i],function(){ i++; setTimeout(next,200); }); }
+    next();
+  }
+  seq.push(Math.floor(Math.random()*4)); playSeq();
+  btns.forEach(function(b){
+    b.onclick=function(){
+      if(showing)return;
+      var v=parseInt(b.dataset.i,10);
+      if(v===seq[step]){ step++; if(step>=seq.length){ toast('مرحله بعد'); try{addPoints(2)}catch(e){} step=0; seq.push(Math.floor(Math.random()*4)); setTimeout(playSeq,500); } }
+      else { toast('باخت!'); step=0; seq=[Math.floor(Math.random()*4)]; setTimeout(playSeq,600); }
+    };
+  });
+}
+
+function gameShowBest(){
+  var b=parseInt(localStorage.getItem('lm_game_best')||'0',10);
+  var el=document.getElementById('g-score2'); if(el) el.textContent='بهترین:'+b;
+  var ov=document.getElementById('game-overlay'); if(ov){ ov.style.display='flex'; }
+}
+
+function gameStart(){
+  gScore=0;gTime= currentGame==='orbit'?20:30; gStars=[]; gRunning=true;
+  var sc=document.getElementById('g-score2'); if(sc) sc.textContent='0';
+  var ov=document.getElementById('game-overlay'); if(ov) ov.style.display='none';
+  var canvas=document.getElementById('game-canvas'); if(!canvas)return;
+  var area=document.getElementById('game-area');
+  canvas.width=area.clientWidth; canvas.height=area.clientHeight;
+  if(gTimer)clearInterval(gTimer);
+  if(gAnim)cancelAnimationFrame(gAnim);
+  gTimer=setInterval(function(){
+    gTime--; if(gTime<=0) gameEnd();
+  },1000);
+  function spawn(){
+    if(!gRunning)return;
+    var speed = currentGame==='orbit'?3+Math.random()*3:1.5+Math.random()*2.5;
+    gStars.push({x:Math.random()*(canvas.width-30)+15,y:-20,r:10+Math.random()*14,v:speed,c:['#67e8f9','#c4b5fd','#fbbf24','#f472b6','#a3e635'][Math.floor(Math.random()*5)]});
+    setTimeout(spawn, currentGame==='orbit'?280:450);
+  }
+  spawn();
+  function loop(){
+    if(!gRunning)return;
+    var ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    gStars.forEach(function(s){
+      s.y+=s.v;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.c; ctx.fill();
+    });
+    gStars=gStars.filter(function(s){return s.y<canvas.height+40});
+    gAnim=requestAnimationFrame(loop);
+  }
+  loop();
+}
+function gameEnd(){
+  gRunning=false; if(gTimer)clearInterval(gTimer); if(gAnim)cancelAnimationFrame(gAnim);
+  var best=parseInt(localStorage.getItem('lm_game_best')||'0',10);
+  if(gScore>best){ best=gScore; localStorage.setItem('lm_game_best',String(best)); }
+  var ov=document.getElementById('game-overlay');
+  if(ov){ ov.style.display='flex'; ov.innerHTML='<p class="text-sm font-medium">پایان! امتیاز: '+gScore+'</p><button type="button" onclick="restartCurrentGame()" class="btn btn-primary px-6 py-2">دوباره</button>'; }
+  try{toast('امتیاز: '+gScore); addPoints(Math.min(10,gScore));}catch(e){}
+}
+(function(){
+  function hit(x,y){
+    if(!gRunning)return;
+    var canvas=document.getElementById('game-canvas'); if(!canvas)return;
+    var rect=canvas.getBoundingClientRect();
+    var cx=(x-rect.left)*(canvas.width/rect.width);
+    var cy=(y-rect.top)*(canvas.height/rect.height);
+    var hitOne=false;
+    gStars=gStars.filter(function(s){
+      var dx=s.x-cx,dy=s.y-cy;
+      if(dx*dx+dy*dy<(s.r+14)*(s.r+14)){ gScore++; hitOne=true; return false; }
+      return true;
+    });
+    if(hitOne){ var el=document.getElementById('g-score2'); if(el) el.textContent=String(gScore); }
+  }
+  document.addEventListener('click',function(e){ if(e.target&&e.target.id==='game-canvas') hit(e.clientX,e.clientY); });
+  document.addEventListener('touchstart',function(e){ if(e.target&&e.target.id==='game-canvas'&&e.touches[0]){ hit(e.touches[0].clientX,e.touches[0].clientY); e.preventDefault(); }},{passive:false});
+})();
+
+function rpsPlay(choice){
+  var opts=['سنگ','کاغذ','قیچی'];
+  var bot=opts[Math.floor(Math.random()*3)];
+  var win=(choice==='سنگ'&&bot==='قیچی')||(choice==='کاغذ'&&bot==='سنگ')||(choice==='قیچی'&&bot==='کاغذ');
+  var draw=choice===bot;
+  var msg=draw?'مساوی!':(win?'برد!':'باخت!');
+  document.getElementById('rps-result').textContent='تو: '+choice+' | حریف: '+bot+' → '+msg;
+  if(win) try{addPoints(2)}catch(e){}
+  if(roomCode) sendGameChat('[بازی] '+msg+' ('+choice+' vs '+bot+')');
+}
+function numGuess(){
+  var v=parseInt(document.getElementById('num-guess').value,10); numTries++;
+  if(isNaN(v))return;
+  if(v===numSecret){ document.getElementById('num-hint').textContent='درست! در '+numTries+' حدس'; try{addPoints(5)}catch(e){} }
+  else if(v<numSecret) document.getElementById('num-hint').textContent='بزرگ‌تر';
+  else document.getElementById('num-hint').textContent='کوچک‌تر';
+}
+function reactGame(){
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex'; ov.innerHTML='<p class="text-sm">صبر کن...</p>';
+  setTimeout(function(){
+    var t0=Date.now();
+    ov.innerHTML='<button type="button" class="btn btn-primary px-8 py-4 text-lg" id="react-btn">الان بزن!</button>';
+    document.getElementById('react-btn').onclick=function(){
+      var ms=Date.now()-t0;
+      ov.innerHTML='<p class="text-sm">'+ms+' میلی‌ثانیه</p><button type="button" onclick="reactGame()" class="btn btn-primary px-4 py-2">دوباره</button>';
+      if(ms<400) try{addPoints(3)}catch(e){}
+    };
+  }, 1000+Math.random()*2000);
+}
+function mathGame(){
+  var a=Math.floor(Math.random()*20)+1,b=Math.floor(Math.random()*20)+1;
+  var ans=a+b;
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-sm mb-2">'+a+' + '+b+' = ؟</p><input id="math-in" class="input text-center" type="number"/><button type="button" class="btn btn-primary mt-2 px-4" id="math-ok">ثبت</button>';
+  document.getElementById('math-ok').onclick=function(){
+    var v=parseInt(document.getElementById('math-in').value,10);
+    ov.innerHTML='<p class="text-sm">'+(v===ans?'درست!':'غلط. جواب '+ans)+'</p><button type="button" onclick="mathGame()" class="btn btn-primary px-4 py-2">بعدی</button>';
+    if(v===ans) try{addPoints(2)}catch(e){}
+  };
+}
+function memoryGame(){
+  var icons=['🌟','🪐','🚀','🌙','⭐','🛸','🌟','🪐','🚀','🌙','⭐','🛸'];
+  icons.sort(function(){return Math.random()-0.5});
+  var open=[], matched=0, lock=false;
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<div class="grid grid-cols-4 gap-1 p-2 w-full" id="mem-grid"></div>';
+  var grid=document.getElementById('mem-grid');
+  icons.forEach(function(ic,i){
+    var b=document.createElement('button');
+    b.className='btn btn-ghost text-lg h-12'; b.textContent='❓'; b.dataset.v=ic; b.dataset.i=i;
+    b.onclick=function(){
+      if(lock||b.dataset.done)return;
+      b.textContent=ic; open.push(b);
+      if(open.length===2){
+        lock=true;
+        if(open[0].dataset.v===open[1].dataset.v){ open[0].dataset.done=1; open[1].dataset.done=1; matched++; open=[]; lock=false; if(matched>=6){ toast('آفرین!'); try{addPoints(8)}catch(e){} } }
+        else { setTimeout(function(){ open[0].textContent='❓'; open[1].textContent='❓'; open=[]; lock=false; },500); }
+      }
+    };
+    grid.appendChild(b);
+  });
+}
+function colorGame(){
+  var colors=[{n:'قرمز',c:'#ef4444'},{n:'آبی',c:'#3b82f6'},{n:'سبز',c:'#22c55e'},{n:'زرد',c:'#eab308'}];
+  var word=colors[Math.floor(Math.random()*colors.length)];
+  var ink=colors[Math.floor(Math.random()*colors.length)];
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-2xl font-bold mb-2" style="color:'+ink.c+'">'+word.n+'</p><p class="text-xs mb-2" style="color:var(--muted)">رنگ نوشته چیست؟ (نه معنی کلمه)</p><div class="grid grid-cols-2 gap-2 w-full px-4" id="col-opts"></div>';
+  colors.forEach(function(c){
+    var b=document.createElement('button'); b.className='btn btn-ghost py-2 text-xs'; b.textContent=c.n;
+    b.onclick=function(){ toast(c.n===ink.n?'درست!':'غلط'); if(c.n===ink.n) try{addPoints(2)}catch(e){}; setTimeout(colorGame,600); };
+    document.getElementById('col-opts').appendChild(b);
+  });
+}
+function quizGame(){
+  var qs=[{q:'۲×۵؟',a:'۱۰'},{q:'پایتخت؟',a:'تهران'},{q:'۳+۷؟',a:'۱۰'}];
+  var q=qs[Math.floor(Math.random()*qs.length)];
+  var ov=document.getElementById('game-overlay');
+  ov.style.display='flex';
+  ov.innerHTML='<p class="text-sm mb-2">'+q.q+'</p><input id="qg-in" class="input"/><button type="button" class="btn btn-primary mt-2" id="qg-ok">ثبت</button>';
+  document.getElementById('qg-ok').onclick=function(){
+    var v=(document.getElementById('qg-in').value||'').trim();
+    toast(v===q.a?'درست!':'جواب: '+q.a);
+    if(v===q.a) try{addPoints(2)}catch(e){}
+    setTimeout(quizGame,700);
+  };
+}
+function snakeGame(){
+  toast('مار: روی بوم کلیک/لمس کن تا حرکت کند — نسخه ساده');
+  gameStart();
+}
+
+async function createClan(){
+  if(!user||!sb)return toast('وارد شو');
+  var name=(document.getElementById('clan-name').value||'').trim(); if(!name)return toast('اسم کلن');
+  if(clientModerationReason(name))return toast('غیرمجاز');
+  var code='CL'+Math.random().toString(36).slice(2,7).toUpperCase();
+  try{
+    var {data,error}=await sb.from('clans').insert({name:name,code:code,owner_username:user.username}).select().single();
+    if(error)throw error;
+    await sb.from('clan_members').insert({clan_id:data.id,username:user.username});
+    localStorage.setItem('lm_clan', JSON.stringify({id:data.id,name:name,code:code}));
+    toast('کلن ساخته شد: '+code); loadClan();
+  }catch(e){ toast('خطا — SQL کلن را Run کن'); }
+}
+async function joinClan(){
+  if(!user||!sb)return toast('وارد شو');
+  var code=(document.getElementById('clan-code').value||'').trim().toUpperCase(); if(!code)return;
+  try{
+    var {data}=await sb.from('clans').select('*').eq('code',code).maybeSingle();
+    if(!data)return toast('کلن پیدا نشد');
+    await sb.from('clan_members').insert({clan_id:data.id,username:user.username});
+    localStorage.setItem('lm_clan', JSON.stringify({id:data.id,name:data.name,code:data.code}));
+    toast('عضو شدی'); loadClan();
+  }catch(e){ toast('خطا عضویت'); }
+}
+function loadClan(){
+  var c=null; try{c=JSON.parse(localStorage.getItem('lm_clan')||'null')}catch(e){}
+  var el=document.getElementById('clan-info');
+  if(!el)return;
+  if(c) el.innerHTML='کلن: <b>'+esc(c.name)+'</b><br/>کد: <b>'+esc(c.code)+'</b>';
+  else el.textContent='کلن نداری — بساز یا با کد عضو شو';
+}
+
+async function createRoom(){
+  if(!user||!sb)return toast('وارد شو');
+  var gt=document.getElementById('room-game').value;
+  var code='RM'+Math.random().toString(36).slice(2,7).toUpperCase();
+  try{
+    await sb.from('game_rooms').insert({code:code,game_type:gt,host_username:user.username,status:'open',state:'{}'});
+    roomCode=code;
+    document.getElementById('room-code-show').textContent='کد اتاق: '+code;
+    toast('اتاق ساخته شد');
+    startGameType(gt==='quiz'?'quizg':gt);
+  }catch(e){ toast('خطا اتاق — SQL را Run کن'); }
+}
+async function joinRoom(){
+  var code=(document.getElementById('room-join').value||'').trim().toUpperCase(); if(!code)return;
+  try{
+    var {data}=await sb.from('game_rooms').select('*').eq('code',code).maybeSingle();
+    if(!data)return toast('اتاق نیست');
+    roomCode=code;
+    document.getElementById('room-code-show').textContent='وصل به: '+code;
+    startGameType(data.game_type==='quiz'?'quizg':data.game_type);
+    loadGameChat();
+  }catch(e){ toast('خطا ورود اتاق'); }
+}
+
+async function sendGameChat(){
+  var inp=document.getElementById('gchat-in'); var t=(inp&&inp.value||'').trim(); if(!t||!user)return;
+  if(clientModerationReason(t))return toast('غیرمجاز');
+  var code=roomCode||'lobby';
+  try{
+    if(sb) await sb.from('game_messages').insert({room_code:code,username:user.username,body:t});
+  }catch(e){}
+  if(inp) inp.value='';
+  loadGameChat();
+}
+async function loadGameChat(){
+  var box=document.getElementById('gchat'); if(!box)return;
+  var code=roomCode||'lobby';
+  try{
+    if(!sb){ box.innerHTML='<p style="color:var(--muted)">سرور نیست</p>'; return; }
+    var {data}=await sb.from('game_messages').select('*').eq('room_code',code).order('created_at',{ascending:false}).limit(30);
+    var list=(data||[]).slice().reverse();
+    box.innerHTML=list.map(function(m){ return '<div><b>@'+esc(m.username)+':</b> '+esc(m.body)+'</div>'; }).join('')||'<p style="color:var(--muted)">پیامی نیست</p>';
+    box.scrollTop=box.scrollHeight;
+  }catch(e){ box.innerHTML='<p style="color:var(--muted)">چت بعد از SQL فعال می‌شود</p>'; }
+}
+
+function gameShowBestInit(){ try{ renderGamesGrid(); }catch(e){} }
+
+/* ===== CHAT: reply + reactions + block ===== */
+var replyToMsg=null;
+var blockedUsers=JSON.parse(localStorage.getItem('lm_blocked')||'[]');
+function isBlockedUser(u){ return blockedUsers.indexOf((u||'').toLowerCase())>=0; }
+function blockUser(u){
+  u=(u||'').toLowerCase(); if(!u||isOwner(u))return toast('نمیشه');
+  if(blockedUsers.indexOf(u)<0) blockedUsers.push(u);
+  localStorage.setItem('lm_blocked',JSON.stringify(blockedUsers));
+  toast('بلاک شد'); closeDmChat();
+}
+function setReply(id,text){
+  replyToMsg={id:id,text:(text||'').slice(0,60)};
+  var inp=document.getElementById('dm-input');
+  if(inp){ inp.placeholder='ریپلای: '+(text||'').slice(0,20); inp.focus(); }
+}
+function clearReply(){ replyToMsg=null; var inp=document.getElementById('dm-input'); if(inp) inp.placeholder='پیام...'; }
+function reactMsg(key){
+  try{
+    var k='lm_react_'+key;
+    var n=parseInt(localStorage.getItem(k)||'0',10)+1;
+    localStorage.setItem(k,String(n));
+    toast('ری‌اکشن ثبت شد');
+  }catch(e){}
+}
+
+/* draft */
+function saveDraft(){
+  var t=document.getElementById('pbody'); if(!t)return;
+  localStorage.setItem('lm_draft', t.value||'');
+  toast('پیش‌نویس ذخیره شد');
+}
+function loadDraft(){
+  var d=localStorage.getItem('lm_draft')||'';
+  var t=document.getElementById('pbody'); if(t&&d) t.value=d;
+}
+
+/* status */
+function setStatus(s){
+  if(!user)return;
+  localStorage.setItem('lm_status_'+user.username, s);
+  toast('وضعیت: '+s);
+  try{ if(sb) sb.from('profiles').update({bio:(user.bio||'')}).eq('id',user.id); }catch(e){}
+}
+
+/* report */
+function reportUser(u){
+  toast('گزارش ثبت شد برای بررسی');
+  try{ if(sb) sb.from('mod_logs').insert({username:u||'?', reason:'user_report', content_snippet:'by:'+(user&&user.username)}); }catch(e){}
+}
+
+/* invite */
+function myInvite(){
+  if(!user)return '';
+  return 'LM-'+(user.username||'').toUpperCase();
+}
+
+
+/* ===== FULL FEATURES ===== */
+var QUIZ_BANK=[
+  {q:'پایتخت ایران؟',opts:['تهران','اصفهان','شیراز','مشهد'],a:0},
+  {q:'۲+۲؟',opts:['۳','۴','۵','۲۲'],a:1},
+  {q:'رنگ آسمان در روز؟',opts:['آبی','سبز','قرمز','سیاه'],a:0},
+  {q:'لومرا چیست؟',opts:['پلتفرم محتوا','بازی فقط','فروشگاه','بانک'],a:0},
+  {q:'یک ساعت چند دقیقه؟',opts:['۳۰','۶۰','۹۰','۱۰۰'],a:1}
+];
+var quizI=0;
+var IDEAS=['یک نکته امروزت را بنویس','عکس از میز مطالعه','یک سوال از بقیه بپرس','یک جمله انگیزشی کوتاه','چالش ۲۵ دقیقه تمرکز','معرفی یک کتاب','چیزی که امروز یاد گرفتی','یک هدف برای فردا','تشکر از یک نفر','ایده برای پروژه کوچک'];
+
+function toolTab(name){
+  document.querySelectorAll('.tool-panel').forEach(function(e){e.classList.add('hidden')});
+  var el=document.getElementById('tool-'+name); if(el) el.classList.remove('hidden');
+  document.querySelectorAll('.ttab').forEach(function(b){ b.classList.toggle('nav-on', b.dataset.tt===name); });
+  try{
+    if(name==='goals')loadGoals();
+    if(name==='notes')loadNotes();
+    if(name==='qa')loadQuestions();
+    if(name==='saves')loadSaves();
+    if(name==='mood')loadMoods();
+    if(name==='cards')loadCards();
+    if(name==='mission')loadMissions();
+    if(name==='focus')loadFocusStat();
+    if(name==='habits')loadHabits();
+    if(name==='plan')loadPlans();
+    if(name==='count')loadCountdowns();
+    if(name==='quiz')nextQuiz();
+    if(name==='idea')randomIdea();
+    if(name==='notif')loadNotifs();
+  }catch(e){console.log(e)}
+}
+
+async function addPoints(n){
+  if(!user||!sb)return;
+  try{
+    var pts=(user.points||0)+n;
+    var lvl=Math.max(1, Math.floor(pts/50)+1);
+    await sb.from('profiles').update({points:pts,level:lvl}).eq('id',user.id);
+    user.points=pts; user.level=lvl;
+    localStorage.setItem('lm_user',JSON.stringify(user));
+    var a=document.getElementById('p-points'); if(a)a.textContent=pts;
+    var b=document.getElementById('p-level'); if(b)b.textContent=lvl;
+  }catch(e){}
+}
+
+async function addHabit(){
+  var t=document.getElementById('hab-in').value.trim(); if(!t)return;
+  if(clientModerationReason(t))return toast('غیرمجاز');
+  await sb.from('user_habits').insert({username:user.username,title:t,streak:0});
+  document.getElementById('hab-in').value=''; loadHabits(); addPoints(2);
+}
+async function loadHabits(){
+  var {data}=await sb.from('user_habits').select('*').eq('username',user.username).order('created_at',{ascending:false});
+  document.getElementById('hab-list').innerHTML=(data||[]).map(function(h){
+    return '<div class="glass rounded-lg px-3 py-2 flex items-center gap-2 text-sm"><button onclick="tickHabit(\''+h.id+'\','+(h.streak||0)+')">✅</button><span class="flex-1">'+esc(h.title)+'</span><span class="text-[10px]" style="color:var(--muted)">'+ (h.streak||0) +' روز</span></div>';
+  }).join('')||'<p class="text-xs" style="color:var(--muted)">خالی</p>';
+}
+async function tickHabit(id,streak){
+  var day=new Date().toISOString().slice(0,10);
+  await sb.from('user_habits').update({streak:(streak||0)+1,last_tick:day}).eq('id',id);
+  loadHabits(); addPoints(3); toast('عادت ثبت شد');
+}
+
+async function addPlan(){
+  var day=document.getElementById('plan-day').value;
+  var task=document.getElementById('plan-task').value.trim(); if(!task)return;
+  if(clientModerationReason(task))return toast('غیرمجاز');
+  await sb.from('study_plans').insert({username:user.username,day_name:day,task:task,done:false});
+  document.getElementById('plan-task').value=''; loadPlans();
+}
+async function loadPlans(){
+  var {data}=await sb.from('study_plans').select('*').eq('username',user.username).order('created_at',{ascending:false}).limit(40);
+  document.getElementById('plan-list').innerHTML=(data||[]).map(function(p){
+    return '<div class="glass rounded-lg px-3 py-2 text-sm flex gap-2"><button onclick="togglePlan(\''+p.id+'\','+(!p.done)+')">'+(p.done?'[x]':'[ ]')+'</button><span class="text-[10px]" style="color:var(--accent)">'+esc(p.day_name)+'</span><span class="flex-1">'+esc(p.task)+'</span></div>';
+  }).join('')||'<p class="text-xs" style="color:var(--muted)">خالی</p>';
+}
+async function togglePlan(id,done){ await sb.from('study_plans').update({done:done}).eq('id',id); loadPlans(); }
+
+async function addCountdown(){
+  var title=document.getElementById('cd-title').value.trim();
+  var dt=document.getElementById('cd-date').value;
+  if(!title||!dt)return toast('عنوان و تاریخ');
+  await sb.from('countdowns').insert({username:user.username,title:title,target_at:new Date(dt).toISOString()});
+  document.getElementById('cd-title').value=''; loadCountdowns();
+}
+async function loadCountdowns(){
+  var {data}=await sb.from('countdowns').select('*').eq('username',user.username).order('target_at');
+  document.getElementById('cd-list').innerHTML=(data||[]).map(function(c){
+    var left=new Date(c.target_at)-Date.now();
+    var days=Math.max(0,Math.ceil(left/86400000));
+    return '<div class="glass rounded-lg p-3"><b>'+esc(c.title)+'</b><p class="text-xs mt-1" style="color:var(--muted)">'+days+' روز مانده</p></div>';
+  }).join('')||'<p class="text-xs" style="color:var(--muted)">خالی</p>';
+}
+
+function calcAvg(){
+  var s=document.getElementById('calc-scores').value.split(/[,،\s]+/).map(Number).filter(function(x){return !isNaN(x)});
+  if(!s.length)return toast('نمره وارد کن');
+  var avg=s.reduce(function(a,b){return a+b},0)/s.length;
+  document.getElementById('calc-out').textContent='میانگین: '+avg.toFixed(2);
+}
+
+function nextQuiz(){
+  quizI=Math.floor(Math.random()*QUIZ_BANK.length);
+  var q=QUIZ_BANK[quizI];
+  document.getElementById('quiz-q').textContent=q.q;
+  document.getElementById('quiz-opts').innerHTML=q.opts.map(function(o,i){
+    return '<button class="btn btn-ghost w-full py-2 text-xs" onclick="answerQuiz('+i+')">'+esc(o)+'</button>';
+  }).join('');
+}
+function answerQuiz(i){
+  var q=QUIZ_BANK[quizI];
+  if(i===q.a){ toast('درست!'); addPoints(5); }
+  else toast('غلط — جواب: '+q.opts[q.a]);
+  setTimeout(nextQuiz,800);
+}
+
+function randomIdea(){
+  var t=IDEAS[Math.floor(Math.random()*IDEAS.length)];
+  document.getElementById('idea-box').textContent=t;
+}
+
+async function doSearch(){
+  var q=(document.getElementById('search-in').value||'').trim().toLowerCase();
+  if(!q)return;
+  var out=[];
+  (posts||[]).forEach(function(p){
+    if((p.content||'').toLowerCase().indexOf(q)>=0 || (p.hashtags||'').toLowerCase().indexOf(q)>=0 || (p.author_username||'').toLowerCase().indexOf(q)>=0)
+      out.push('<div class="glass rounded-lg p-2 text-xs">@'+esc(p.author_username)+': '+esc((p.content||'').slice(0,80))+'</div>');
+  });
+  try{
+    var {data}=await sb.from('profiles').select('username,display_name').ilike('username','%'+q+'%').limit(10);
+    (data||[]).forEach(function(u){
+      out.push('<div class="glass rounded-lg p-2 text-xs flex justify-between"><span>@'+esc(u.username)+' — '+esc(u.display_name||'')+'</span><button class="btn btn-ghost text-[10px]" onclick="go(\'direct\');document.getElementById(\'dm-search\').value=\''+esc(u.username)+'\';startDm()">چت</button></div>');
+    });
+  }catch(e){}
+  document.getElementById('search-out').innerHTML=out.join('')||'<p class="text-xs" style="color:var(--muted)">چیزی پیدا نشد</p>';
+}
+
+async function loadNotifs(){
+  if(!user||!sb)return;
+  try{
+    var {data}=await sb.from('notifications').select('*').eq('username',user.username).order('created_at',{ascending:false}).limit(30);
+    document.getElementById('notif-list').innerHTML=(data||[]).map(function(n){
+      return '<div class="glass rounded-lg p-2 text-xs"><b>'+esc(n.title||'')+'</b><p style="color:var(--muted)">'+esc(n.body||'')+'</p></div>';
+    }).join('')||'<p class="text-xs" style="color:var(--muted)">اعلانی نیست</p>';
+  }catch(e){
+    document.getElementById('notif-list').innerHTML='<p class="text-xs" style="color:var(--muted)">جدول اعلان هنوز ساخته نشده — SQL را Run کن</p>';
+  }
+}
+
+async function pushNotif(username,title,body){
+  try{ if(sb) await sb.from('notifications').insert({username:username,title:title,body:body||''}); }catch(e){}
+}
+
+async function pinChat(peer){
+  if(!peer||!user)return;
+  try{ await sb.from('chat_pins').insert({owner_username:user.username,peer_username:peer}); toast('پین شد'); }catch(e){toast('پین');}
+}
+
+function saveGeminiKey(){
+  var k=document.getElementById('gemini-key');
+  var v=k?k.value.trim():'';
+  if(v){ localStorage.setItem('lm_gemini_key', v); toast('کلید ذخیره شد'); }
+  else { localStorage.removeItem('lm_gemini_key'); toast('کلید پاک شد'); }
+}
+function lowDataToggle(){
+  var on=localStorage.getItem('lm_lowdata')==='1';
+  localStorage.setItem('lm_lowdata', on?'0':'1');
+  toast(on?'حالت عادی':'حالت کم‌داده');
+}
+
+
+async function callFreeAI(prompt){
+  var system = 'تو دستیار لومرا هستی. سال فعلی ۲۰۲۶ است. دانش عمومی‌ات را تا ۲۰۲۵–۲۰۲۶ در نظر بگیر. فارسی، مودب و دقیق جواب بده. لومرا پلتفرم محتوای فارسی با تم فضایی است.';
+  // 1) Pollinations رایگان بدون کلید
+  try{
+    var r = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        messages: [
+          {role:'system', content: system},
+          {role:'user', content: prompt}
+        ],
+        model: 'openai',
+        seed: Math.floor(Math.random()*100000)
+      })
+    });
+    if(r.ok){
+      var t = await r.text();
+      if(t && t.trim().length>0) return t.trim();
+    }
+  }catch(e){ console.log('pollinations', e); }
+
+  // 2) Gemini رایگان اگر کاربر کلید گذاشته باشد
+  var gkey = localStorage.getItem('lm_gemini_key')||'';
+  if(gkey){
+    try{
+      var gr = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+encodeURIComponent(gkey), {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          contents:[{parts:[{text: system+'\n\nسوال کاربر: '+prompt}]}]
+        })
+      });
+      var gj = await gr.json();
+      var gt = gj && gj.candidates && gj.candidates[0] && gj.candidates[0].content && gj.candidates[0].content.parts && gj.candidates[0].content.parts[0] && gj.candidates[0].content.parts[0].text;
+      if(gt) return gt.trim();
+    }catch(e){ console.log('gemini', e); }
+  }
+
+  // 3) fallback محلی
+  return aiAnswerLocal(prompt);
+}
+
+function aiAnswerLocal(q){
+  var t=(q||'').toLowerCase();
+  if(/لومرا|چیست|چی هست/.test(t)) return 'لومرا پلتفرم محتوای فارسی با تم فضایی است: پست، استوری، چت، ابزار و بازی.';
+  if(/قانون|ممنوع|فحش/.test(t)) return 'فحش، حاشیه سیاسی و اسپم ممنوع است. ربات نگهبان فعال است.';
+  if(/سلام|درود|hi|hello/.test(t)) return 'سلام! من AI لومرا هستم. بپرس.';
+  return 'الان به سرویس آنلاین وصل نشدم. فیلترشکن را امتحان کن یا در تنظیمات کلید رایگان Gemini بگذار. سوالت: '+q;
+}
+
+
+function imgQuotaLimit(){
+  if(isOwner(user&&user.username)) return 999999;
+  if(isVip(user)) return 5;
+  return 2;
+}
+function imgUsedToday(){
+  var day=new Date().toISOString().slice(0,10);
+  return parseInt(localStorage.getItem('lm_ai_img_'+day)||'0',10);
+}
+function addImgUsed(){
+  var day=new Date().toISOString().slice(0,10);
+  var v=imgUsedToday()+1;
+  localStorage.setItem('lm_ai_img_'+day,String(v));
+  return v;
+}
+function refreshAiQuota(){
+  var el=document.getElementById('ai-quota'); if(!el)return;
+  if(isOwner(user&&user.username)) el.textContent='عکس: نامحدود';
+  else el.textContent='عکس: '+imgUsedToday()+'/'+imgQuotaLimit()+' · حرف: '+(isVip(user)?'∞':(aiCharsToday()+'/'+AI_FREE_LIMIT));
+}
+async function askAIImage(){
+  if(!user)return toast('وارد شو');
+  var inp=document.getElementById('min');
+  var q=(inp&&inp.value||'').trim()||'beautiful abstract art';
+  if(clientModerationReason(q)||isObsceneText(q)){await banObscene('obscene_ai');return;}
+  var lim=imgQuotaLimit();
+  if(imgUsedToday()>=lim){
+    openVipGate('سقف ساخت عکس امروز پر شد. VIP تا ۵ عکس، مالک نامحدود.');
+    return;
+  }
+  var box=document.getElementById('mbox');
+  box.innerHTML+='<div class="flex justify-end"><div class="rounded-xl px-3 py-2 text-sm max-w-[90%]" style="background:color-mix(in srgb,var(--accent) 18%,transparent)">🖼 '+esc(q)+'</div></div>';
+  box.innerHTML+='<div class="flex justify-start" id="ai-img-load"><div class="glass rounded-xl px-3 py-2 text-sm" style="color:var(--muted)">در حال ساخت عکس...</div></div>';
+  try{
+    var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(q)+'?width=768&height=768&seed='+Math.floor(Math.random()*99999)+'&nologo=true';
+    addImgUsed(); refreshAiQuota();
+    var load=document.getElementById('ai-img-load'); if(load) load.remove();
+    box.innerHTML+='<div class="flex justify-start"><div class="glass rounded-xl p-2 max-w-[90%]"><img src="'+url+'" class="rounded-xl max-h-72 w-full object-cover" alt="ai"/></div></div>';
+    if(inp)inp.value='';
+  }catch(e){
+    var load2=document.getElementById('ai-img-load'); if(load2) load2.remove();
+    toast('خطا ساخت عکس');
+  }
+  box.scrollTop=box.scrollHeight;
+}
+var voiceRec=null, voiceOn=false;
+function toggleVoiceAI(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast('مرورگر از ویس پشتیبانی نمی‌کند'); return; }
+  if(voiceOn&&voiceRec){ try{voiceRec.stop()}catch(e){} voiceOn=false; toast('ویس خاموش'); return; }
+  voiceRec=new SR(); voiceRec.lang='fa-IR'; voiceRec.interimResults=false;
+  voiceRec.onresult=function(ev){
+    var t=ev.results[0][0].transcript;
+    var inp=document.getElementById('min'); if(inp) inp.value=t;
+    askMem();
+  };
+  voiceRec.onerror=function(){ voiceOn=false; toast('خطا ویس'); };
+  voiceRec.onend=function(){ voiceOn=false; };
+  voiceOn=true; voiceRec.start(); toast('گوش می‌دهم...');
+}
+function speakAI(text){
+  try{
+    if(!window.speechSynthesis)return;
+    var u=new SpeechSynthesisUtterance(String(text).slice(0,400));
+    u.lang='fa-IR'; u.rate=1; speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+async function askMem(){
+  var inp=document.getElementById('min');
+  var q=(inp && inp.value || '').trim();
+  if(!q)return;
+  if(clientModerationReason(q)){toast('غیرمجاز');return}
+  if(!isVip(user)){
+    var used=aiCharsToday();
+    if(used>=AI_FREE_LIMIT){
+      openVipGate('محدودیت هوش مصنوعی رایگان تمام شد (۱۰۰۰ حرف در روز). با VIP نامحدود استفاده کن.');
+      return;
+    }
+    if(used+q.length>AI_FREE_LIMIT){
+      openVipGate('با این پیام از سقف ۱۰۰۰ حرف امروز رد می‌شوی. متن کوتاه‌تر بنویس یا VIP شو.');
+      return;
+    }
+    addAiChars(q.length);
+  }
+
+  var box=document.getElementById('mbox');
+  if(!box)return;
+  box.innerHTML+='<div class="flex justify-end"><div class="rounded-xl px-3 py-2 text-sm max-w-[90%]" style="background:color-mix(in srgb,var(--accent) 18%,transparent)">'+esc(q)+'</div></div>';
+  if(inp) inp.value='';
+  box.innerHTML+='<div class="flex justify-start" id="ai-loading"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%]" style="color:var(--muted)">در حال فکر کردن...</div></div>';
+  box.scrollTop=box.scrollHeight;
+  try{
+    var ans = await callFreeAI(q);
+    var load=document.getElementById('ai-loading'); if(load) load.remove();
+    box.innerHTML+='<div class="flex justify-start"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%] whitespace-pre-line">'+esc(ans)+'</div></div>';
+    try{speakAI(ans)}catch(e){}
+    try{refreshAiQuota()}catch(e){}
+  }catch(e){
+    var load2=document.getElementById('ai-loading'); if(load2) load2.remove();
+    box.innerHTML+='<div class="flex justify-start"><div class="glass rounded-xl px-3 py-2 text-sm max-w-[90%]">خطا در اتصال AI. فیلترشکن یا کلید Gemini را چک کن.</div></div>';
+  }
+  box.scrollTop=box.scrollHeight;
+}
+function askQuick(q){ var inp=document.getElementById('min'); if(inp) inp.value=q; askMem(); }
+
+
+/* ===== WOW LAYER ===== */
+var liveRoom=null, liveLeft=25*60, liveTimer=null, liveRun=false;
+
+function runIntro(){
+  if(localStorage.getItem('lm_intro_seen')==='1'){
+    var el=document.getElementById('intro-cinematic'); if(el) el.classList.add('hide');
+    setTimeout(function(){ if(el) el.style.display='none'; },900);
+    return;
+  }
+  setTimeout(function(){
+    localStorage.setItem('lm_intro_seen','1');
+    var el=document.getElementById('intro-cinematic');
+    if(el){ el.classList.add('hide'); setTimeout(function(){ el.style.display='none'; },900); }
+    try{playPulse()}catch(e){}
+  },3200);
+}
+
+function fingerprintBadge(name){
+  name=name||'user';
+  var h=0; for(var i=0;i<name.length;i++) h=((h<<5)-h)+name.charCodeAt(i)|0;
+  var c1='hsl('+(Math.abs(h)%360)+',70%,55%)';
+  var c2='hsl('+(Math.abs(h*3)%360)+',70%,45%)';
+  var el=document.getElementById('fp-badge');
+  if(el){ el.style.background='linear-gradient(135deg,'+c1+','+c2+')'; el.textContent=(name.slice(0,2)||'LM').toUpperCase(); }
+}
+
+function burstReact(emoji, x, y){
+  var d=document.createElement('div'); d.className='react-burst'; d.textContent=emoji||'✨';
+  d.style.left=(x||window.innerWidth/2)+'px'; d.style.top=(y||window.innerHeight/2)+'px';
+  document.body.appendChild(d); setTimeout(function(){ d.remove(); },800);
+  try{playPulse()}catch(e){}
+}
+
+
+/* micro features pack */
+function toggleFontBig(){ document.body.classList.toggle('font-big'); localStorage.setItem('lm_font_big', document.body.classList.contains('font-big')?'1':'0'); toast('فونت'); }
+function toggleReduceAnim(){ document.body.classList.toggle('reduce-anim'); toast('انیمیشن'); }
+function copyInvite(){ var t=myInvite(); try{navigator.clipboard.writeText('لومرا '+t+' '+location.href); toast('کپی شد')}catch(e){toast(t)} }
+function luckyPost(){ var ideas=['امروز چی یاد گرفتی؟','یک جمله کوتاه','حالت چطوره؟','یک هدف کوچک']; var t=document.getElementById('pbody'); openM('m-post'); if(t) t.value=ideas[Math.floor(Math.random()*ideas.length)]; }
+function focusModeOn(){ document.body.classList.add('cinema-mode'); toast('فوکوس'); }
+function shakeUI(){ document.getElementById('app').style.animation='lmIn .4s'; setTimeout(function(){document.getElementById('app').style.animation='';},400); }
+
+function playPulse(){
+  try{
+    var ac=new (window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator(); var g=ac.createGain();
+    o.type='sine'; o.frequency.value=520;
+    g.gain.value=0.04; o.connect(g); g.connect(ac.destination);
+    o.start(); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.3);
+    o.stop(ac.currentTime+0.32);
+  }catch(e){}
+}
+
+function toggleCinema(){ document.body.classList.toggle('cinema-mode'); toast(document.body.classList.contains('cinema-mode')?'حالت سینما':'عادی'); }
+function toggleNightCosmic(){
+  document.body.classList.toggle('night-cosmic');
+  var on=document.body.classList.contains('night-cosmic');
+  localStorage.setItem('lm_night_cosmic', on?'1':'0');
+  toast(on?'شیفت شب کیهانی':'حالت روز');
+}
+
+function joinLive(kind){
+  liveRoom=kind;
+  var titles={study:'📚 مدار مطالعه',talk:'💬 مدار حرف',play:'🎮 مدار بازی'};
+  document.getElementById('live-panel').classList.remove('hidden');
+  document.getElementById('live-title').textContent=titles[kind]||kind;
+  if(kind==='play'){ try{go('game')}catch(e){} }
+  loadLiveChat();
+  try{ if(sb) sb.from('live_rooms').update({users_count:1,updated_at:new Date().toISOString()}).eq('id',kind); }catch(e){}
+  toast('وارد مدار شدی');
+}
+function leaveLive(){ liveRoom=null; liveRun=false; if(liveTimer)clearInterval(liveTimer); document.getElementById('live-panel').classList.add('hidden'); }
+function liveTimerStart(){
+  if(liveRun)return; liveRun=true;
+  liveTimer=setInterval(function(){
+    liveLeft--; var m=Math.floor(liveLeft/60),s=liveLeft%60;
+    document.getElementById('live-timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(liveLeft<=0){ liveRun=false; clearInterval(liveTimer); toast('تموم شد!'); try{addPoints(5)}catch(e){} liveLeft=25*60; }
+  },1000);
+}
+function liveTimerReset(){ liveRun=false; if(liveTimer)clearInterval(liveTimer); liveLeft=25*60; document.getElementById('live-timer').textContent='25:00'; }
+async function sendLiveChat(){
+  if(!liveRoom||!user)return;
+  var inp=document.getElementById('live-in'); var t=(inp&&inp.value||'').trim(); if(!t)return;
+  if(clientModerationReason(t))return toast('غیرمجاز');
+  try{ await sb.from('game_messages').insert({room_code:'live_'+liveRoom,username:user.username,body:t}); }catch(e){}
+  if(inp)inp.value=''; loadLiveChat();
+}
+async function loadLiveChat(){
+  var box=document.getElementById('live-chat'); if(!box||!liveRoom)return;
+  try{
+    var {data}=await sb.from('game_messages').select('*').eq('room_code','live_'+liveRoom).order('created_at',{ascending:false}).limit(40);
+    box.innerHTML=(data||[]).slice().reverse().map(function(m){return '<div><b>@'+esc(m.username)+'</b> '+esc(m.body)+'</div>';}).join('')||'<p style="color:var(--muted)">ساکت...</p>';
+    box.scrollTop=box.scrollHeight;
+  }catch(e){ box.innerHTML='<p style="color:var(--muted)">بعد از SQL فعال می‌شود</p>'; }
+}
+
+async function createDuel(){
+  if(!user||!sb)return;
+  var topic=(document.getElementById('duel-topic').value||'').trim();
+  var text=(document.getElementById('duel-text').value||'').trim();
+  if(!topic||!text)return toast('موضوع و جمله');
+  if(clientModerationReason(topic+' '+text))return toast('غیرمجاز');
+  try{
+    await sb.from('duels').insert({topic:topic,user_a:user.username,text_a:text,status:'open'});
+    toast('دوئل ثبت شد'); document.getElementById('duel-text').value=''; loadDuels();
+  }catch(e){toast('SQL دوئل را Run کن')}
+}
+async function loadDuels(){
+  var box=document.getElementById('duel-list'); if(!box)return;
+  try{
+    var {data}=await sb.from('duels').select('*').order('created_at',{ascending:false}).limit(10);
+    box.innerHTML=(data||[]).map(function(d){
+      var extra=d.text_b?('<p>B @'+esc(d.user_b)+': '+esc(d.text_b)+'</p>'):('<button type="button" class="btn btn-ghost text-[10px] mt-1 duel-ans" data-id="'+d.id+'">جواب بده</button>');
+      return '<div class="glass rounded-lg p-2 text-xs"><b>'+esc(d.topic)+'</b><p class="mt-1">A @'+esc(d.user_a)+': '+esc(d.text_a||'')+'</p>'+extra+'<div class="flex gap-2 mt-1"><button type="button" class="btn btn-ghost text-[10px] duel-va" data-id="'+d.id+'">رأی A ('+(d.votes_a||0)+')</button><button type="button" class="btn btn-ghost text-[10px] duel-vb" data-id="'+d.id+'">رأی B ('+(d.votes_b||0)+')</button></div></div>';
+    }).join('')||'<p class="text-xs" style="color:var(--muted)">دوئلی نیست</p>';
+    box.querySelectorAll('.duel-ans').forEach(function(btn){ btn.onclick=function(){ answerDuel(btn.getAttribute('data-id')); }; });
+    box.querySelectorAll('.duel-va').forEach(function(btn){ btn.onclick=function(){ voteDuel(btn.getAttribute('data-id'),'a'); }; });
+    box.querySelectorAll('.duel-vb').forEach(function(btn){ btn.onclick=function(){ voteDuel(btn.getAttribute('data-id'),'b'); }; });
+  }catch(e){ box.innerHTML='<p class="text-xs" style="color:var(--muted)">SQL لازم است</p>'; }
+}
+async function answerDuel(id){
+  var text=prompt('جمله تو برای دوئل:'); if(!text||!user)return;
+  if(clientModerationReason(text))return toast('غیرمجاز');
+  try{ await sb.from('duels').update({user_b:user.username,text_b:text}).eq('id',id); loadDuels(); }catch(e){toast('خطا')}
+}
+async function voteDuel(id,side){
+  try{
+    var {data}=await sb.from('duels').select('*').eq('id',id).maybeSingle(); if(!data)return;
+    var patch={}; if(side==='a') patch.votes_a=(data.votes_a||0)+1; else patch.votes_b=(data.votes_b||0)+1;
+    await sb.from('duels').update(patch).eq('id',id); loadDuels();
+  }catch(e){}
+}
+
+async function saveCapsule(){
+  if(!user||!sb)return;
+  var body=(document.getElementById('cap-body').value||'').trim();
+  var dt=document.getElementById('cap-date').value;
+  var pub=document.getElementById('cap-pub')&&document.getElementById('cap-pub').checked;
+  if(!body||!dt)return toast('متن و تاریخ');
+  if(clientModerationReason(body))return toast('غیرمجاز');
+  try{
+    await sb.from('time_capsules').insert({username:user.username,body:body,open_at:new Date(dt).toISOString(),is_public:!!pub});
+    toast('قفل شد تا آینده'); document.getElementById('cap-body').value=''; loadCapsules();
+  }catch(e){toast('SQL جعبه زمان')}
+}
+async function loadCapsules(){
+  var box=document.getElementById('cap-list'); if(!box||!user)return;
+  try{
+    var {data}=await sb.from('time_capsules').select('*').eq('username',user.username).order('open_at').limit(10);
+    var now=Date.now();
+    box.innerHTML=(data||[]).map(function(c){
+      var open=new Date(c.open_at).getTime()<=now;
+      return '<div class="glass rounded-lg p-2">'+(open?esc(c.body):'🔒 تا '+new Date(c.open_at).toLocaleString('fa-IR'))+'</div>';
+    }).join('')||'خالی';
+  }catch(e){ box.textContent='SQL لازم'; }
+}
+
+async function postGalaxy(){
+  if(!user||!sb)return;
+  var line=(document.getElementById('gal-line').value||'').trim(); if(!line)return;
+  if(clientModerationReason(line))return toast('غیرمجاز');
+  try{ await sb.from('galaxy_wall').insert({username:user.username,line:line.slice(0,120)}); document.getElementById('gal-line').value=''; loadGalaxy(); toast('روی آسمان رفت'); }catch(e){toast('SQL کهکشان')}
+}
+async function loadGalaxy(){
+  var box=document.getElementById('gal-list'); if(!box)return;
+  try{
+    var {data}=await sb.from('galaxy_wall').select('*').order('created_at',{ascending:false}).limit(20);
+    box.innerHTML=(data||[]).map(function(g){return '✦ '+esc(g.line)+' <span style="opacity:.5">@'+esc(g.username)+'</span>';}).join('<br/>')||'آسمان خالی است';
+  }catch(e){ box.textContent='SQL لازم'; }
+}
+
+async function postIdea(){
+  if(!user||!sb)return;
+  var idea=(document.getElementById('idea-in').value||'').trim(); if(!idea)return;
+  if(clientModerationReason(idea))return toast('غیرمجاز');
+  try{ await sb.from('idea_market').insert({username:user.username,idea:idea}); document.getElementById('idea-in').value=''; loadIdeas(); }catch(e){toast('SQL ایده')}
+}
+async function loadIdeas(){
+  var box=document.getElementById('idea-list'); if(!box)return;
+  try{
+    var {data}=await sb.from('idea_market').select('*').order('created_at',{ascending:false}).limit(15);
+    box.innerHTML=(data||[]).map(function(i){
+      return '<div class="glass rounded-lg p-2 text-xs flex justify-between gap-2"><span>'+esc(i.idea)+' — @'+esc(i.username)+'</span><button type="button" class="btn btn-ghost text-[10px] idea-claim" data-id="'+i.id+'" data-owner="'+esc(i.username)+'">میسازمش</button></div>';
+    }).join('')||'<p class="text-xs" style="color:var(--muted)">ایده ای نیست</p>';
+    box.querySelectorAll('.idea-claim').forEach(function(btn){ btn.onclick=function(){ claimIdea(btn.getAttribute('data-id'), btn.getAttribute('data-owner')); }; });
+  }catch(e){ box.innerHTML='SQL لازم'; }
+}
+async function claimIdea(id, owner){
+  toast('برای هماهنگی دایرکت باز کن');
+  try{ go('direct'); document.getElementById('dm-search').value=owner; }catch(e){}
+}
+
+async function pushMood(score){
+  if(!user||!sb)return;
+  try{
+    await sb.from('mood_global').insert({username:user.username,score:score});
+    loadMoodMirror();
+  }catch(e){toast('SQL حال')}
+}
+async function loadMoodMirror(){
+  var el=document.getElementById('mood-mirror'); if(!el)return;
+  try{
+    var day=new Date().toISOString().slice(0,10);
+    var {data}=await sb.from('mood_global').select('score').eq('day',day);
+    if(!data||!data.length){ el.textContent='هنوز کسی حال نزده'; return; }
+    var avg=data.reduce(function(a,b){return a+(b.score||0)},0)/data.length;
+    el.textContent='میانگین حال امروز لومرا: '+avg.toFixed(1)+' / 5 — از '+data.length+' نفر';
+  }catch(e){ el.textContent='SQL لازم'; }
+}
+
+async function randomCompanion(){
+  if(!user||!sb)return toast('وارد شو');
+  try{
+    var {data}=await sb.from('profiles').select('username,display_name').neq('username',user.username).limit(30);
+    if(!data||!data.length)return toast('کسی نیست');
+    var pick=data[Math.floor(Math.random()*data.length)];
+    toast('همراه نامرئی: @'+pick.username+' — ۵ دقیقه حرف بزن');
+    go('direct'); document.getElementById('dm-search').value=pick.username; startDm();
+  }catch(e){toast('خطا')}
+}
+
+function loadWow(){
+  fingerprintBadge(user&&user.username);
+  loadDuels(); loadCapsules(); loadGalaxy(); loadIdeas(); loadMoodMirror();
+  if(localStorage.getItem('lm_night_cosmic')==='1') document.body.classList.add('night-cosmic');
+}
+
+
+/* ===== VIP ===== */
+
+function isObsceneText(t){
+  t=(t||'').toLowerCase().replace(/[.\s_\-]+/g,'');
+  var bad=['nude','porn','xxx','nsfw','sex','hentai','لخت','سکس','پورن','برهنه','عورت','جق','کون','کص','کیر','ممه','نود'];
+  for(var i=0;i<bad.length;i++){ if(t.indexOf(bad[i])>=0) return true; }
+  return false;
+}
+async function banObscene(reason){
+  if(!user)return;
+  if(isOwner(user.username))return;
+  try{
+    var until=new Date(Date.now()+10*24*60*60*1000).toISOString();
+    await sb.from('profiles').update({is_banned:true,ban_type:'temporary',banned_until:until,ban_reason:reason||'obscene'}).eq('id',user.id);
+    try{await sb.from('mod_logs').insert({username:user.username,reason:reason||'obscene',content_snippet:'media/text'});}catch(e){}
+    toast('محتوای نامناسب — بن ۱۰ روزه');
+    setTimeout(function(){logout()},1200);
+  }catch(e){ toast('بن ۱۰ روزه'); setTimeout(function(){logout()},1200); }
+}
+
+
+/* ===== MEGA FEATURE FLAGS (115 pack - many active) ===== */
+var LM_FEATS={
+  rocket_cabin:1, cosmic_quote:1, vip_loading:1, online_aura:1, logout_anim:1,
+  story_ab:1, timed_post:1, voice_only:1, group_collage:1, challenge_24h:1,
+  chat_planet:1, burn_msg:1, radio_chat:1, dark_room:1, pin_lock:1,
+  ai_style:1, ai_story:1, ai_cover:1, ai_focus:1, ai_duel_judge:1,
+  clan_base:1, clan_war:1, clan_flag:1, live_radio:1, midnight_event:1,
+  rocket_fuel:1, season_pass:1, gift_vip:1, profile_dna:1, ghost_mode:1,
+  app_lock:1, panic_wipe:1, device_alert:1, haptic:1, gyro:1, portal_fx:1,
+  cinema:1, ui_sound:1, seasonal_theme:1, health_scroll:1, counter_mini:1
+};
+function featOn(k){ return !!LM_FEATS[k]; }
+function haptic(){ try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){} }
+function cosmicQuote(){
+  var q=['مدار آرام است','ستاره‌ها شاهدند','سوخت کافی است','پیام از عمق فضا','تمرکز مثل مدار'];
+  return q[Math.floor(Math.random()*q.length)];
+}
+
+function isVip(u){
+  u=u||user;
+  if(!u)return false;
+  if(isOwner(u.username))return true;
+  if(u.is_vip===true)return true;
+  return false;
+}
+function openVipGate(msg){
+  var el=document.getElementById('vip-gate');
+  var m=document.getElementById('vip-gate-msg');
+  if(m) m.textContent=msg||'این قابلیت برای VIP است.';
+  if(el) el.classList.add('show');
+  try{playPulse()}catch(e){}
+}
+function closeVipGate(){ var el=document.getElementById('vip-gate'); if(el) el.classList.remove('show'); }
+
+function aiCharsToday(){
+  var day=new Date().toISOString().slice(0,10);
+  var key='lm_ai_chars_'+day;
+  return parseInt(localStorage.getItem(key)||'0',10);
+}
+function addAiChars(n){
+  var day=new Date().toISOString().slice(0,10);
+  var key='lm_ai_chars_'+day;
+  var v=aiCharsToday()+n;
+  localStorage.setItem(key,String(v));
+  return v;
+}
+var AI_FREE_LIMIT=10000;
+
+async function grantVip(username){
+  if(!username||!sb)return;
+  username=String(username).toLowerCase().trim();
+  try{
+    var res=await sb.from('profiles').update({is_vip:true}).eq('username',username).select();
+    console.log('grantVip',username,res);
+    if(user&&user.username===username){ user.is_vip=true; localStorage.setItem('lm_user',JSON.stringify(user)); }
+    return res;
+  }catch(e){ console.error(e); toast('خطا VIP'); }
+}
+
+function vipLabel(u){
+  if(isVip(u)||(u&&u.is_vip)) return ' <span class="vip-badge">VIP</span>';
+  return '';
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{runIntro()}catch(e){}
+  try{ if(featOn('cosmic_quote')) setTimeout(function(){toast(cosmicQuote())},3500);}catch(e){}
+  clientFp=getFingerprint();
+  getIp().then(ip=>clientIp=ip);
+  if(!(await checkSiteStatus()))return;
+  const saved=localStorage.getItem('lm_user');
+  if(saved){
+    try{
+      user=JSON.parse(saved);
+      const {data}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+      if(data){
+        if(data.is_banned&&data.ban_type==='temporary'&&data.banned_until&&new Date(data.banned_until)<new Date()){
+          await sb.from('profiles').update({is_banned:false,ban_type:'',banned_until:null}).eq('id',data.id);
+          data.is_banned=false;
+        }
+        if(!data.is_banned||isOwner(data.username)){
+          if(await isBlocked()){localStorage.removeItem('lm_user');return}
+          user={...data,is_admin:isOwner(data.username),is_vip:!!data.is_vip||isOwner(data.username)};
+          localStorage.setItem('lm_user',JSON.stringify(user));
+          collectAndSaveMeta(data.id,{login:true});
+          await enter();
+        }else localStorage.removeItem('lm_user');
+      }else localStorage.removeItem('lm_user');
+    }catch(e){}
+  }
+});
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeM(m.id)}));
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{try{reg.update()}catch(e){}}).catch(()=>{});
+  // اگر نسخه قبلی خراب بود، یک‌بار کش را پاک کن
+  if(localStorage.getItem('lm_sw_v')!=='3'){
+    localStorage.setItem('lm_sw_v','3');
+    if(navigator.serviceWorker.getRegistrations){
+      navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
+    }
+    if(window.caches&&caches.keys){
+      caches.keys().then(keys=>keys.forEach(k=>caches.delete(k)));
+    }
+  }
+  });
+}
+</script>
+</body>
+</html>
